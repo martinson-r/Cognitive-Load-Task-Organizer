@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { getAllTasks, saveTask, deleteTask } from "./data/db";
+import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -198,13 +199,13 @@ async function handleToggleTask(id) {
                     className="edit-button"
                     onClick={() => handleStartEdit(task)}
                   >
-                    Edit
+                    <PencilIcon className="icon" />
                   </button>
                   <button
                     className="delete-button"
                     onClick={() => handleDeleteTask(task.id)}
                   >
-                    Delete
+                    <TrashIcon className="icon" />
                   </button>
                 </div>
               </>
