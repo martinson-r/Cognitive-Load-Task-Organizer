@@ -37,6 +37,24 @@
   border-radius: 8px;
 }
 
+.task-content {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.delete-button {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.delete-button:hover {
+  background: #f5f5f5;
+}
+
 .task-load {
   font-size: 0.875rem;
   text-transform: capitalize;

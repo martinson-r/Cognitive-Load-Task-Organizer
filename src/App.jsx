@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { getAllTasks, saveTask } from "./data/db";
+import { getAllTasks, saveTask, deleteTask } from "./data/db";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -43,6 +43,15 @@ function App() {
     }
   }
 
+  async function handleDeleteTask(id) {
+  try {
+    await deleteTask(id);
+    setTasks((prev) => prev.filter((task) => task.id !== id));
+  } catch (error) {
+    console.error("Failed to delete task:", error);
+  }
+}
+
   return (
     <div className="app">
       <h1>Cognitive Load Task List</h1>
@@ -64,13 +73,22 @@ function App() {
       </form>
 
       <ul className="task-list">
-        {tasks.map((task) => (
-          <li key={task.id} className={`task-item task-item--${task.load}`}>
+      {tasks.map((task) => (
+        <li key={task.id} className={`task-item task-item--${task.load}`}>
+          <div className="task-content">
             <span>{task.title}</span>
             <span className="task-load">{task.load}</span>
-          </li>
-        ))}
-      </ul>
+          </div>
+
+          <button
+            className="delete-button"
+            onClick={() => handleDeleteTask(task.id)}
+          >
+            Delete
+          </button>
+        </li>
+      ))}
+    </ul>
     </div>
   );
 }
