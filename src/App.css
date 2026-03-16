@@ -1,0 +1,56 @@
+.app {
+  padding: 2rem;
+  font-family: system-ui, -apple-system, sans-serif;
+  max-width: 600px;
+}
+
+.task-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.task-form input,
+.task-form select,
+.task-form button {
+  padding: 0.5rem;
+}
+
+.task-form input {
+  flex: 1;
+}
+
+.task-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.task-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  margin-bottom: 0.5rem;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+}
+
+.task-load {
+  font-size: 0.875rem;
+  text-transform: capitalize;
+  opacity: 0.8;
+}
+
+.task-item--low .task-load {
+  color: green;
+}
+
+.task-item--medium .task-load {
+  color: darkgoldenrod;
+}
+
+.task-item--high .task-load {
+  color: crimson;
+}
