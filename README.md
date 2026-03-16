@@ -68,6 +68,22 @@ LocalStorage works well for very small key/value data, but this project uses Ind
 
 This allows the app to scale beyond a trivial demo while remaining fully offline-capable.
 
+# Development Workflow
+
+AI-assisted development tools were used as part of the coding workflow for this project.
+
+These tools were primarily used for:
+
+- accelerating boilerplate generation
+
+- exploring alternative implementation approaches
+
+- reviewing potential patterns for IndexedDB integration and React state handling
+
+All code included in this repository was reviewed and validated manually and tested during development.
+
+The project’s structure, feature design, and engineering decisions were made intentionally, and the author can walk through and explain any portion of the codebase.
+
 # Running the Project
 
 ## Clone the repository:
