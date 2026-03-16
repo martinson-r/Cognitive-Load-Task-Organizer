@@ -121,7 +121,7 @@ async function handleToggleTask(id) {
 
   return (
     <div className="app">
-      <h1>Cognitive Load Task List</h1>
+      <h1>Cognitive Load Task Organizer</h1>
 
       <form className="task-form" onSubmit={addTask}>
         <input
@@ -131,9 +131,9 @@ async function handleToggleTask(id) {
         />
 
         <select value={load} onChange={(e) => setLoad(e.target.value)}>
-          <option value="low">Low load</option>
-          <option value="medium">Medium load</option>
-          <option value="high">High load</option>
+          <option value="low">Low cognitive load</option>
+          <option value="medium">Medium cognitive load</option>
+          <option value="high">High cognitive load</option>
         </select>
 
         <button type="submit">Add</button>
@@ -161,9 +161,9 @@ async function handleToggleTask(id) {
                     value={editLoad}
                     onChange={(e) => setEditLoad(e.target.value)}
                   >
-                    <option value="low">Low load</option>
-                    <option value="medium">Medium load</option>
-                    <option value="high">High load</option>
+                    <option value="low">Low cognitive load</option>
+                    <option value="medium">Medium cognitive load</option>
+                    <option value="high">High cognitive load</option>
                   </select>
                 </div>
 

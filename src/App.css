@@ -1,7 +1,8 @@
 .app {
   padding: 2rem;
   font-family: system-ui, -apple-system, sans-serif;
-  max-width: 600px;
+  max-width: 640px;
+  margin: 0 auto;
 }
 
 .task-form {
@@ -16,8 +17,30 @@
   padding: 0.5rem;
 }
 
+.task-form input,
+.task-form select {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
 .task-form input {
   flex: 1;
+}
+
+/* Fix irritating down arrow antics */
+.task-form select, 
+.edit-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  min-width: 8.5rem;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23333' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 0.9rem;
 }
 
 .task-list {
@@ -31,10 +54,10 @@
   justify-content: space-between;
   align-items: center;
   gap: 1rem;
-  padding: 0.75rem 1rem;
+  padding: 14px 16px;
+  border-radius: 8px;
   margin-bottom: 0.5rem;
   border: 1px solid #ddd;
-  border-radius: 8px;
 }
 
 .task-content {
@@ -43,7 +66,7 @@
   gap: 0.25rem;
 }
 
-.delete-button {
+.delete-button, .edit-button {
   padding: 0.4rem 0.75rem;
   border: 1px solid #ccc;
   border-radius: 6px;
@@ -51,14 +74,16 @@
   cursor: pointer;
 }
 
-.delete-button:hover {
+.delete-button:hover, .edit-button:hover {
   background: #f5f5f5;
 }
 
 .task-load {
   font-size: 0.875rem;
   text-transform: capitalize;
+  font-weight: 500;
   opacity: 0.8;
+  margin-top: 2px;
 }
 
 .task-item--low .task-load {
@@ -127,6 +152,10 @@
   color: #000;
 }
 
-.icon-button.delete:hover .icon {
+.delete-button:hover .icon {
   color: #c33;
+}
+
+.edit-button:hover .icon {
+  color: rgb(51, 204, 94);
 }
