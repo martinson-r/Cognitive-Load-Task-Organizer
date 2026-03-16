@@ -16,6 +16,20 @@ High Load — deep thinking or complex work
 
 This approach can be helpful for people managing fatigue, executive dysfunction, ADHD, or fluctuating mental energy.
 
+## Work in Progress
+
+This project is currently under active development.
+
+Core task functionality and IndexedDB persistence are implemented.  
+Upcoming improvements include:
+
+- task filtering and organization by cognitive load
+- task priority support
+- UI/UX polish
+
+## Live Demo
+**[Cognitive Load Task Organizer](https://cognitiveorganizer.netlify.app/)**
+
 # Features
 
 ## Current functionality:
