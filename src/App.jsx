@@ -52,6 +52,29 @@ function App() {
   }
 }
 
+async function handleToggleTask(id) {
+  const taskToUpdate = tasks.find((task) => task.id === id);
+
+  if (!taskToUpdate) return;
+
+  const updatedTask = {
+    ...taskToUpdate,
+    done: !taskToUpdate.done,
+  };
+
+  try {
+    await saveTask(updatedTask);
+
+    setTasks((prev) =>
+      prev.map((task) =>
+        task.id === id ? updatedTask : task
+      )
+    );
+  } catch (error) {
+    console.error("Failed to update task:", error);
+  }
+}
+
   return (
     <div className="app">
       <h1>Cognitive Load Task List</h1>
@@ -73,22 +96,35 @@ function App() {
       </form>
 
       <ul className="task-list">
-      {tasks.map((task) => (
-        <li key={task.id} className={`task-item task-item--${task.load}`}>
-          <div className="task-content">
-            <span>{task.title}</span>
-            <span className="task-load">{task.load}</span>
-          </div>
-
-          <button
-            className="delete-button"
-            onClick={() => handleDeleteTask(task.id)}
+        {tasks.map((task) => (
+          <li
+            key={task.id}
+            className={`task-item task-item--${task.load} ${
+              task.done ? "task-item--done" : ""
+            }`}
           >
-            Delete
-          </button>
-        </li>
-      ))}
-    </ul>
+            <div className="task-content">
+              <label className="task-title-row">
+                <input
+                  type="checkbox"
+                  checked={task.done}
+                  onChange={() => handleToggleTask(task.id)}
+                />
+                <span className="task-title">{task.title}</span>
+              </label>
+
+              <span className="task-load">{task.load}</span>
+            </div>
+
+            <button
+              className="delete-button"
+              onClick={() => handleDeleteTask(task.id)}
+            >
+              Delete
+            </button>
+          </li>
+        ))}
+      </ul>
     </div>
   );
 }
