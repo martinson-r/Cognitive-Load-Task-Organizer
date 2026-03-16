@@ -92,3 +92,35 @@
   opacity: 0.85;
   background: #f8f8f8;
 }
+
+.task-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.edit-input,
+.edit-select {
+  padding: 0.5rem;
+}
+
+.edit-input {
+  margin-bottom: 0.5rem;
+}
+
+.edit-button,
+.save-button,
+.cancel-button,
+.delete-button {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.edit-button:hover,
+.save-button:hover,
+.cancel-button:hover,
+.delete-button:hover {
+  background: #f5f5f5;
+}

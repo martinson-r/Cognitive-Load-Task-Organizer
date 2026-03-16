@@ -6,6 +6,9 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
   const [load, setLoad] = useState("medium");
+  const [editingTaskId, setEditingTaskId] = useState(null);
+  const [editTitle, setEditTitle] = useState("");
+  const [editLoad, setEditLoad] = useState("medium");
 
   useEffect(() => {
     async function loadTasks() {
@@ -49,6 +52,46 @@ function App() {
     setTasks((prev) => prev.filter((task) => task.id !== id));
   } catch (error) {
     console.error("Failed to delete task:", error);
+  }
+}
+
+function handleStartEdit(task) {
+  setEditingTaskId(task.id);
+  setEditTitle(task.title);
+  setEditLoad(task.load);
+}
+
+function handleCancelEdit() {
+  setEditingTaskId(null);
+  setEditTitle("");
+  setEditLoad("medium");
+}
+
+async function handleSaveEdit(id) {
+  const trimmedTitle = editTitle.trim();
+
+  if (!trimmedTitle) return;
+
+  const taskToUpdate = tasks.find((task) => task.id === id);
+
+  if (!taskToUpdate) return;
+
+  const updatedTask = {
+    ...taskToUpdate,
+    title: trimmedTitle,
+    load: editLoad,
+  };
+
+  try {
+    await saveTask(updatedTask);
+
+    setTasks((prev) =>
+      prev.map((task) => (task.id === id ? updatedTask : task))
+    );
+
+    handleCancelEdit();
+  } catch (error) {
+    console.error("Failed to save edited task:", error);
   }
 }
 
@@ -103,25 +146,69 @@ async function handleToggleTask(id) {
               task.done ? "task-item--done" : ""
             }`}
           >
-            <div className="task-content">
-              <label className="task-title-row">
-                <input
-                  type="checkbox"
-                  checked={task.done}
-                  onChange={() => handleToggleTask(task.id)}
-                />
-                <span className="task-title">{task.title}</span>
-              </label>
+            {editingTaskId === task.id ? (
+              <>
+                <div className="task-content">
+                  <input
+                    className="edit-input"
+                    value={editTitle}
+                    onChange={(e) => setEditTitle(e.target.value)}
+                  />
 
-              <span className="task-load">{task.load}</span>
-            </div>
+                  <select
+                    className="edit-select"
+                    value={editLoad}
+                    onChange={(e) => setEditLoad(e.target.value)}
+                  >
+                    <option value="low">Low load</option>
+                    <option value="medium">Medium load</option>
+                    <option value="high">High load</option>
+                  </select>
+                </div>
 
-            <button
-              className="delete-button"
-              onClick={() => handleDeleteTask(task.id)}
-            >
-              Delete
-            </button>
+                <div className="task-actions">
+                  <button
+                    className="save-button"
+                    onClick={() => handleSaveEdit(task.id)}
+                  >
+                    Save
+                  </button>
+                  <button className="cancel-button" onClick={handleCancelEdit}>
+                    Cancel
+                  </button>
+                </div>
+              </>
+            ) : (
+              <>
+                <div className="task-content">
+                  <label className="task-title-row">
+                    <input
+                      type="checkbox"
+                      checked={task.done}
+                      onChange={() => handleToggleTask(task.id)}
+                    />
+                    <span className="task-title">{task.title}</span>
+                  </label>
+
+                  <span className="task-load">{task.load}</span>
+                </div>
+
+                <div className="task-actions">
+                  <button
+                    className="edit-button"
+                    onClick={() => handleStartEdit(task)}
+                  >
+                    Edit
+                  </button>
+                  <button
+                    className="delete-button"
+                    onClick={() => handleDeleteTask(task.id)}
+                  >
+                    Delete
+                  </button>
+                </div>
+              </>
+            )}
           </li>
         ))}
       </ul>
