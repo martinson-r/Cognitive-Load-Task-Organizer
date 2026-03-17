@@ -28,27 +28,35 @@ function App() {
   const [editContext, setEditContext] = useState("general");
   const [customContexts, setCustomContexts] = useState([]);
   const [newContextInput, setNewContextInput] = useState("");
+  const [showCustomContextInput, setShowCustomContextInput] = useState(false);
+
+  // Derive available context options (can dedupe later if needed)
+  const contextOptions = [...DEFAULT_CONTEXT_OPTIONS, ...customContexts];
 
   // load stored tasks from IndexedDB
   useEffect(() => {
-  async function loadTasks() {
-    try {
-      const storedTasks = await getAllTasks();
+    async function loadAppData() {
+      try {
+        const [storedTasks, storedCustomContexts] = await Promise.all([
+          getAllTasks(),
+          getCustomContexts(),
+        ]);
 
-      const normalizedTasks = storedTasks
-        .map((task, index) => ({
-          ...task,
-          position: task.position ?? index,
-        }))
-        .sort((a, b) => a.position - b.position);
+        const normalizedTasks = storedTasks
+          .map((task, index) => ({
+            ...task,
+            position: task.position ?? index,
+          }))
+          .sort((a, b) => a.position - b.position);
 
-      setTasks(normalizedTasks);
+        setTasks(normalizedTasks);
+        setCustomContexts(storedCustomContexts);
       } catch (error) {
-        console.error("Failed to load tasks from IndexedDB:", error);
+        console.error("Failed to load app data from IndexedDB:", error);
       }
     }
 
-    loadTasks();
+    loadAppData();
   }, []);
 
   function normalizeTaskPositions(tasks) {
@@ -57,6 +65,46 @@ function App() {
       ...task,
       position: index,
     }));
+  }
+
+  // Functions for handling custom context inputs
+  function handleContextChange(value) {
+  if (value === "__add_custom__") {
+    setShowCustomContextInput(true);
+    return;
+  }
+
+  setContext(value);
+}
+
+  async function handleAddCustomContext() {
+    const trimmedContext = newContextInput.trim().toLowerCase();
+
+    if (!trimmedContext) return;
+
+    if (contextOptions.includes(trimmedContext)) {
+      setContext(trimmedContext);
+      setNewContextInput("");
+      setShowCustomContextInput(false);
+      return;
+    }
+
+    const updatedCustomContexts = [...customContexts, trimmedContext];
+
+    try {
+      await saveCustomContexts(updatedCustomContexts);
+      setCustomContexts(updatedCustomContexts);
+      setContext(trimmedContext);
+      setNewContextInput("");
+      setShowCustomContextInput(false);
+    } catch (error) {
+      console.error("Failed to save custom contexts:", error);
+    }
+  }
+
+  function handleCancelCustomContext() {
+    setNewContextInput("");
+    setShowCustomContextInput(false);
   }
 
   function swapTasks(tasks, fromIndex, toIndex) {
@@ -150,7 +198,7 @@ function handleStartEdit(task) {
   setEditTitle(task.title);
   setEditLoad(task.load);
   setEditPriority(task.priority ?? "medium"); // Being extra safe in case old tasks don't have a priority set
-  setEditContext(task.context ?? "computer");
+  setEditContext(task.context ?? "general");
 }
 
 function handleCancelEdit() {
@@ -158,7 +206,7 @@ function handleCancelEdit() {
   setEditTitle("");
   setEditLoad("medium");
   setEditPriority("medium");
-  setEditContext("computer");
+  setEditContext("general");
 }
 
 async function handleSaveEdit(id) {
@@ -226,8 +274,13 @@ async function handleToggleTask(id) {
         priority={priority}
         setPriority={setPriority}
         context={context}
-        setContext={setContext}
-        contextOptions={DEFAULT_CONTEXT_OPTIONS}
+        onContextChange={handleContextChange}
+        contextOptions={contextOptions}
+        showCustomContextInput={showCustomContextInput}
+        newContextInput={newContextInput}
+        setNewContextInput={setNewContextInput}
+        onAddCustomContext={handleAddCustomContext}
+        onCancelCustomContext={handleCancelCustomContext}
         onSubmit={addTask}
         loadLabels={LOAD_LABELS}
         priorityLabels={PRIORITY_LABELS}

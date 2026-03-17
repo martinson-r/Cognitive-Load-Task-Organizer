@@ -216,3 +216,19 @@
 .move-button:hover .icon {
   color: var(--icon-hover);
 }
+
+.task-form-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.custom-context-row {
+  display: flex;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.custom-context-row input {
+  flex: 1;
+}
