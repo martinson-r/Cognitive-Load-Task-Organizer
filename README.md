@@ -45,7 +45,8 @@ This mockup is a design reference, not the shipped implementation.
 The live application and repository code reflect the actual engineering work.
 
 ### Planned UI direction (Figma mockup)
-![Screenshot of planned final demo app UI.](https://i.imgur.com/Qwgad72.png)
+![Screenshot of planned final demo app mobile UI.](https://i.imgur.com/ilZ5bpL.png)
+![Screenshot of planned final demo app desktop UI.](https://i.imgur.com/Qwgad72.png)
 
 ### Current implementation (source for mockup)
 ![Screenshot of rough demo app UI.](https://i.imgur.com/10CwdLz.png)
