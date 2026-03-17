@@ -3,7 +3,7 @@ import "./App.css";
 import { getAllTasks, saveTask, deleteTask } from "./data/db";
 import TaskForm from "./components/TaskForm";
 import { LOAD_LABELS, PRIORITY_LABELS } from "./constants/TaskOptions";
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import TaskCard from "./components/TaskCard";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -158,96 +158,24 @@ async function handleToggleTask(id) {
 
       <ul className="task-list">
         {tasks.map((task) => (
-          <li
+          <TaskCard
             key={task.id}
-            className={`task-item task-item--${task.load} ${
-              task.done ? "task-item--done" : ""
-            }`}
-          >
-            {editingTaskId === task.id ? (
-              <>
-                <div className="task-content">
-                  <input
-                    className="edit-input"
-                    value={editTitle}
-                    onChange={(e) => setEditTitle(e.target.value)}
-                  />
-
-                  <select
-                    className="edit-select"
-                    value={editLoad}
-                    onChange={(e) => setEditLoad(e.target.value)}
-                  >
-                    {Object.entries(LOAD_LABELS).map(([value, label]) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-
-                  <select
-                    className="edit-select"
-                    value={editPriority}
-                    onChange={(e) => setEditPriority(e.target.value)}
-                  >
-                    {Object.entries(PRIORITY_LABELS).map(([value, label]) => (
-                      <option key={value} value={value}>
-                        {label}
-                      </option>
-                    ))}
-                  </select>
-                </div>
-
-                <div className="task-actions">
-                  <button
-                    className="save-button"
-                    onClick={() => handleSaveEdit(task.id)}
-                  >
-                    Save
-                  </button>
-                  <button className="cancel-button" onClick={handleCancelEdit}>
-                    Cancel
-                  </button>
-                </div>
-              </>
-            ) : (
-              <>
-                <div className="task-content">
-                  <label className="task-title-row">
-                    <input
-                      type="checkbox"
-                      checked={task.done}
-                      onChange={() => handleToggleTask(task.id)}
-                    />
-                    <span className="task-title">{task.title}</span>
-                  </label>
-
-                  <span className="task-load">
-                    {LOAD_LABELS[task.load] ?? LOAD_LABELS.medium}
-                  </span>
-
-                  <span className={`task-priority task-priority--${task.priority ?? "medium"}`}>
-                    {PRIORITY_LABELS[task.priority] ?? PRIORITY_LABELS.medium}
-                  </span>
-                </div>
-
-                <div className="task-actions">
-                  <button
-                    className="edit-button"
-                    onClick={() => handleStartEdit(task)}
-                  >
-                    <PencilIcon className="icon" />
-                  </button>
-                  <button
-                    className="delete-button"
-                    onClick={() => handleDeleteTask(task.id)}
-                  >
-                    <TrashIcon className="icon" />
-                  </button>
-                </div>
-              </>
-            )}
-          </li>
+            task={task}
+            editingTaskId={editingTaskId}
+            editTitle={editTitle}
+            setEditTitle={setEditTitle}
+            editLoad={editLoad}
+            setEditLoad={setEditLoad}
+            editPriority={editPriority}
+            setEditPriority={setEditPriority}
+            onStartEdit={handleStartEdit}
+            onCancelEdit={handleCancelEdit}
+            onSaveEdit={handleSaveEdit}
+            onDeleteTask={handleDeleteTask}
+            onToggleTask={handleToggleTask}
+            loadLabels={LOAD_LABELS}
+            priorityLabels={PRIORITY_LABELS}
+          />
         ))}
       </ul>
     </div>
