@@ -25,10 +25,18 @@ function App() {
 
   // load stored tasks from IndexedDB
   useEffect(() => {
-    async function loadTasks() {
-      try {
-        const storedTasks = await getAllTasks();
-        setTasks(storedTasks);
+  async function loadTasks() {
+    try {
+      const storedTasks = await getAllTasks();
+
+      const normalizedTasks = storedTasks
+        .map((task, index) => ({
+          ...task,
+          position: task.position ?? index,
+        }))
+        .sort((a, b) => a.position - b.position);
+
+      setTasks(normalizedTasks);
       } catch (error) {
         console.error("Failed to load tasks from IndexedDB:", error);
       }
@@ -63,6 +71,13 @@ function App() {
     setNewContextInput("");
   }
 
+  function normalizeTaskPositions(tasks) {
+    return tasks.map((task, index) => ({
+      ...task,
+      position: index,
+    }));
+  }
+
   async function addTask(e) {
     e.preventDefault();
 
@@ -78,9 +93,12 @@ function App() {
       createdAt: Date.now(),
     };
 
+    const reorderedTasks = normalizeTaskPositions([newTask, ...tasks]);
+
     try {
-      await saveTask(newTask);
-      setTasks((prev) => [newTask, ...prev]);
+      await Promise.all(reorderedTasks.map((task) => saveTask(task)));
+
+      setTasks(reorderedTasks);
       setInput("");
       setLoad("medium");
       setPriority("medium");
@@ -90,10 +108,16 @@ function App() {
     }
   }
 
-  async function handleDeleteTask(id) {
+async function handleDeleteTask(id) {
   try {
+    const remainingTasks = normalizeTaskPositions(
+      tasks.filter((task) => task.id !== id)
+    );
+
     await deleteTask(id);
-    setTasks((prev) => prev.filter((task) => task.id !== id));
+    await Promise.all(remainingTasks.map((task) => saveTask(task)));
+
+    setTasks(remainingTasks);
   } catch (error) {
     console.error("Failed to delete task:", error);
   }
