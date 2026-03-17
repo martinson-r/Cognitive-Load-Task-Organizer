@@ -13,6 +13,18 @@ function App() {
   const [priority, setPriority] = useState("medium");
   const [editPriority, setEditPriority] = useState("medium");
 
+  const LOAD_LABELS = {
+    low: "Low cognitive load",
+    medium: "Medium cognitive load",
+    high: "High cognitive load",
+  };
+
+  const PRIORITY_LABELS = {
+    low: "Low priority",
+    medium: "Medium priority",
+    high: "High priority",
+  };
+
   useEffect(() => {
     async function loadTasks() {
       try {
@@ -138,15 +150,19 @@ async function handleToggleTask(id) {
         />
 
         <select value={load} onChange={(e) => setLoad(e.target.value)}>
-          <option value="low">Low cognitive load</option>
-          <option value="medium">Medium cognitive load</option>
-          <option value="high">High cognitive load</option>
+          {Object.entries(LOAD_LABELS).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
         </select>
 
         <select value={priority} onChange={(e) => setPriority(e.target.value)}>
-          <option value="low">Low priority</option>
-          <option value="medium">Medium priority</option>
-          <option value="high">High priority</option>
+          {Object.entries(PRIORITY_LABELS).map(([value, label]) => (
+            <option key={value} value={value}>
+              {label}
+            </option>
+          ))}
         </select>
 
         <button type="submit">Add</button>
@@ -174,9 +190,11 @@ async function handleToggleTask(id) {
                     value={editLoad}
                     onChange={(e) => setEditLoad(e.target.value)}
                   >
-                    <option value="low">Low cognitive load</option>
-                    <option value="medium">Medium cognitive load</option>
-                    <option value="high">High cognitive load</option>
+                    {Object.entries(LOAD_LABELS).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
                   </select>
 
                   <select
@@ -184,9 +202,11 @@ async function handleToggleTask(id) {
                     value={editPriority}
                     onChange={(e) => setEditPriority(e.target.value)}
                   >
-                    <option value="low">Low priority</option>
-                    <option value="medium">Medium priority</option>
-                    <option value="high">High priority</option>
+                    {Object.entries(PRIORITY_LABELS).map(([value, label]) => (
+                      <option key={value} value={value}>
+                        {label}
+                      </option>
+                    ))}
                   </select>
                 </div>
 
@@ -214,10 +234,12 @@ async function handleToggleTask(id) {
                     <span className="task-title">{task.title}</span>
                   </label>
 
-                  <span className="task-load">{task.load}</span>
-                  
+                  <span className="task-load">
+                    {LOAD_LABELS[task.load] ?? LOAD_LABELS.medium}
+                  </span>
+
                   <span className={`task-priority task-priority--${task.priority ?? "medium"}`}>
-                    {task.priority ?? "medium"} priority
+                    {PRIORITY_LABELS[task.priority] ?? PRIORITY_LABELS.medium}
                   </span>
                 </div>
 
