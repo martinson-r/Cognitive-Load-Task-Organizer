@@ -15,18 +15,6 @@ function App() {
   const [priority, setPriority] = useState("medium");
   const [editPriority, setEditPriority] = useState("medium");
 
-  const LOAD_LABELS = {
-    low: "Low cognitive load",
-    medium: "Medium cognitive load",
-    high: "High cognitive load",
-  };
-
-  const PRIORITY_LABELS = {
-    low: "Low priority",
-    medium: "Medium priority",
-    high: "High priority",
-  };
-
   useEffect(() => {
     async function loadTasks() {
       try {
