@@ -14,6 +14,9 @@ function TaskCard({
   setEditLoad,
   editPriority,
   setEditPriority,
+  editContext,
+  setEditContext,
+  contextOptions,
   onStartEdit,
   onCancelEdit,
   onSaveEdit,
@@ -64,6 +67,18 @@ function TaskCard({
                   {label}
                 </option>
               ))}
+            </select>
+
+            <select
+                className="edit-select"
+                value={editContext}
+                onChange={(e) => setEditContext(e.target.value)}
+                >
+                {contextOptions.map((option) => (
+                    <option key={option} value={option}>
+                    {option}
+                    </option>
+                ))}
             </select>
           </div>
 

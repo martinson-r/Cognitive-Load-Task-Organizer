@@ -232,3 +232,19 @@
 .custom-context-row input {
   flex: 1;
 }
+
+.task-visibility-controls {
+  margin-bottom: 1rem;
+}
+
+.show-completed-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.95rem;
+}
+
+.empty-state {
+  opacity: 0.75;
+  margin-bottom: 1rem;
+}

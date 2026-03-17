@@ -29,9 +29,21 @@ function App() {
   const [customContexts, setCustomContexts] = useState([]);
   const [newContextInput, setNewContextInput] = useState("");
   const [showCustomContextInput, setShowCustomContextInput] = useState(false);
+  const [showCompleted, setShowCompleted] = useState(false);
 
   // Derive available context options (can dedupe later if needed)
-  const contextOptions = [...DEFAULT_CONTEXT_OPTIONS, ...customContexts];
+  const contextOptions = Array.from(
+  new Set([
+      ...DEFAULT_CONTEXT_OPTIONS,
+      ...customContexts,
+      ...(editContext ? [editContext] : []),
+    ])
+  );
+
+  // Derive visible tasks before render, let's just not mutate data if we can avoid it
+  const visibleTasks = showCompleted
+  ? tasks
+  : tasks.filter((task) => !task.done);
 
   // load stored tasks from IndexedDB
   useEffect(() => {
@@ -218,7 +230,7 @@ async function handleSaveEdit(id) {
 
   if (!taskToUpdate) return;
 
-  const updatedTask = {
+   const updatedTask = {
     ...taskToUpdate,
     title: trimmedTitle,
     load: editLoad,
@@ -228,11 +240,9 @@ async function handleSaveEdit(id) {
 
   try {
     await saveTask(updatedTask);
-
     setTasks((prev) =>
       prev.map((task) => (task.id === id ? updatedTask : task))
     );
-
     handleCancelEdit();
   } catch (error) {
     console.error("Failed to save edited task:", error);
@@ -286,8 +296,27 @@ async function handleToggleTask(id) {
         priorityLabels={PRIORITY_LABELS}
       />
 
+      <div className="task-visibility-controls">
+        <label className="show-completed-toggle">
+          <input
+            type="checkbox"
+            checked={showCompleted}
+            onChange={(e) => setShowCompleted(e.target.checked)}
+          />
+          Show completed tasks
+        </label>
+      </div>
+
+      {/* Empty-state message if all tasks are completed */}
+      {visibleTasks.length === 0 && (
+        <p className="empty-state">
+          No visible tasks right now.
+        </p>
+      )}
+
       <ul className="task-list">
-        {tasks.map((task) => (
+        {/* Render only visible tasks */}
+        {visibleTasks.map((task) => (
           <TaskCard
             key={task.id}
             task={task}
@@ -298,6 +327,9 @@ async function handleToggleTask(id) {
             setEditLoad={setEditLoad}
             editPriority={editPriority}
             setEditPriority={setEditPriority}
+            editContext={editContext}
+            setEditContext={setEditContext}
+            contextOptions={contextOptions}
             onStartEdit={handleStartEdit}
             onCancelEdit={handleCancelEdit}
             onSaveEdit={handleSaveEdit}
