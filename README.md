@@ -30,6 +30,44 @@ Upcoming improvements include:
 ## Live Demo
 **[Cognitive Load Task Organizer](https://cognitiveorganizer.netlify.app/)**
 
+## Design Mockup
+
+Below is a UI mockup created in Figma Make as part of the design exploration phase.
+
+- [View Figma mockup](https://www.figma.com/make/95fSiDjTXaqdFkuYqutgt8/Refine-Productivity-App-UI?t=0pci9ZAYvc3utPrX-1)
+
+Process:
+- Provided a raw screenshot of the working app as a starting point
+- Used prompting to explore a more polished layout and interaction model
+- The resulting mockup helped clarify the intended direction for future UI refinement
+
+This mockup is a design reference, not the shipped implementation.
+The live application and repository code reflect the actual engineering work.
+
+### Planned UI direction (Figma mockup)
+![Screenshot of planned final demo app UI.](https://i.imgur.com/Qwgad72.png)
+
+### Current implementation (source for mockup)
+![Screenshot of rough demo app UI.](https://i.imgur.com/10CwdLz.png)
+
+## AI-Assisted Workflow
+
+AI tools were used selectively during this project for:
+- UI exploration and mockup generation
+- brainstorming alternative layouts
+- accelerating boilerplate implementation
+
+The app's architecture, state management, IndexedDB persistence, task model, CRUD logic, and feature planning were implemented and reviewed intentionally as part of the development process.
+
+Note: The Figma prototype is a design artifact, not the source of truth for implementation.
+
+In particular, the Figma prototype should not be confused with the production code in this repository:
+- the prototype represents a visual/design direction
+- the application code handles real task persistence and interaction logic
+- future UI refactors will adapt the live app toward the mockup incrementally
+
+This workflow reflects a practical approach: using AI to accelerate iteration while maintaining ownership of system design and implementation.
+
 # Features
 
 ## Current functionality:
