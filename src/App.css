@@ -1,3 +1,16 @@
+:root {
+  --priority-low: #64748b; 
+  --priority-medium: #304C89; 
+  --priority-high: #a21caf; 
+  --load-low: #3b82f6; 
+  --load-medium: #FF6700;
+  --load-high: #c2001d;
+  --action-edit: #32CD32;
+  --action-delete: #D21F3C;
+  --icon: #555;
+  --icon-hover: #222;
+}
+
 .app {
   padding: 2rem;
   font-family: system-ui, -apple-system, sans-serif;
@@ -87,15 +100,15 @@
 }
 
 .task-item--low .task-load {
-  color: green;
+  color: var(--load-low);
 }
 
 .task-item--medium .task-load {
-  color: darkgoldenrod;
+  color: var(--load-medium);
 }
 
 .task-item--high .task-load {
-  color: crimson;
+  color: var(--load-high);
 }
 
 .task-title-row {
@@ -132,32 +145,32 @@
   margin-bottom: 0.5rem;
 }
 
-.icon-button {
-  background: none;
-  border: none;
-  padding: 4px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
+.icon-button { 
+  background: none; 
+  border: none; 
+  padding: 4px; 
+  cursor: pointer; 
+  display: flex; 
+  align-items: center; 
+  justify-content: center; 
+} 
 
-.icon {
-  width: 18px;
-  height: 18px;
-  color: #555;
-}
+.icon { 
+  width: 18px; 
+  height: 18px; 
+  color: var(--icon); 
+} 
 
-.icon-button:hover .icon {
-  color: #000;
+.icon-button:hover .icon { 
+  color: var(--icon-hover); 
 }
 
 .delete-button:hover .icon {
-  color: #c33;
+  color: var(--action-delete);
 }
 
 .edit-button:hover .icon {
-  color: rgb(51, 204, 94);
+  color: var(--action-edit);
 }
 
 .task-meta {
@@ -173,13 +186,13 @@
 }
 
 .task-priority--low {
-  color: #3b82f6; /* blue */
+  color: var(--priority-low);
 }
 
 .task-priority--medium {
-  color: #962b7f; /* purple */
+  color: var(--priority-medium);
 }
 
 .task-priority--high {
-  color: #dc2626; /* red */
+  color: var(--priority-high);
 }
