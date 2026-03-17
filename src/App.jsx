@@ -1,6 +1,8 @@
 import { useEffect, useState } from "react";
 import "./App.css";
 import { getAllTasks, saveTask, deleteTask } from "./data/db";
+import TaskForm from "./components/TaskForm";
+import { LOAD_LABELS, PRIORITY_LABELS } from "./constants/TaskOptions";
 import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
 
 function App() {
@@ -142,31 +144,17 @@ async function handleToggleTask(id) {
     <div className="app">
       <h1>Cognitive Load Task Organizer</h1>
 
-      <form className="task-form" onSubmit={addTask}>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Add a task..."
-        />
-
-        <select value={load} onChange={(e) => setLoad(e.target.value)}>
-          {Object.entries(LOAD_LABELS).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-
-        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
-          {Object.entries(PRIORITY_LABELS).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
-
-        <button type="submit">Add</button>
-      </form>
+      <TaskForm
+        input={input}
+        setInput={setInput}
+        load={load}
+        setLoad={setLoad}
+        priority={priority}
+        setPriority={setPriority}
+        onSubmit={addTask}
+        loadLabels={LOAD_LABELS}
+        priorityLabels={PRIORITY_LABELS}
+      />
 
       <ul className="task-list">
         {tasks.map((task) => (
