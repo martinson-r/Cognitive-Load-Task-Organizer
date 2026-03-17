@@ -35,6 +35,9 @@ function App() {
   const [filterLoad, setFilterLoad] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
   const [filterContext, setFilterContext] = useState("all");
+  const [viewMode, setViewMode] = useState("custom");
+  const [sortBy, setSortBy] = useState("load");
+  const [sortDirection, setSortDirection] = useState("asc");
 
   // Derive available context options (can dedupe later if needed)
   const contextOptions = Array.from(
@@ -45,15 +48,45 @@ function App() {
     ])
   );
 
+  const LOAD_RANK = {
+    low: 0,
+    medium: 1,
+    high: 2,
+  };
+
+  const PRIORITY_RANK = {
+    low: 0,
+    medium: 1,
+    high: 2,
+  };
+
   // Derive visible tasks before render, let's just not mutate data if we can avoid it
   // Avoid re-sorting them or interfering with custom sort
-  const visibleTasks = tasks.filter((task) => {
+  let visibleTasks = tasks.filter((task) => {
     if (!showCompleted && task.done) return false;
     if (filterLoad !== "all" && task.load !== filterLoad) return false;
     if (filterPriority !== "all" && task.priority !== filterPriority) return false;
     if (filterContext !== "all" && task.context !== filterContext) return false;
     return true;
   });
+
+  // Sorted views
+  if (viewMode === "sorted") {
+    visibleTasks = [...visibleTasks].sort((a, b) => {
+      const rankMap = sortBy === "load" ? LOAD_RANK : PRIORITY_RANK;
+
+      const aRank = rankMap[a[sortBy] ?? "medium"];
+      const bRank = rankMap[b[sortBy] ?? "medium"];
+
+      if (aRank !== bRank) {
+        return sortDirection === "asc" ? aRank - bRank : bRank - aRank;
+      }
+
+      // tiebreaker is Custom View position
+      return (a.position ?? 0) - (b.position ?? 0);
+    });
+  }
+
   // load stored tasks from IndexedDB
   useEffect(() => {
     async function loadAppData() {
@@ -332,6 +365,39 @@ async function handleToggleTask(id) {
           />
           Show completed tasks
         </label>
+      </div>
+
+      <div className="sort-controls">
+        <label>
+          Order mode
+          <select value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
+            <option value="custom">Custom Order</option>
+            <option value="sorted">Auto Sort</option>
+          </select>
+        </label>
+
+        {viewMode === "sorted" && (
+          <>
+            <label>
+              Sort by
+              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                <option value="load">Cognitive Load</option>
+                <option value="priority">Priority</option>
+              </select>
+            </label>
+
+            <label>
+              Direction
+              <select
+                value={sortDirection}
+                onChange={(e) => setSortDirection(e.target.value)}
+              >
+                <option value="asc">Low to High</option>
+                <option value="desc">High to Low</option>
+              </select>
+            </label>
+          </>
+        )}
       </div>
 
       {/* Empty-state message if all tasks are completed */}
