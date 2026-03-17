@@ -5,6 +5,9 @@ function TaskForm({
   setLoad,
   priority,
   setPriority,
+  context,
+  setContext,
+  contextOptions,
   onSubmit,
   loadLabels,
   priorityLabels,
@@ -29,6 +32,14 @@ function TaskForm({
         {Object.entries(priorityLabels).map(([value, label]) => (
           <option key={value} value={value}>
             {label}
+          </option>
+        ))}
+      </select>
+
+      <select value={context} onChange={(e) => setContext(e.target.value)}>
+        {contextOptions.map((option) => (
+          <option key={option} value={option}>
+            {option}
           </option>
         ))}
       </select>

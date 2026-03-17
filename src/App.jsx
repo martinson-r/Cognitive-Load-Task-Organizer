@@ -2,7 +2,11 @@ import { useEffect, useState } from "react";
 import "./App.css";
 import { getAllTasks, saveTask, deleteTask } from "./data/db";
 import TaskForm from "./components/TaskForm";
-import { LOAD_LABELS, PRIORITY_LABELS } from "./constants/TaskOptions";
+import {
+  LOAD_LABELS,
+  PRIORITY_LABELS,
+  DEFAULT_CONTEXT_OPTIONS,
+} from "./constants/TaskOptions";
 import TaskCard from "./components/TaskCard";
 
 function App() {
@@ -14,7 +18,12 @@ function App() {
   const [editLoad, setEditLoad] = useState("medium");
   const [priority, setPriority] = useState("medium");
   const [editPriority, setEditPriority] = useState("medium");
+  const [context, setContext] = useState("general");
+  const [editContext, setEditContext] = useState("general");
+  const [customContexts, setCustomContexts] = useState([]);
+  const [newContextInput, setNewContextInput] = useState("");
 
+  // load stored tasks from IndexedDB
   useEffect(() => {
     async function loadTasks() {
       try {
@@ -28,6 +37,32 @@ function App() {
     loadTasks();
   }, []);
 
+  // Load and save custom Context information to localStorage
+  useEffect(() => {
+  const storedContexts = localStorage.getItem("custom-context-options");
+  if (storedContexts) {
+    setCustomContexts(JSON.parse(storedContexts));
+  }
+  }, []);
+
+  useEffect(() => {
+    localStorage.setItem(
+      "custom-context-options",
+      JSON.stringify(customContexts)
+    );
+  }, [customContexts]);
+
+  function handleAddCustomContext() {
+    const trimmed = newContextInput.trim().toLowerCase();
+
+    if (!trimmed) return;
+    if (contextOptions.includes(trimmed)) return;
+
+    setCustomContexts((prev) => [...prev, trimmed]);
+    setContext(trimmed);
+    setNewContextInput("");
+  }
+
   async function addTask(e) {
     e.preventDefault();
 
@@ -38,6 +73,7 @@ function App() {
       title: input.trim(),
       load,
       priority,
+      context,
       done: false,
       createdAt: Date.now(),
     };
@@ -48,6 +84,7 @@ function App() {
       setInput("");
       setLoad("medium");
       setPriority("medium");
+      setContext("general");
     } catch (error) {
       console.error("Failed to save task:", error);
     }
@@ -67,6 +104,7 @@ function handleStartEdit(task) {
   setEditTitle(task.title);
   setEditLoad(task.load);
   setEditPriority(task.priority ?? "medium"); // Being extra safe in case old tasks don't have a priority set
+  setEditContext(task.context ?? "computer");
 }
 
 function handleCancelEdit() {
@@ -74,6 +112,7 @@ function handleCancelEdit() {
   setEditTitle("");
   setEditLoad("medium");
   setEditPriority("medium");
+  setEditContext("computer");
 }
 
 async function handleSaveEdit(id) {
@@ -90,6 +129,7 @@ async function handleSaveEdit(id) {
     title: trimmedTitle,
     load: editLoad,
     priority: editPriority,
+    context: editContext,
   };
 
   try {
@@ -139,6 +179,9 @@ async function handleToggleTask(id) {
         setLoad={setLoad}
         priority={priority}
         setPriority={setPriority}
+        context={context}
+        setContext={setContext}
+        contextOptions={DEFAULT_CONTEXT_OPTIONS}
         onSubmit={addTask}
         loadLabels={LOAD_LABELS}
         priorityLabels={PRIORITY_LABELS}

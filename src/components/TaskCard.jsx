@@ -91,6 +91,10 @@ function TaskCard({
             <span className={`task-priority task-priority--${priorityValue}`}>
               {priorityLabels[priorityValue] ?? priorityLabels.medium}
             </span>
+
+            <span className="task-context">
+                {task.context ?? "general"}
+            </span>
           </div>
 
           <div className="task-actions">

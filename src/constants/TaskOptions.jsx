@@ -10,7 +10,7 @@ export const PRIORITY_LABELS = {
   high: "High priority",
 };
 
-export const CONTEXT_OPTIONS = [
+export const DEFAULT_CONTEXT_OPTIONS = [
   "kitchen",
   "bathroom",
   "garage",
@@ -20,4 +20,5 @@ export const CONTEXT_OPTIONS = [
   "outside",
   "laundry",
   "admin",
+  "general",
 ];
