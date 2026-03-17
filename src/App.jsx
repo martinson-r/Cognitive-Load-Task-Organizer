@@ -1,6 +1,12 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-import { getAllTasks, saveTask, deleteTask } from "./data/db";
+import {
+  getAllTasks,
+  saveTask,
+  deleteTask,
+  getCustomContexts,
+  saveCustomContexts,
+} from "./data/db";
 import TaskForm from "./components/TaskForm";
 import {
   LOAD_LABELS,
@@ -44,32 +50,6 @@ function App() {
 
     loadTasks();
   }, []);
-
-  // Load and save custom Context information to localStorage
-  useEffect(() => {
-  const storedContexts = localStorage.getItem("custom-context-options");
-  if (storedContexts) {
-    setCustomContexts(JSON.parse(storedContexts));
-  }
-  }, []);
-
-  useEffect(() => {
-    localStorage.setItem(
-      "custom-context-options",
-      JSON.stringify(customContexts)
-    );
-  }, [customContexts]);
-
-  function handleAddCustomContext() {
-    const trimmed = newContextInput.trim().toLowerCase();
-
-    if (!trimmed) return;
-    if (contextOptions.includes(trimmed)) return;
-
-    setCustomContexts((prev) => [...prev, trimmed]);
-    setContext(trimmed);
-    setNewContextInput("");
-  }
 
   function normalizeTaskPositions(tasks) {
     // Make sure tasks persist in the same order, not loaded randomly
