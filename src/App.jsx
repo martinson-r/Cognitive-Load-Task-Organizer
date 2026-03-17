@@ -7,13 +7,15 @@ import {
   getCustomContexts,
   saveCustomContexts,
 } from "./data/db";
-import TaskForm from "./components/TaskForm";
 import {
   LOAD_LABELS,
   PRIORITY_LABELS,
   DEFAULT_CONTEXT_OPTIONS,
 } from "./constants/TaskOptions";
+
+import TaskForm from "./components/TaskForm";
 import TaskCard from "./components/TaskCard";
+import FilterBar from "./components/FilterBar";
 
 function App() {
   const [tasks, setTasks] = useState([]);
@@ -30,6 +32,9 @@ function App() {
   const [newContextInput, setNewContextInput] = useState("");
   const [showCustomContextInput, setShowCustomContextInput] = useState(false);
   const [showCompleted, setShowCompleted] = useState(false);
+  const [filterLoad, setFilterLoad] = useState("all");
+  const [filterPriority, setFilterPriority] = useState("all");
+  const [filterContext, setFilterContext] = useState("all");
 
   // Derive available context options (can dedupe later if needed)
   const contextOptions = Array.from(
@@ -41,10 +46,14 @@ function App() {
   );
 
   // Derive visible tasks before render, let's just not mutate data if we can avoid it
-  const visibleTasks = showCompleted
-  ? tasks
-  : tasks.filter((task) => !task.done);
-
+  // Avoid re-sorting them or interfering with custom sort
+  const visibleTasks = tasks.filter((task) => {
+    if (!showCompleted && task.done) return false;
+    if (filterLoad !== "all" && task.load !== filterLoad) return false;
+    if (filterPriority !== "all" && task.priority !== filterPriority) return false;
+    if (filterContext !== "all" && task.context !== filterContext) return false;
+    return true;
+  });
   // load stored tasks from IndexedDB
   useEffect(() => {
     async function loadAppData() {
@@ -298,6 +307,18 @@ async function handleToggleTask(id) {
         onAddCustomContext={handleAddCustomContext}
         onCancelCustomContext={handleCancelCustomContext}
         onSubmit={addTask}
+        loadLabels={LOAD_LABELS}
+        priorityLabels={PRIORITY_LABELS}
+      />
+
+      <FilterBar
+        filterLoad={filterLoad}
+        setFilterLoad={setFilterLoad}
+        filterPriority={filterPriority}
+        setFilterPriority={setFilterPriority}
+        filterContext={filterContext}
+        setFilterContext={setFilterContext}
+        contextOptions={contextOptions}
         loadLabels={LOAD_LABELS}
         priorityLabels={PRIORITY_LABELS}
       />
