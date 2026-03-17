@@ -10,6 +10,8 @@ function App() {
   const [editingTaskId, setEditingTaskId] = useState(null);
   const [editTitle, setEditTitle] = useState("");
   const [editLoad, setEditLoad] = useState("medium");
+  const [priority, setPriority] = useState("medium");
+  const [editPriority, setEditPriority] = useState("medium");
 
   useEffect(() => {
     async function loadTasks() {
@@ -33,6 +35,7 @@ function App() {
       id: crypto.randomUUID(),
       title: input.trim(),
       load,
+      priority,
       done: false,
       createdAt: Date.now(),
     };
@@ -42,6 +45,7 @@ function App() {
       setTasks((prev) => [newTask, ...prev]);
       setInput("");
       setLoad("medium");
+      setPriority("medium");
     } catch (error) {
       console.error("Failed to save task:", error);
     }
@@ -60,12 +64,14 @@ function handleStartEdit(task) {
   setEditingTaskId(task.id);
   setEditTitle(task.title);
   setEditLoad(task.load);
+  setEditPriority(task.priority ?? "medium"); // Being extra safe in case old tasks don't have a priority set
 }
 
 function handleCancelEdit() {
   setEditingTaskId(null);
   setEditTitle("");
   setEditLoad("medium");
+  setEditPriority("medium");
 }
 
 async function handleSaveEdit(id) {
@@ -81,6 +87,7 @@ async function handleSaveEdit(id) {
     ...taskToUpdate,
     title: trimmedTitle,
     load: editLoad,
+    priority: editPriority,
   };
 
   try {
@@ -136,6 +143,12 @@ async function handleToggleTask(id) {
           <option value="high">High cognitive load</option>
         </select>
 
+        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+          <option value="low">Low priority</option>
+          <option value="medium">Medium priority</option>
+          <option value="high">High priority</option>
+        </select>
+
         <button type="submit">Add</button>
       </form>
 
@@ -165,6 +178,16 @@ async function handleToggleTask(id) {
                     <option value="medium">Medium cognitive load</option>
                     <option value="high">High cognitive load</option>
                   </select>
+
+                  <select
+                    className="edit-select"
+                    value={editPriority}
+                    onChange={(e) => setEditPriority(e.target.value)}
+                  >
+                    <option value="low">Low priority</option>
+                    <option value="medium">Medium priority</option>
+                    <option value="high">High priority</option>
+                  </select>
                 </div>
 
                 <div className="task-actions">
@@ -192,6 +215,10 @@ async function handleToggleTask(id) {
                   </label>
 
                   <span className="task-load">{task.load}</span>
+                  
+                  <span className={`task-priority task-priority--${task.priority ?? "medium"}`}>
+                    {task.priority ?? "medium"} priority
+                  </span>
                 </div>
 
                 <div className="task-actions">

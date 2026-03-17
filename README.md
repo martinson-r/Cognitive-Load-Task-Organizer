@@ -82,6 +82,10 @@ LocalStorage works well for very small key/value data, but this project uses Ind
 
 This allows the app to scale beyond a trivial demo while remaining fully offline-capable.
 
+## Security Considerations
+
+This app stores data locally using IndexedDB and does not implement authentication or encryption. This is intentional, as the app is designed for low-friction personal task management rather than secure data storage. **Sensitive information should not be stored in this app.**
+
 # Development Workflow
 
 AI-assisted development tools were used as part of the coding workflow for this project.
