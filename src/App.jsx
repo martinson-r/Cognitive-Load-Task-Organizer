@@ -72,10 +72,52 @@ function App() {
   }
 
   function normalizeTaskPositions(tasks) {
+    // Make sure tasks persist in the same order, not loaded randomly
     return tasks.map((task, index) => ({
       ...task,
       position: index,
     }));
+  }
+
+  function swapTasks(tasks, fromIndex, toIndex) {
+    // Copies array, swaps neighbors, and reassigns clean position values
+  const updatedTasks = [...tasks];
+  [updatedTasks[fromIndex], updatedTasks[toIndex]] = [
+    updatedTasks[toIndex],
+    updatedTasks[fromIndex],
+  ];
+  return normalizeTaskPositions(updatedTasks);
+}
+
+  // Move handlers for moving tasks up/down
+  async function handleMoveTaskUp(id) {
+    const currentIndex = tasks.findIndex((task) => task.id === id);
+
+    if (currentIndex <= 0) return;
+
+    const reorderedTasks = swapTasks(tasks, currentIndex, currentIndex - 1);
+
+    try {
+      await Promise.all(reorderedTasks.map((task) => saveTask(task)));
+      setTasks(reorderedTasks);
+    } catch (error) {
+      console.error("Failed to move task up:", error);
+    }
+  }
+
+  async function handleMoveTaskDown(id) {
+    const currentIndex = tasks.findIndex((task) => task.id === id);
+
+    if (currentIndex === -1 || currentIndex >= tasks.length - 1) return;
+
+    const reorderedTasks = swapTasks(tasks, currentIndex, currentIndex + 1);
+
+    try {
+      await Promise.all(reorderedTasks.map((task) => saveTask(task)));
+      setTasks(reorderedTasks);
+    } catch (error) {
+      console.error("Failed to move task down:", error);
+    }
   }
 
   async function addTask(e) {
@@ -228,6 +270,8 @@ async function handleToggleTask(id) {
             onSaveEdit={handleSaveEdit}
             onDeleteTask={handleDeleteTask}
             onToggleTask={handleToggleTask}
+            onMoveTaskUp={handleMoveTaskUp}
+            onMoveTaskDown={handleMoveTaskDown}
             loadLabels={LOAD_LABELS}
             priorityLabels={PRIORITY_LABELS}
           />

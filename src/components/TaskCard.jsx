@@ -1,4 +1,9 @@
-import { PencilIcon, TrashIcon } from "@heroicons/react/24/outline";
+import { 
+        PencilIcon, 
+        TrashIcon,
+        ArrowUpIcon,
+        ArrowDownIcon, 
+        } from "@heroicons/react/24/outline";
 
 function TaskCard({
   task,
@@ -14,6 +19,8 @@ function TaskCard({
   onSaveEdit,
   onDeleteTask,
   onToggleTask,
+  onMoveTaskUp,
+  onMoveTaskDown,
   loadLabels,
   priorityLabels,
 }) {
@@ -99,20 +106,37 @@ function TaskCard({
 
           <div className="task-actions">
             <button
-              className="edit-button"
-              onClick={() => onStartEdit(task)}
-              aria-label="Edit task"
+                className="move-button"
+                onClick={() => onMoveTaskUp(task.id)}
+                aria-label="Move task up"
             >
-              <PencilIcon className="icon" />
+                <ArrowUpIcon className="icon" />
             </button>
+
             <button
-              className="delete-button"
-              onClick={() => onDeleteTask(task.id)}
-              aria-label="Delete task"
+                className="move-button"
+                onClick={() => onMoveTaskDown(task.id)}
+                aria-label="Move task down"
             >
-              <TrashIcon className="icon" />
+                <ArrowDownIcon className="icon" />
             </button>
-          </div>
+
+            <button
+                className="edit-button"
+                onClick={() => onStartEdit(task)}
+                aria-label="Edit task"
+            >
+                <PencilIcon className="icon" />
+            </button>
+
+            <button
+                className="delete-button"
+                onClick={() => onDeleteTask(task.id)}
+                aria-label="Delete task"
+            >
+                <TrashIcon className="icon" />
+            </button>
+        </div>
         </>
       )}
     </li>

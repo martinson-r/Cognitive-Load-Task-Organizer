@@ -196,3 +196,23 @@
 .task-priority--high {
   color: var(--priority-high);
 }
+
+.delete-button,
+.edit-button,
+.move-button {
+  padding: 0.4rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background: white;
+  cursor: pointer;
+}
+
+.delete-button:hover,
+.edit-button:hover,
+.move-button:hover {
+  background: #f5f5f5;
+}
+
+.move-button:hover .icon {
+  color: var(--icon-hover);
+}
