@@ -275,6 +275,12 @@ async function handleToggleTask(id) {
   return (
     <div className="app">
       <h1>Cognitive Load Task Organizer</h1>
+      <div className="info-banner">
+        <p>No account required.</p>
+        <p>Data is stored locally in your browser using IndexedDB. 
+        This app does not include authentication or encryption.</p>
+        <p><strong>Do not store sensitive information in this app.</strong></p>
+      </div>
 
       <TaskForm
         input={input}
