@@ -6,6 +6,8 @@ import {
   deleteTask,
   getCustomContexts,
   saveCustomContexts,
+  getSetting,
+  saveSetting,
 } from "./data/db";
 import {
   LOAD_LABELS,
@@ -38,6 +40,8 @@ function App() {
   const [viewMode, setViewMode] = useState("custom");
   const [sortBy, setSortBy] = useState("load");
   const [sortDirection, setSortDirection] = useState("asc");
+  const [advancedFeaturesEnabled, setAdvancedFeaturesEnabled] = useState(false);
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   // Derive available context options (can dedupe later if needed)
   const contextOptions = Array.from(
@@ -91,9 +95,10 @@ function App() {
   useEffect(() => {
     async function loadAppData() {
       try {
-        const [storedTasks, storedCustomContexts] = await Promise.all([
+        const [storedTasks, storedCustomContexts, storedAdvancedFeatures] = await Promise.all([
           getAllTasks(),
           getCustomContexts(),
+          getSetting("advancedFeaturesEnabled", false),
         ]);
 
         const normalizedTasks = storedTasks
@@ -105,6 +110,9 @@ function App() {
 
         setTasks(normalizedTasks);
         setCustomContexts(storedCustomContexts);
+        setAdvancedFeaturesEnabled(storedAdvancedFeatures);
+        setSettingsLoaded(true);
+
       } catch (error) {
         console.error("Failed to load app data from IndexedDB:", error);
       }
@@ -112,6 +120,15 @@ function App() {
 
     loadAppData();
   }, []);
+
+  // Get advanced features setting
+  useEffect(() => {
+    if (!settingsLoaded) return;
+
+    saveSetting("advancedFeaturesEnabled", advancedFeaturesEnabled).catch((error) => {
+      console.error("Failed to save advanced features setting:", error);
+    });
+  }, [advancedFeaturesEnabled, settingsLoaded]);
 
   function normalizeTaskPositions(tasks) {
     // Make sure tasks persist in the same order, not loaded randomly
@@ -316,6 +333,16 @@ async function handleToggleTask(id) {
 
   return (
     <div className="app">
+      <div className="toolbar-row">
+        <label className="toggle-row">
+          <input
+            type="checkbox"
+            checked={advancedFeaturesEnabled}
+            onChange={(e) => setAdvancedFeaturesEnabled(e.target.checked)}
+          />
+          <span>Advanced Features</span>
+        </label>
+      </div>
       <h1>Cognitive Load Task Organizer</h1>
       <div className="info-banner">
         <p>No account required.</p>
@@ -355,6 +382,14 @@ async function handleToggleTask(id) {
         loadLabels={LOAD_LABELS}
         priorityLabels={PRIORITY_LABELS}
       />
+
+      {advancedFeaturesEnabled && (
+        <div className="advanced-features-panel">
+          <p className="advanced-features-note">
+            Advanced features enabled. Focus View, Snooze, and Momentum Mode will appear here.
+          </p>
+        </div>
+      )}
 
       <div className="task-visibility-controls">
         <label className="show-completed-toggle">

@@ -34,15 +34,23 @@ export async function deleteTask(id) {
 }
 
 export async function getCustomContexts() {
-  const db = await getDB();
-  const record = await db.get(SETTINGS_STORE, "customContexts");
-  return record?.values ?? [];
+  return getSetting("customContexts", []);
 }
 
 export async function saveCustomContexts(values) {
+  return saveSetting("customContexts", values);
+}
+
+export async function getSetting(id, fallback = null) {
+  const db = await getDB();
+  const record = await db.get(SETTINGS_STORE, id);
+  return record?.value ?? fallback;
+}
+
+export async function saveSetting(id, value) {
   const db = await getDB();
   return db.put(SETTINGS_STORE, {
-    id: "customContexts",
-    values,
+    id,
+    value,
   });
 }
