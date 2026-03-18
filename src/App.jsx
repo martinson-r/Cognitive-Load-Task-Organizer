@@ -75,6 +75,17 @@ function getVisibleTasks({
   return visibleTasks;
 }
 
+// Settings saver helper
+function persistSettings(settingsLoaded, settings) {
+  if (!settingsLoaded) return;
+
+  Object.entries(settings).forEach(([key, value]) => {
+    saveSetting(key, value).catch((error) => {
+      console.error(`Failed to save setting "${key}":`, error);
+    });
+  });
+}
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
@@ -180,68 +191,29 @@ function App() {
 
   // Get existing settings, guarded by settingsLoaded
   useEffect(() => {
-    if (!settingsLoaded) return;
-
-    saveSetting("advancedFeaturesEnabled", advancedFeaturesEnabled).catch((error) => {
-      console.error("Failed to save advanced features setting:", error);
-    });
-  }, [advancedFeaturesEnabled, settingsLoaded]);
-
-  useEffect(() => {
-  if (!settingsLoaded) return;
-
-  saveSetting("showSnoozedTasks", showSnoozedTasks).catch((error) => {
-    console.error("Failed to save show snoozed tasks setting:", error);
+  persistSettings(settingsLoaded, {
+    advancedFeaturesEnabled,
+    showSnoozedTasks,
+    showCompleted,
+    viewMode,
+    sortBy,
+    sortDirection,
+    filterLoad,
+    filterPriority,
+    filterContext,
   });
-  }, [showSnoozedTasks, settingsLoaded]);
-  useEffect(() => {
-    if (!settingsLoaded) return;
-    saveSetting("showCompleted", showCompleted).catch((error) => {
-      console.error("Failed to save show completed setting:", error);
-    });
-  }, [showCompleted, settingsLoaded]);
-
-  useEffect(() => {
-    if (!settingsLoaded) return;
-    saveSetting("viewMode", viewMode).catch((error) => {
-      console.error("Failed to save view mode setting:", error);
-    });
-  }, [viewMode, settingsLoaded]);
-
-  useEffect(() => {
-    if (!settingsLoaded) return;
-    saveSetting("sortBy", sortBy).catch((error) => {
-      console.error("Failed to save sortBy setting:", error);
-    });
-  }, [sortBy, settingsLoaded]);
-
-  useEffect(() => {
-    if (!settingsLoaded) return;
-    saveSetting("sortDirection", sortDirection).catch((error) => {
-      console.error("Failed to save sortDirection setting:", error);
-    });
-  }, [sortDirection, settingsLoaded]);
-
-  useEffect(() => {
-  if (!settingsLoaded) return;
-  saveSetting("filterLoad", filterLoad).catch((error) => {
-    console.error("Failed to save filterLoad setting:", error);
-  });
-}, [filterLoad, settingsLoaded]);
-
-useEffect(() => {
-  if (!settingsLoaded) return;
-  saveSetting("filterPriority", filterPriority).catch((error) => {
-    console.error("Failed to save filterPriority setting:", error);
-  });
-}, [filterPriority, settingsLoaded]);
-
-useEffect(() => {
-  if (!settingsLoaded) return;
-  saveSetting("filterContext", filterContext).catch((error) => {
-    console.error("Failed to save filterContext setting:", error);
-  });
-}, [filterContext, settingsLoaded]);
+}, [
+  settingsLoaded,
+  advancedFeaturesEnabled,
+  showSnoozedTasks,
+  showCompleted,
+  viewMode,
+  sortBy,
+  sortDirection,
+  filterLoad,
+  filterPriority,
+  filterContext,
+]);
 
   function normalizeTaskPositions(tasks) {
     // Make sure tasks persist in the same order, not loaded randomly
