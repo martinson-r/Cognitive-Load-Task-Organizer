@@ -110,6 +110,9 @@ function App() {
           storedAdvancedFeatures, 
           storedShowSnoozedTasks,
           storedShowCompleted,
+          storedFilterLoad,
+          storedFilterPriority,
+          storedFilterContext,
           storedViewMode,
           storedSortBy,
           storedSortDirection,
@@ -119,6 +122,9 @@ function App() {
           getSetting("advancedFeaturesEnabled", false),
           getSetting("showSnoozedTasks", false),
           getSetting("showCompleted", false),
+          getSetting("filterLoad", "all"),
+          getSetting("filterPriority", "all"),
+          getSetting("filterContext", "all"),
           getSetting("viewMode", "custom"),
           getSetting("sortBy", "load"),
           getSetting("sortDirection", "asc"),
@@ -136,6 +142,9 @@ function App() {
         setAdvancedFeaturesEnabled(storedAdvancedFeatures);
         setShowSnoozedTasks(storedShowSnoozedTasks);
         setShowCompleted(storedShowCompleted);
+        setFilterLoad(storedFilterLoad);
+        setFilterPriority(storedFilterPriority);
+        setFilterContext(storedFilterContext);
         setViewMode(storedViewMode);
         setSortBy(storedSortBy);
         setSortDirection(storedSortDirection);
@@ -191,6 +200,27 @@ function App() {
       console.error("Failed to save sortDirection setting:", error);
     });
   }, [sortDirection, settingsLoaded]);
+
+  useEffect(() => {
+  if (!settingsLoaded) return;
+  saveSetting("filterLoad", filterLoad).catch((error) => {
+    console.error("Failed to save filterLoad setting:", error);
+  });
+}, [filterLoad, settingsLoaded]);
+
+useEffect(() => {
+  if (!settingsLoaded) return;
+  saveSetting("filterPriority", filterPriority).catch((error) => {
+    console.error("Failed to save filterPriority setting:", error);
+  });
+}, [filterPriority, settingsLoaded]);
+
+useEffect(() => {
+  if (!settingsLoaded) return;
+  saveSetting("filterContext", filterContext).catch((error) => {
+    console.error("Failed to save filterContext setting:", error);
+  });
+}, [filterContext, settingsLoaded]);
 
   function normalizeTaskPositions(tasks) {
     // Make sure tasks persist in the same order, not loaded randomly
