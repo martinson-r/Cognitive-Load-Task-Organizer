@@ -362,3 +362,9 @@
 .task-submenu button:hover {
   background: #f3f4f6;
 }
+
+.focus-mode-info {
+  font-size: 0.85rem;
+  color: #6b7280; /* soft gray */
+  margin-bottom: 0.5rem;
+}

@@ -110,6 +110,7 @@ function App() {
   const [advancedFeaturesEnabled, setAdvancedFeaturesEnabled] = useState(false);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [showSnoozedTasks, setShowSnoozedTasks] = useState(false);
+  const [focusModeEnabled, setFocusModeEnabled] = useState(false);
 
   // Derive available context options (can dedupe later if needed)
   const contextOptions = Array.from(
@@ -132,6 +133,13 @@ function App() {
   sortDirection,
 });
 
+const displayedTasks = focusModeEnabled
+  ? visibleTasks.slice(0, 7)
+  : visibleTasks;
+
+const totalVisibleCount = visibleTasks.length;
+const displayedCount = displayedTasks.length;
+
   // load stored tasks from IndexedDB
   useEffect(() => {
     async function loadAppData() {
@@ -148,6 +156,7 @@ function App() {
           storedViewMode,
           storedSortBy,
           storedSortDirection,
+          storedFocusModeEnabled,
         ] = await Promise.all([
           getAllTasks(),
           getCustomContexts(),
@@ -160,6 +169,7 @@ function App() {
           getSetting("viewMode", "custom"),
           getSetting("sortBy", "load"),
           getSetting("sortDirection", "asc"),
+          getSetting("focusModeEnabled", false),
         ]);
 
         const normalizedTasks = storedTasks
@@ -181,6 +191,7 @@ function App() {
         setSortBy(storedSortBy);
         setSortDirection(storedSortDirection);
         setSettingsLoaded(true);
+        setFocusModeEnabled(storedFocusModeEnabled);
       } catch (error) {
         console.error("Failed to load app data from IndexedDB:", error);
       }
@@ -201,6 +212,7 @@ function App() {
     filterLoad,
     filterPriority,
     filterContext,
+    focusModeEnabled,
   });
 }, [
   settingsLoaded,
@@ -213,6 +225,7 @@ function App() {
   filterLoad,
   filterPriority,
   filterContext,
+  focusModeEnabled,
 ]);
 
   function normalizeTaskPositions(tasks) {
@@ -262,16 +275,6 @@ function App() {
     setNewContextInput("");
     setShowCustomContextInput(false);
   }
-
-  function swapTasks(tasks, fromIndex, toIndex) {
-    // Copies array, swaps neighbors, and reassigns clean position values
-  const updatedTasks = [...tasks];
-  [updatedTasks[fromIndex], updatedTasks[toIndex]] = [
-    updatedTasks[toIndex],
-    updatedTasks[fromIndex],
-  ];
-  return normalizeTaskPositions(updatedTasks);
-}
 
 const handleSnooze = async (taskId, hours = 24) => {
   const snoozedUntil = Date.now() + hours * 60 * 60 * 1000;
@@ -546,6 +549,15 @@ async function handleToggleTask(id) {
             />
             View Snoozed Tasks
           </label>
+
+           <label>
+            <input
+              type="checkbox"
+              checked={focusModeEnabled}
+              onChange={(e) => setFocusModeEnabled(e.target.checked)}
+            />
+            Focus Mode (show only 7 tasks)
+          </label>
         </div>
       )}
 
@@ -593,16 +605,26 @@ async function handleToggleTask(id) {
         )}
       </div>
 
+
+      {focusModeEnabled && (
+        <div className="focus-mode-info">
+          {displayedCount === totalVisibleCount
+            ? `Showing all ${totalVisibleCount} tasks`
+            : `Showing ${displayedCount} of ${totalVisibleCount} tasks`}
+        </div>
+      )}
+
       {/* Empty-state message if all tasks are completed */}
-      {visibleTasks.length === 0 && (
+      {displayedTasks.length === 0 && (
         <p className="empty-state">
           No visible tasks right now.
         </p>
       )}
+      
 
       <ul className="task-list">
         {/* Render only visible tasks */}
-        {visibleTasks.map((task) => (
+        {displayedTasks.map((task) => (
           <TaskCard
             key={task.id}
             task={task}
