@@ -104,11 +104,24 @@ function App() {
   useEffect(() => {
     async function loadAppData() {
       try {
-        const [storedTasks, storedCustomContexts, storedAdvancedFeatures, storedShowSnoozedTasks] = await Promise.all([
+        const [
+          storedTasks, 
+          storedCustomContexts, 
+          storedAdvancedFeatures, 
+          storedShowSnoozedTasks,
+          storedShowCompleted,
+          storedViewMode,
+          storedSortBy,
+          storedSortDirection,
+        ] = await Promise.all([
           getAllTasks(),
           getCustomContexts(),
           getSetting("advancedFeaturesEnabled", false),
           getSetting("showSnoozedTasks", false),
+          getSetting("showCompleted", false),
+          getSetting("viewMode", "custom"),
+          getSetting("sortBy", "load"),
+          getSetting("sortDirection", "asc"),
         ]);
 
         const normalizedTasks = storedTasks
@@ -122,6 +135,10 @@ function App() {
         setCustomContexts(storedCustomContexts);
         setAdvancedFeaturesEnabled(storedAdvancedFeatures);
         setShowSnoozedTasks(storedShowSnoozedTasks);
+        setShowCompleted(storedShowCompleted);
+        setViewMode(storedViewMode);
+        setSortBy(storedSortBy);
+        setSortDirection(storedSortDirection);
         setSettingsLoaded(true);
       } catch (error) {
         console.error("Failed to load app data from IndexedDB:", error);
@@ -131,7 +148,7 @@ function App() {
     loadAppData();
   }, []);
 
-  // Get advanced features setting
+  // Get existing settings, guarded by settingsLoaded
   useEffect(() => {
     if (!settingsLoaded) return;
 
@@ -146,7 +163,34 @@ function App() {
   saveSetting("showSnoozedTasks", showSnoozedTasks).catch((error) => {
     console.error("Failed to save show snoozed tasks setting:", error);
   });
-}, [showSnoozedTasks, settingsLoaded]);
+  }, [showSnoozedTasks, settingsLoaded]);
+  useEffect(() => {
+    if (!settingsLoaded) return;
+    saveSetting("showCompleted", showCompleted).catch((error) => {
+      console.error("Failed to save show completed setting:", error);
+    });
+  }, [showCompleted, settingsLoaded]);
+
+  useEffect(() => {
+    if (!settingsLoaded) return;
+    saveSetting("viewMode", viewMode).catch((error) => {
+      console.error("Failed to save view mode setting:", error);
+    });
+  }, [viewMode, settingsLoaded]);
+
+  useEffect(() => {
+    if (!settingsLoaded) return;
+    saveSetting("sortBy", sortBy).catch((error) => {
+      console.error("Failed to save sortBy setting:", error);
+    });
+  }, [sortBy, settingsLoaded]);
+
+  useEffect(() => {
+    if (!settingsLoaded) return;
+    saveSetting("sortDirection", sortDirection).catch((error) => {
+      console.error("Failed to save sortDirection setting:", error);
+    });
+  }, [sortDirection, settingsLoaded]);
 
   function normalizeTaskPositions(tasks) {
     // Make sure tasks persist in the same order, not loaded randomly

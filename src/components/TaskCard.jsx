@@ -1,3 +1,5 @@
+import { useEffect, useRef, useState } from "react";
+
 import { 
         PencilIcon, 
         TrashIcon,
@@ -33,6 +35,28 @@ function TaskCard({
   const isEditing = editingTaskId === task.id;
   const priorityValue = task.priority ?? "medium";
   const isSnoozed = task.snoozedUntil && task.snoozedUntil > Date.now();
+  const [showSnoozeMenu, setShowSnoozeMenu] = useState(false);
+  const snoozeMenuRef = useRef(null);
+
+  // close snooze menu on outside click
+  useEffect(() => {
+  function handleClickOutside(event) {
+    if (
+      snoozeMenuRef.current &&
+      !snoozeMenuRef.current.contains(event.target)
+    ) {
+      setShowSnoozeMenu(false);
+    }
+  }
+
+  if (showSnoozeMenu) {
+    document.addEventListener("mousedown", handleClickOutside);
+  }
+
+  return () => {
+    document.removeEventListener("mousedown", handleClickOutside);
+  };
+}, [showSnoozeMenu]);
 
   function formatSnoozeRemaining(snoozedUntil) {
     const diffMs = snoozedUntil - Date.now();
@@ -165,11 +189,51 @@ function TaskCard({
                     Snoozed · {formatSnoozeRemaining(task.snoozedUntil)}
                 </span>
             )}
+
             {advancedFeaturesEnabled && !isSnoozed && (
-                <button onClick={() => onSnooze(task.id, 24)}>
+                <div className="task-action-menu" ref={snoozeMenuRef}>
+                    <button
+                    type="button"
+                    className="task-action-button"
+                    onClick={() => setShowSnoozeMenu((prev) => !prev)}
+                    >
                     Snooze
-                </button>
-            )}
+                    </button>
+
+                    {showSnoozeMenu && (
+                    <div className="task-submenu">
+                        <button
+                        type="button"
+                        onClick={() => {
+                            onSnooze(task.id, 24);
+                            setShowSnoozeMenu(false);
+                        }}
+                        >
+                        Snooze 24h
+                        </button>
+                        <button
+                        type="button"
+                        onClick={() => {
+                            onSnooze(task.id, 48);
+                            setShowSnoozeMenu(false);
+                        }}
+                        >
+                        Snooze 48h
+                        </button>
+                        <button
+                        type="button"
+                        onClick={() => {
+                            onSnooze(task.id, 72);
+                            setShowSnoozeMenu(false);
+                        }}
+                        >
+                        Snooze 72h
+                        </button>
+                    </div>
+                    )}
+                </div>
+                )}
+
 
                 {advancedFeaturesEnabled && isSnoozed && (
                 <button onClick={() => onUnsnooze(task.id)}>
