@@ -42,6 +42,7 @@ function App() {
   const [sortDirection, setSortDirection] = useState("asc");
   const [advancedFeaturesEnabled, setAdvancedFeaturesEnabled] = useState(false);
   const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [showSnoozedTasks, setShowSnoozedTasks] = useState(false);
 
   // Derive available context options (can dedupe later if needed)
   const contextOptions = Array.from(
@@ -67,6 +68,13 @@ function App() {
   // Derive visible tasks before render, let's just not mutate data if we can avoid it
   // Avoid re-sorting them or interfering with custom sort
   let visibleTasks = tasks.filter((task) => {
+    const now = Date.now();
+    const isSnoozed =
+      task.snoozedUntil && task.snoozedUntil > now;
+
+    if (!showSnoozedTasks && isSnoozed) {
+      return false;
+    }
     if (!showCompleted && task.done) return false;
     if (filterLoad !== "all" && task.load !== filterLoad) return false;
     if (filterPriority !== "all" && task.priority !== filterPriority) return false;
@@ -76,6 +84,7 @@ function App() {
 
   // Sorted views
   if (viewMode === "sorted") {
+    
     visibleTasks = [...visibleTasks].sort((a, b) => {
       const rankMap = sortBy === "load" ? LOAD_RANK : PRIORITY_RANK;
 
@@ -95,10 +104,11 @@ function App() {
   useEffect(() => {
     async function loadAppData() {
       try {
-        const [storedTasks, storedCustomContexts, storedAdvancedFeatures] = await Promise.all([
+        const [storedTasks, storedCustomContexts, storedAdvancedFeatures, storedShowSnoozedTasks] = await Promise.all([
           getAllTasks(),
           getCustomContexts(),
           getSetting("advancedFeaturesEnabled", false),
+          getSetting("showSnoozedTasks", false),
         ]);
 
         const normalizedTasks = storedTasks
@@ -111,8 +121,8 @@ function App() {
         setTasks(normalizedTasks);
         setCustomContexts(storedCustomContexts);
         setAdvancedFeaturesEnabled(storedAdvancedFeatures);
+        setShowSnoozedTasks(storedShowSnoozedTasks);
         setSettingsLoaded(true);
-
       } catch (error) {
         console.error("Failed to load app data from IndexedDB:", error);
       }
@@ -129,6 +139,14 @@ function App() {
       console.error("Failed to save advanced features setting:", error);
     });
   }, [advancedFeaturesEnabled, settingsLoaded]);
+
+  useEffect(() => {
+  if (!settingsLoaded) return;
+
+  saveSetting("showSnoozedTasks", showSnoozedTasks).catch((error) => {
+    console.error("Failed to save show snoozed tasks setting:", error);
+  });
+}, [showSnoozedTasks, settingsLoaded]);
 
   function normalizeTaskPositions(tasks) {
     // Make sure tasks persist in the same order, not loaded randomly
@@ -188,6 +206,42 @@ function App() {
   return normalizeTaskPositions(updatedTasks);
 }
 
+const handleSnooze = async (taskId, hours = 24) => {
+  const snoozedUntil = Date.now() + hours * 60 * 60 * 1000;
+
+  setTasks((prevTasks) => {
+    const updatedTasks = prevTasks.map((task) =>
+      task.id === taskId ? { ...task, snoozedUntil } : task
+    );
+
+    const updatedTask = updatedTasks.find((task) => task.id === taskId);
+    if (updatedTask) {
+      saveTask(updatedTask).catch((error) => {
+        console.error("Failed to snooze task:", error);
+      });
+    }
+
+    return updatedTasks;
+  });
+};
+
+const handleUnsnooze = async (taskId) => {
+  setTasks((prevTasks) => {
+    const updatedTasks = prevTasks.map((task) =>
+      task.id === taskId ? { ...task, snoozedUntil: null } : task
+    );
+
+    const updatedTask = updatedTasks.find((task) => task.id === taskId);
+    if (updatedTask) {
+      saveTask(updatedTask).catch((error) => {
+        console.error("Failed to unsnooze task:", error);
+      });
+    }
+
+    return updatedTasks;
+  });
+};
+
   // Move handlers for moving tasks up/down
   async function handleMoveTaskUp(id) {
     const currentIndex = tasks.findIndex((task) => task.id === id);
@@ -232,6 +286,7 @@ function App() {
       context,
       done: false,
       createdAt: Date.now(),
+      snoozedUntil: null,
     };
 
     const reorderedTasks = normalizeTaskPositions([newTask, ...tasks]);
@@ -388,6 +443,14 @@ async function handleToggleTask(id) {
           <p className="advanced-features-note">
             Advanced features enabled. Focus View, Snooze, and Momentum Mode will appear here.
           </p>
+          <label>
+            <input
+              type="checkbox"
+              checked={showSnoozedTasks}
+              onChange={(e) => setShowSnoozedTasks(e.target.checked)}
+            />
+            View Snoozed Tasks
+          </label>
         </div>
       )}
 
@@ -465,6 +528,9 @@ async function handleToggleTask(id) {
             onToggleTask={handleToggleTask}
             onMoveTaskUp={handleMoveTaskUp}
             onMoveTaskDown={handleMoveTaskDown}
+            onSnooze={handleSnooze}
+            onUnsnooze={handleUnsnooze}
+            advancedFeaturesEnabled={advancedFeaturesEnabled}
             loadLabels={LOAD_LABELS}
             priorityLabels={PRIORITY_LABELS}
           />

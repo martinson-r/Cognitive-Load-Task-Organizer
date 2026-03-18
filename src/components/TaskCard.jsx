@@ -24,15 +24,40 @@ function TaskCard({
   onToggleTask,
   onMoveTaskUp,
   onMoveTaskDown,
+  advancedFeaturesEnabled,
+  onSnooze,
+  onUnsnooze,
   loadLabels,
   priorityLabels,
 }) {
   const isEditing = editingTaskId === task.id;
   const priorityValue = task.priority ?? "medium";
+  const isSnoozed = task.snoozedUntil && task.snoozedUntil > Date.now();
+
+  function formatSnoozeRemaining(snoozedUntil) {
+    const diffMs = snoozedUntil - Date.now();
+
+    if (diffMs <= 0) return "Ready now";
+
+    const totalHours = Math.ceil(diffMs / (1000 * 60 * 60));
+
+    if (totalHours < 24) {
+        return `${totalHours}h remaining`;
+    }
+
+    const days = Math.floor(totalHours / 24);
+    const hours = totalHours % 24;
+
+    if (hours === 0) {
+        return `${days}d remaining`;
+    }
+
+    return `${days}d ${hours}h remaining`;
+    }
 
   return (
     <li
-      className={`task-item task-item--${task.load} ${
+      className={`task-item task-item--${task.load} ${isSnoozed ? "task-card--snoozed" : ""} ${
         task.done ? "task-item--done" : ""
       }`}
     >
@@ -135,6 +160,22 @@ function TaskCard({
             >
                 <ArrowDownIcon className="icon" />
             </button>
+            {isSnoozed && (
+                <span className="task-snooze-info">
+                    Snoozed · {formatSnoozeRemaining(task.snoozedUntil)}
+                </span>
+            )}
+            {advancedFeaturesEnabled && !isSnoozed && (
+                <button onClick={() => onSnooze(task.id, 24)}>
+                    Snooze
+                </button>
+            )}
+
+                {advancedFeaturesEnabled && isSnoozed && (
+                <button onClick={() => onUnsnooze(task.id)}>
+                    Un-snooze
+                </button>
+            )}
 
             <button
                 className="edit-button"
