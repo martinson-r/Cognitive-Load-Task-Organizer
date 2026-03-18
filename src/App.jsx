@@ -316,36 +316,64 @@ const handleUnsnooze = async (taskId) => {
   });
 };
 
+// Helper to avoid filtered, completed, or snoozed tasks from interfering with reordering tasks
+function reorderByVisibleSwap(allTasks, visibleTasks, taskId, direction) {
+  const visibleIndex = visibleTasks.findIndex((task) => task.id === taskId);
+  if (visibleIndex === -1) return allTasks;
+
+  const targetIndex =
+    direction === "up" ? visibleIndex - 1 : visibleIndex + 1;
+
+  if (targetIndex < 0 || targetIndex >= visibleTasks.length) {
+    return allTasks;
+  }
+
+  const currentVisibleTask = visibleTasks[visibleIndex];
+  const targetVisibleTask = visibleTasks[targetIndex];
+
+  const updatedTasks = allTasks.map((task) => {
+    if (task.id === currentVisibleTask.id) {
+      return { ...task, position: targetVisibleTask.position };
+    }
+    if (task.id === targetVisibleTask.id) {
+      return { ...task, position: currentVisibleTask.position };
+    }
+    return task;
+  });
+
+  return [...updatedTasks].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
+}
+
   // Move handlers for moving tasks up/down
   async function handleMoveTaskUp(id) {
-    const currentIndex = tasks.findIndex((task) => task.id === id);
+  if (viewMode !== "custom") return;
 
-    if (currentIndex <= 0) return;
+  const reorderedTasks = reorderByVisibleSwap(tasks, visibleTasks, id, "up");
 
-    const reorderedTasks = swapTasks(tasks, currentIndex, currentIndex - 1);
+  if (reorderedTasks === tasks) return;
 
-    try {
-      await Promise.all(reorderedTasks.map((task) => saveTask(task)));
-      setTasks(reorderedTasks);
-    } catch (error) {
-      console.error("Failed to move task up:", error);
-    }
+  try {
+    await Promise.all(reorderedTasks.map((task) => saveTask(task)));
+    setTasks(reorderedTasks);
+  } catch (error) {
+    console.error("Failed to move task up:", error);
   }
+}
 
-  async function handleMoveTaskDown(id) {
-    const currentIndex = tasks.findIndex((task) => task.id === id);
+async function handleMoveTaskDown(id) {
+  if (viewMode !== "custom") return;
 
-    if (currentIndex === -1 || currentIndex >= tasks.length - 1) return;
+  const reorderedTasks = reorderByVisibleSwap(tasks, visibleTasks, id, "down");
 
-    const reorderedTasks = swapTasks(tasks, currentIndex, currentIndex + 1);
+  if (reorderedTasks === tasks) return;
 
-    try {
-      await Promise.all(reorderedTasks.map((task) => saveTask(task)));
-      setTasks(reorderedTasks);
-    } catch (error) {
-      console.error("Failed to move task down:", error);
-    }
+  try {
+    await Promise.all(reorderedTasks.map((task) => saveTask(task)));
+    setTasks(reorderedTasks);
+  } catch (error) {
+    console.error("Failed to move task down:", error);
   }
+}
 
   async function addTask(e) {
     e.preventDefault();
