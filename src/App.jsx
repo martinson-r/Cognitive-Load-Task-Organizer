@@ -19,6 +19,62 @@ import TaskForm from "./components/TaskForm";
 import TaskCard from "./components/TaskCard";
 import FilterBar from "./components/FilterBar";
 
+const LOAD_RANK = {
+  low: 0,
+  medium: 1,
+  high: 2,
+};
+
+const PRIORITY_RANK = {
+  low: 0,
+  medium: 1,
+  high: 2,
+};
+
+function getVisibleTasks({
+  tasks,
+  showSnoozedTasks,
+  showCompleted,
+  filterLoad,
+  filterPriority,
+  filterContext,
+  viewMode,
+  sortBy,
+  sortDirection,
+}) {
+  const now = Date.now();
+
+  let visibleTasks = tasks.filter((task) => {
+    const isSnoozed =
+      task.snoozedUntil && task.snoozedUntil > now;
+
+    if (!showSnoozedTasks && isSnoozed) return false;
+    if (!showCompleted && task.done) return false;
+    if (filterLoad !== "all" && task.load !== filterLoad) return false;
+    if (filterPriority !== "all" && task.priority !== filterPriority) return false;
+    if (filterContext !== "all" && task.context !== filterContext) return false;
+
+    return true;
+  });
+
+  if (viewMode === "sorted") {
+    visibleTasks = [...visibleTasks].sort((a, b) => {
+      const rankMap = sortBy === "load" ? LOAD_RANK : PRIORITY_RANK;
+
+      const aRank = rankMap[a[sortBy] ?? "medium"];
+      const bRank = rankMap[b[sortBy] ?? "medium"];
+
+      if (aRank !== bRank) {
+        return sortDirection === "asc" ? aRank - bRank : bRank - aRank;
+      }
+
+      return (a.position ?? 0) - (b.position ?? 0);
+    });
+  }
+
+  return visibleTasks;
+}
+
 function App() {
   const [tasks, setTasks] = useState([]);
   const [input, setInput] = useState("");
@@ -53,52 +109,17 @@ function App() {
     ])
   );
 
-  const LOAD_RANK = {
-    low: 0,
-    medium: 1,
-    high: 2,
-  };
-
-  const PRIORITY_RANK = {
-    low: 0,
-    medium: 1,
-    high: 2,
-  };
-
-  // Derive visible tasks before render, let's just not mutate data if we can avoid it
-  // Avoid re-sorting them or interfering with custom sort
-  let visibleTasks = tasks.filter((task) => {
-    const now = Date.now();
-    const isSnoozed =
-      task.snoozedUntil && task.snoozedUntil > now;
-
-    if (!showSnoozedTasks && isSnoozed) {
-      return false;
-    }
-    if (!showCompleted && task.done) return false;
-    if (filterLoad !== "all" && task.load !== filterLoad) return false;
-    if (filterPriority !== "all" && task.priority !== filterPriority) return false;
-    if (filterContext !== "all" && task.context !== filterContext) return false;
-    return true;
-  });
-
-  // Sorted views
-  if (viewMode === "sorted") {
-    
-    visibleTasks = [...visibleTasks].sort((a, b) => {
-      const rankMap = sortBy === "load" ? LOAD_RANK : PRIORITY_RANK;
-
-      const aRank = rankMap[a[sortBy] ?? "medium"];
-      const bRank = rankMap[b[sortBy] ?? "medium"];
-
-      if (aRank !== bRank) {
-        return sortDirection === "asc" ? aRank - bRank : bRank - aRank;
-      }
-
-      // tiebreaker is Custom View position
-      return (a.position ?? 0) - (b.position ?? 0);
-    });
-  }
+  const visibleTasks = getVisibleTasks({
+  tasks,
+  showSnoozedTasks,
+  showCompleted,
+  filterLoad,
+  filterPriority,
+  filterContext,
+  viewMode,
+  sortBy,
+  sortDirection,
+});
 
   // load stored tasks from IndexedDB
   useEffect(() => {
