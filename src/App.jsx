@@ -14,6 +14,11 @@ import {
   PRIORITY_LABELS,
   DEFAULT_CONTEXT_OPTIONS,
 } from "./constants/TaskOptions";
+import { 
+  pickKeystoneForMe, 
+  getMomentumTasks, 
+  hasCrossContextLowerLoadOptions 
+} from "./utils/momentum";
 
 import TaskForm from "./components/TaskForm";
 import TaskCard from "./components/TaskCard";
@@ -116,6 +121,7 @@ function App() {
   const [keystoneTaskId, setKeystoneTaskId] = useState(null);
   const [momentumError, setMomentumError] = useState("");
   const [settingsLoaded, setSettingsLoaded] = useState(false);
+  const [allowCrossContextRunway, setAllowCrossContextRunway] = useState(false);
 
   // Derive available context options (can dedupe later if needed)
   const contextOptions = Array.from(
@@ -138,12 +144,67 @@ function App() {
   sortDirection,
 });
 
-const displayedTasks = focusModeEnabled
-  ? visibleTasks.slice(0, 7)
-  : visibleTasks;
+const activeTasks =
+  momentumModeEnabled && momentumRunActive
+    ? getMomentumTasks({
+        tasks: visibleTasks,
+        keystoneTaskId,
+        energy: momentumEnergy,
+        allowCrossContextRunway,
+      })
+    : visibleTasks;
 
-const totalVisibleCount = visibleTasks.length;
+// help users pick a keystone if they're tired
+function handlePickKeystoneForMe() {
+  const suggestedTask = pickKeystoneForMe(visibleTasks);
+
+  if (!suggestedTask) {
+    setMomentumError("No eligible tasks available to choose from.");
+    return;
+  }
+
+  setKeystoneTaskId(suggestedTask.id);
+  setMomentumEnergy("tired");
+  setMomentumError("");
+}
+
+function getRunwayNeedsFallback(tasks, keystoneTaskId) {
+  if (!keystoneTaskId) return false;
+
+  const keystone = tasks.find((task) => task.id === keystoneTaskId);
+  if (!keystone) return false;
+  if (keystone.load === "low") return false;
+
+  const sameContextTasks = tasks.filter(
+    (task) => task.id !== keystone.id && task.context === keystone.context
+  );
+
+  const sameLowCount = sameContextTasks.filter((task) => task.load === "low").length;
+  const sameMediumCount = sameContextTasks.filter((task) => task.load === "medium").length;
+
+  if (keystone.load === "medium") {
+    return sameLowCount < 1;
+  }
+
+  // high keystone
+  return sameLowCount < 1 && sameMediumCount < 1;
+}
+
+const displayedTasks = 
+    focusModeEnabled || (momentumModeEnabled && momentumRunActive)
+    ? activeTasks.slice(0, 7)
+    : activeTasks;
+
+const totalVisibleCount = activeTasks.length;
 const displayedCount = displayedTasks.length;
+
+const isClippedMode =
+  focusModeEnabled || (momentumModeEnabled && momentumRunActive);
+
+const momentumNeedsFallback =
+momentumModeEnabled &&
+keystoneTaskId &&
+getRunwayNeedsFallback(visibleTasks, keystoneTaskId);
 
   // load stored tasks from IndexedDB
   useEffect(() => {
@@ -203,12 +264,12 @@ const displayedCount = displayedTasks.length;
         setViewMode(storedViewMode);
         setSortBy(storedSortBy);
         setSortDirection(storedSortDirection);
-        setSettingsLoaded(true);
         setFocusModeEnabled(storedFocusModeEnabled);
         setMomentumModeEnabled(storedMomentumModeEnabled);
         setMomentumEnergy(storedMomentumEnergy);
         setMomentumRunActive(storedMomentumRunActive);
         setKeystoneTaskId(storedKeystoneTaskId);
+        setSettingsLoaded(true);
       } catch (error) {
         console.error("Failed to load app data from IndexedDB:", error);
       }
@@ -272,7 +333,36 @@ useEffect(() => {
 // Set keystone task
 function handleSetKeystone(taskId) {
   setKeystoneTaskId(taskId);
+  setAllowCrossContextRunway(false);
   setMomentumError("");
+}
+
+function getMomentumRunwayMessage(visibleTasks, keystoneTaskId) {
+  if (!keystoneTaskId) return "";
+
+  const keystone = visibleTasks.find((task) => task.id === keystoneTaskId);
+  if (!keystone) return "";
+
+  if (keystone.load === "low") return "";
+
+  const sameContextTasks = visibleTasks.filter(
+    (task) => task.id !== keystone.id && task.context === keystone.context
+  );
+
+  const hasLowerLoadTask =
+    keystone.load === "medium"
+      ? sameContextTasks.some((task) => task.load === "low")
+      : sameContextTasks.some(
+          (task) => task.load === "low" || task.load === "medium"
+        );
+
+  if (hasLowerLoadTask) return "";
+
+  if (keystone.load === "medium") {
+    return "No lower-load tasks available in this context.";
+  }
+
+  return "No lower-load tasks available in this context. This run may begin with your Keystone.";
 }
 
   function normalizeTaskPositions(tasks) {
@@ -343,6 +433,7 @@ function handleEndMomentumRun() {
   setKeystoneTaskId(null);
   setMomentumEnergy("");
   setMomentumError("");
+  setAllowCrossContextRunway(false);
 }
 
 // Helper to warn user if they uncheck Momentum Mode toggle
@@ -370,6 +461,20 @@ function handleMomentumModeToggle(nextEnabled) {
   setMomentumRunActive(false);
   setKeystoneTaskId(null);
   setMomentumEnergy("");
+  setMomentumError("");
+}
+
+const momentumRunwayMessage = getMomentumRunwayMessage(visibleTasks, keystoneTaskId);
+
+function handleEnableCrossContextRunway() {
+  const hasOptions = hasCrossContextLowerLoadOptions(visibleTasks, keystoneTaskId);
+
+  if (!hasOptions) {
+    setMomentumError("No lower-load tasks are available from another context.");
+    return;
+  }
+
+  setAllowCrossContextRunway(true);
   setMomentumError("");
 }
 
@@ -772,13 +877,9 @@ async function handleToggleTask(id) {
 
                 <button
                   type="button"
-                  onClick={() => {
-                    // stub for now — real logic comes next step
-                    setMomentumEnergy("tired");
-                    setMomentumError("");
-                  }}
+                  onClick={handlePickKeystoneForMe}
                 >
-                  I’m too tired, pick for me
+                  I'm too tired, pick for me
                 </button>
               </div>
             </>
@@ -788,6 +889,28 @@ async function handleToggleTask(id) {
               <p>
                 Energy: <strong>{momentumEnergy}</strong>
               </p>
+              {momentumNeedsFallback && !allowCrossContextRunway && !momentumError && (
+                <div className="momentum-panel__fallback">
+                  <p className="momentum-panel__help">
+                    No lower-load tasks available in this context.
+                  </p>
+                  <button
+                    type="button"
+                    onClick={handleEnableCrossContextRunway}
+                  >
+                    Bring in easier tasks from another context
+                  </button>
+                </div>
+              )}
+              {allowCrossContextRunway && !momentumError && (
+              <p className="momentum-panel__help">
+                Using lower-load tasks from another context to build runway.
+              </p>
+            )}
+            {momentumError && (
+              <p>{momentumError}</p>
+            )}
+            
               <button type="button" onClick={handleEndMomentumRun}>
                 End Run
               </button>
