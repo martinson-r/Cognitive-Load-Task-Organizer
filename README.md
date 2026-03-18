@@ -34,7 +34,7 @@ Upcoming improvements include:
 
 Below is a UI mockup created in Figma Make as part of the design exploration phase.
 
-- [View Figma mockup](https://www.figma.com/make/95fSiDjTXaqdFkuYqutgt8/Refine-Productivity-App-UI?t=0pci9ZAYvc3utPrX-1)
+**[View Figma mockup](https://www.figma.com/make/95fSiDjTXaqdFkuYqutgt8/Refine-Productivity-App-UI?t=0pci9ZAYvc3utPrX-1)**
 
 Process:
 - Provided a raw screenshot of the working app as a starting point
@@ -45,8 +45,11 @@ This mockup is a design reference, not the shipped implementation.
 The live application and repository code reflect the actual engineering work.
 
 ### Planned UI direction (Figma mockup)
-![Screenshot of planned final demo app mobile UI.](https://i.imgur.com/ilZ5bpL.png)
-![Screenshot of planned final demo app desktop UI.](https://i.imgur.com/Qwgad72.png)
+#### Mobile UI
+![Screenshot of planned final demo app mobile UI.](https://i.imgur.com/oLMjmCP.png)
+
+#### Desktop UI
+![Screenshot of planned final demo app desktop UI.](https://i.imgur.com/qxJwxs9.jpeg)
 
 ### Current implementation (source for mockup)
 ![Screenshot of rough demo app UI.](https://i.imgur.com/10CwdLz.png)
