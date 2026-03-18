@@ -368,3 +368,61 @@
   color: #6b7280; /* soft gray */
   margin-bottom: 0.5rem;
 }
+
+.momentum-panel {
+  margin: 1rem 0;
+  padding: 1rem;
+  border: 1px solid #d9d9d9;
+  border-radius: 0.75rem;
+  background: #fafafa;
+}
+
+.momentum-panel__title {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+}
+
+.momentum-panel__section {
+  margin-bottom: 0.75rem;
+}
+
+.momentum-panel__help {
+  font-size: 0.9rem;
+  opacity: 0.75;
+}
+
+.momentum-energy-options {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.momentum-energy-options .is-selected {
+  font-weight: 600;
+}
+
+.momentum-panel__error {
+  color: #b00020;
+  margin: 0.5rem 0;
+}
+
+.momentum-panel__actions {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+.task-card--keystone {
+  outline: 2px solid #888;
+  outline-offset: 2px;
+  background: #ffc353;
+}
+
+.keystone-badge {
+  display: inline-block;
+  padding: 0.25rem 0.5rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  background: #eee;
+}

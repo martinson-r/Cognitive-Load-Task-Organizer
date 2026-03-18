@@ -108,9 +108,14 @@ function App() {
   const [sortBy, setSortBy] = useState("load");
   const [sortDirection, setSortDirection] = useState("asc");
   const [advancedFeaturesEnabled, setAdvancedFeaturesEnabled] = useState(false);
-  const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [showSnoozedTasks, setShowSnoozedTasks] = useState(false);
   const [focusModeEnabled, setFocusModeEnabled] = useState(false);
+  const [momentumModeEnabled, setMomentumModeEnabled] = useState(false);
+  const [momentumRunActive, setMomentumRunActive] = useState(false);
+  const [momentumEnergy, setMomentumEnergy] = useState("");
+  const [keystoneTaskId, setKeystoneTaskId] = useState(null);
+  const [momentumError, setMomentumError] = useState("");
+  const [settingsLoaded, setSettingsLoaded] = useState(false);
 
   // Derive available context options (can dedupe later if needed)
   const contextOptions = Array.from(
@@ -157,6 +162,10 @@ const displayedCount = displayedTasks.length;
           storedSortBy,
           storedSortDirection,
           storedFocusModeEnabled,
+          storedMomentumModeEnabled,
+          storedMomentumEnergy,
+          storedMomentumRunActive,
+          storedKeystoneTaskId,
         ] = await Promise.all([
           getAllTasks(),
           getCustomContexts(),
@@ -170,6 +179,10 @@ const displayedCount = displayedTasks.length;
           getSetting("sortBy", "load"),
           getSetting("sortDirection", "asc"),
           getSetting("focusModeEnabled", false),
+          getSetting("momentumModeEnabled", false),
+          getSetting("momentumEnergy", ""),
+          getSetting("momentumRunActive", false),
+          getSetting("keystoneTaskId", null),
         ]);
 
         const normalizedTasks = storedTasks
@@ -192,6 +205,10 @@ const displayedCount = displayedTasks.length;
         setSortDirection(storedSortDirection);
         setSettingsLoaded(true);
         setFocusModeEnabled(storedFocusModeEnabled);
+        setMomentumModeEnabled(storedMomentumModeEnabled);
+        setMomentumEnergy(storedMomentumEnergy);
+        setMomentumRunActive(storedMomentumRunActive);
+        setKeystoneTaskId(storedKeystoneTaskId);
       } catch (error) {
         console.error("Failed to load app data from IndexedDB:", error);
       }
@@ -213,6 +230,10 @@ const displayedCount = displayedTasks.length;
     filterPriority,
     filterContext,
     focusModeEnabled,
+    momentumModeEnabled,
+    momentumEnergy,
+    momentumRunActive,
+    keystoneTaskId,
   });
 }, [
   settingsLoaded,
@@ -226,7 +247,33 @@ const displayedCount = displayedTasks.length;
   filterPriority,
   filterContext,
   focusModeEnabled,
+  momentumModeEnabled,
+  momentumEnergy,
+  momentumRunActive,
+  keystoneTaskId,
 ]);
+
+// Stop Momentum Run if task no longer exists or is no longer eligible
+useEffect(() => {
+  if (!momentumRunActive) return;
+  if (!keystoneTaskId) {
+    setMomentumRunActive(false);
+    return;
+  }
+
+  const keystoneTask = tasks.find((task) => task.id === keystoneTaskId);
+
+  if (!keystoneTask) {
+    setKeystoneTaskId(null);
+    setMomentumRunActive(false);
+  }
+}, [tasks, keystoneTaskId, momentumRunActive]);
+
+// Set keystone task
+function handleSetKeystone(taskId) {
+  setKeystoneTaskId(taskId);
+  setMomentumError("");
+}
 
   function normalizeTaskPositions(tasks) {
     // Make sure tasks persist in the same order, not loaded randomly
@@ -275,6 +322,56 @@ const displayedCount = displayedTasks.length;
     setNewContextInput("");
     setShowCustomContextInput(false);
   }
+
+  function handleStartMomentumRun() {
+  if (!keystoneTaskId) {
+    setMomentumError("Select a Keystone task to start.");
+    return;
+  }
+
+  if (!momentumEnergy) {
+    setMomentumError("Choose how tired you are first.");
+    return;
+  }
+
+  setMomentumError("");
+  setMomentumRunActive(true);
+}
+
+function handleEndMomentumRun() {
+  setMomentumRunActive(false);
+  setKeystoneTaskId(null);
+  setMomentumEnergy("");
+  setMomentumError("");
+}
+
+// Helper to warn user if they uncheck Momentum Mode toggle
+function handleMomentumModeToggle(nextEnabled) {
+  if (nextEnabled) {
+    setMomentumModeEnabled(true);
+    return;
+  }
+
+  const hasMomentumState =
+    momentumRunActive || keystoneTaskId != null || momentumEnergy !== "";
+
+  if (!hasMomentumState) {
+    setMomentumModeEnabled(false);
+    return;
+  }
+
+  const confirmed = window.confirm(
+    "Turn off Momentum Mode? This will clear your current Momentum selections and end any active run."
+  );
+
+  if (!confirmed) return;
+
+  setMomentumModeEnabled(false);
+  setMomentumRunActive(false);
+  setKeystoneTaskId(null);
+  setMomentumEnergy("");
+  setMomentumError("");
+}
 
 const handleSnooze = async (taskId, hours = 24) => {
   const snoozedUntil = Date.now() + hours * 60 * 60 * 1000;
@@ -558,6 +655,15 @@ async function handleToggleTask(id) {
             />
             Focus Mode (show only 7 tasks)
           </label>
+
+          <label>
+            <input
+              type="checkbox"
+              checked={momentumModeEnabled}
+              onChange={(e) => handleMomentumModeToggle(e.target.checked)}
+            />
+            Momentum Mode
+          </label>
         </div>
       )}
 
@@ -606,6 +712,91 @@ async function handleToggleTask(id) {
       </div>
 
 
+      {advancedFeaturesEnabled && momentumModeEnabled && (
+        <div className="momentum-panel">
+          {!momentumRunActive ? (
+            <>
+              <p className="momentum-panel__title">Momentum Mode</p>
+
+              <div className="momentum-panel__section">
+                <p>Choose your Keystone task</p>
+                <p className="momentum-panel__help">
+                  Click a task card to select it.
+                </p>
+              </div>
+
+              <div className="momentum-panel__section">
+                <p>How tired are you today?</p>
+                <div className="momentum-energy-options">
+                  <button
+                    type="button"
+                    className={momentumEnergy === "tired" ? "is-selected" : ""}
+                    onClick={() => {
+                      setMomentumEnergy("tired");
+                      setMomentumError("");
+                    }}
+                  >
+                    Tired
+                  </button>
+                  <button
+                    type="button"
+                    className={momentumEnergy === "normal" ? "is-selected" : ""}
+                    onClick={() => {
+                      setMomentumEnergy("normal");
+                      setMomentumError("");
+                    }}
+                  >
+                    Normal
+                  </button>
+                  <button
+                    type="button"
+                    className={momentumEnergy === "ambitious" ? "is-selected" : ""}
+                    onClick={() => {
+                      setMomentumEnergy("ambitious");
+                      setMomentumError("");
+                    }}
+                  >
+                    Ambitious
+                  </button>
+                </div>
+              </div>
+
+              {momentumError && (
+                <p className="momentum-panel__error">{momentumError}</p>
+              )}
+
+              <div className="momentum-panel__actions">
+                <button type="button" onClick={handleStartMomentumRun}>
+                  Start Momentum Run
+                </button>
+
+                <button
+                  type="button"
+                  onClick={() => {
+                    // stub for now — real logic comes next step
+                    setMomentumEnergy("tired");
+                    setMomentumError("");
+                  }}
+                >
+                  I’m too tired, pick for me
+                </button>
+              </div>
+            </>
+          ) : (
+            <>
+              <p className="momentum-panel__title">Momentum Run active</p>
+              <p>
+                Energy: <strong>{momentumEnergy}</strong>
+              </p>
+              <button type="button" onClick={handleEndMomentumRun}>
+                End Run
+              </button>
+            </>
+          )}
+        </div>
+      )}
+
+
       {focusModeEnabled && (
         <div className="focus-mode-info">
           {displayedCount === totalVisibleCount
@@ -650,6 +841,10 @@ async function handleToggleTask(id) {
             advancedFeaturesEnabled={advancedFeaturesEnabled}
             loadLabels={LOAD_LABELS}
             priorityLabels={PRIORITY_LABELS}
+            momentumModeEnabled={momentumModeEnabled}
+            momentumRunActive={momentumRunActive}
+            isKeystone={task.id === keystoneTaskId}
+            onSetKeystone={handleSetKeystone}
           />
         ))}
       </ul>

@@ -8,29 +8,33 @@ import {
         } from "@heroicons/react/24/outline";
 
 function TaskCard({
-  task,
-  editingTaskId,
-  editTitle,
-  setEditTitle,
-  editLoad,
-  setEditLoad,
-  editPriority,
-  setEditPriority,
-  editContext,
-  setEditContext,
-  contextOptions,
-  onStartEdit,
-  onCancelEdit,
-  onSaveEdit,
-  onDeleteTask,
-  onToggleTask,
-  onMoveTaskUp,
-  onMoveTaskDown,
-  advancedFeaturesEnabled,
-  onSnooze,
-  onUnsnooze,
-  loadLabels,
-  priorityLabels,
+    task,
+    editingTaskId,
+    editTitle,
+    setEditTitle,
+    editLoad,
+    setEditLoad,
+    editPriority,
+    setEditPriority,
+    editContext,
+    setEditContext,
+    contextOptions,
+    onStartEdit,
+    onCancelEdit,
+    onSaveEdit,
+    onDeleteTask,
+    onToggleTask,
+    onMoveTaskUp,
+    onMoveTaskDown,
+    advancedFeaturesEnabled,
+    onSnooze,
+    onUnsnooze,
+    loadLabels,
+    priorityLabels,
+    momentumModeEnabled,
+    momentumRunActive,
+    isKeystone,
+    onSetKeystone,
 }) {
   const isEditing = editingTaskId === task.id;
   const priorityValue = task.priority ?? "medium";
@@ -81,7 +85,7 @@ function TaskCard({
 
   return (
     <li
-      className={`task-item task-item--${task.load} ${isSnoozed ? "task-card--snoozed" : ""} ${
+      className={`task-item task-item--${task.load} ${isSnoozed ? "task-card--snoozed" : ""} ${isKeystone ? "task-card--keystone" : ""} ${
         task.done ? "task-item--done" : ""
       }`}
     >
@@ -240,6 +244,19 @@ function TaskCard({
                     Un-snooze
                 </button>
             )}
+
+            {momentumModeEnabled && !momentumRunActive && (
+                isKeystone ? (
+                    <span className="keystone-badge">Keystone</span>
+                ) : (
+                    <button
+                    type="button"
+                    onClick={() => onSetKeystone(task.id)}
+                    >
+                    Set Keystone
+                    </button>
+                )
+                )}
 
             <button
                 className="edit-button"
