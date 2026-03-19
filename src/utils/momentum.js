@@ -277,3 +277,53 @@ export function hasCrossContextLowerLoadOptions(tasks, keystoneTaskId) {
     (task) => task.load === "low" || task.load === "medium"
   );
 }
+
+export function getRunwayNeedsFallback(tasks, keystoneTaskId) {
+  if (!keystoneTaskId) return false;
+
+  const keystone = tasks.find((task) => task.id === keystoneTaskId);
+  if (!keystone) return false;
+  if (keystone.load === "low") return false;
+
+  const sameContextTasks = tasks.filter(
+    (task) => task.id !== keystone.id && task.context === keystone.context
+  );
+
+  const sameLowCount = sameContextTasks.filter((task) => task.load === "low").length;
+  const sameMediumCount = sameContextTasks.filter((task) => task.load === "medium").length;
+
+  if (keystone.load === "medium") {
+    return sameLowCount < 1;
+  }
+
+  // high keystone
+  return sameLowCount < 1 && sameMediumCount < 1;
+}
+
+export function getMomentumRunwayMessage(visibleTasks, keystoneTaskId) {
+  if (!keystoneTaskId) return "";
+
+  const keystone = visibleTasks.find((task) => task.id === keystoneTaskId);
+  if (!keystone) return "";
+
+  if (keystone.load === "low") return "";
+
+  const sameContextTasks = visibleTasks.filter(
+    (task) => task.id !== keystone.id && task.context === keystone.context
+  );
+
+  const hasLowerLoadTask =
+    keystone.load === "medium"
+      ? sameContextTasks.some((task) => task.load === "low")
+      : sameContextTasks.some(
+          (task) => task.load === "low" || task.load === "medium"
+        );
+
+  if (hasLowerLoadTask) return "";
+
+  if (keystone.load === "medium") {
+    return "No lower-load tasks available in this context.";
+  }
+
+  return "No lower-load tasks available in this context. This run may begin with your Keystone.";
+}

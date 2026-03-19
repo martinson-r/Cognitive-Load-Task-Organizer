@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
+
 import {
   getAllTasks,
   saveTask,
@@ -9,76 +10,31 @@ import {
   getSetting,
   saveSetting,
 } from "./data/db";
+
 import {
   LOAD_LABELS,
   PRIORITY_LABELS,
   DEFAULT_CONTEXT_OPTIONS,
 } from "./constants/TaskOptions";
+
 import { 
   pickKeystoneForMe, 
   getMomentumTasks, 
-  hasCrossContextLowerLoadOptions 
+  hasCrossContextLowerLoadOptions,
+  getRunwayNeedsFallback, 
+  getMomentumRunwayMessage,
 } from "./utils/momentum";
+
+import {
+  getVisibleTasks,
+  normalizeTaskPositions,
+  reorderByVisibleSwap,
+} from './utils/taskView';
 
 import TaskForm from "./components/TaskForm";
 import TaskCard from "./components/TaskCard";
 import FilterBar from "./components/FilterBar";
-
-const LOAD_RANK = {
-  low: 0,
-  medium: 1,
-  high: 2,
-};
-
-const PRIORITY_RANK = {
-  low: 0,
-  medium: 1,
-  high: 2,
-};
-
-function getVisibleTasks({
-  tasks,
-  showSnoozedTasks,
-  showCompleted,
-  filterLoad,
-  filterPriority,
-  filterContext,
-  viewMode,
-  sortBy,
-  sortDirection,
-}) {
-  const now = Date.now();
-
-  let visibleTasks = tasks.filter((task) => {
-    const isSnoozed =
-      task.snoozedUntil && task.snoozedUntil > now;
-
-    if (!showSnoozedTasks && isSnoozed) return false;
-    if (!showCompleted && task.done) return false;
-    if (filterLoad !== "all" && task.load !== filterLoad) return false;
-    if (filterPriority !== "all" && task.priority !== filterPriority) return false;
-    if (filterContext !== "all" && task.context !== filterContext) return false;
-
-    return true;
-  });
-
-  if (viewMode === "sorted") {
-    visibleTasks = [...visibleTasks].sort((a, b) => {
-      const rankMap = sortBy === "load" ? LOAD_RANK : PRIORITY_RANK;
-
-      const aRank = rankMap[a[sortBy] ?? "medium"];
-      const bRank = rankMap[b[sortBy] ?? "medium"];
-
-      if (aRank !== bRank) {
-        return sortDirection === "asc" ? aRank - bRank : bRank - aRank;
-      }
-
-      return (a.position ?? 0) - (b.position ?? 0);
-    });
-  }
-
-  return visibleTasks;
-}
+import MomentumPanel from "./components/MomentumPanel";
 
 // Settings saver helper
 function persistSettings(settingsLoaded, settings) {
@@ -168,28 +124,6 @@ function handlePickKeystoneForMe() {
   setMomentumError("");
 }
 
-function getRunwayNeedsFallback(tasks, keystoneTaskId) {
-  if (!keystoneTaskId) return false;
-
-  const keystone = tasks.find((task) => task.id === keystoneTaskId);
-  if (!keystone) return false;
-  if (keystone.load === "low") return false;
-
-  const sameContextTasks = tasks.filter(
-    (task) => task.id !== keystone.id && task.context === keystone.context
-  );
-
-  const sameLowCount = sameContextTasks.filter((task) => task.load === "low").length;
-  const sameMediumCount = sameContextTasks.filter((task) => task.load === "medium").length;
-
-  if (keystone.load === "medium") {
-    return sameLowCount < 1;
-  }
-
-  // high keystone
-  return sameLowCount < 1 && sameMediumCount < 1;
-}
-
 const displayedTasks = 
     focusModeEnabled || (momentumModeEnabled && momentumRunActive)
     ? activeTasks.slice(0, 7)
@@ -198,8 +132,10 @@ const displayedTasks =
 const totalVisibleCount = activeTasks.length;
 const displayedCount = displayedTasks.length;
 
-const isClippedMode =
-  focusModeEnabled || (momentumModeEnabled && momentumRunActive);
+// Setting this separation up ahead of time, not used quite yet 
+const isFocusClipped = focusModeEnabled;
+const isMomentumClipped = momentumModeEnabled && momentumRunActive;
+const isClippedMode = isFocusClipped || isMomentumClipped;
 
 const momentumNeedsFallback =
 momentumModeEnabled &&
@@ -337,41 +273,7 @@ function handleSetKeystone(taskId) {
   setMomentumError("");
 }
 
-function getMomentumRunwayMessage(visibleTasks, keystoneTaskId) {
-  if (!keystoneTaskId) return "";
 
-  const keystone = visibleTasks.find((task) => task.id === keystoneTaskId);
-  if (!keystone) return "";
-
-  if (keystone.load === "low") return "";
-
-  const sameContextTasks = visibleTasks.filter(
-    (task) => task.id !== keystone.id && task.context === keystone.context
-  );
-
-  const hasLowerLoadTask =
-    keystone.load === "medium"
-      ? sameContextTasks.some((task) => task.load === "low")
-      : sameContextTasks.some(
-          (task) => task.load === "low" || task.load === "medium"
-        );
-
-  if (hasLowerLoadTask) return "";
-
-  if (keystone.load === "medium") {
-    return "No lower-load tasks available in this context.";
-  }
-
-  return "No lower-load tasks available in this context. This run may begin with your Keystone.";
-}
-
-  function normalizeTaskPositions(tasks) {
-    // Make sure tasks persist in the same order, not loaded randomly
-    return tasks.map((task, index) => ({
-      ...task,
-      position: index,
-    }));
-  }
 
   // Functions for handling custom context inputs
   function handleContextChange(value) {
@@ -464,8 +366,6 @@ function handleMomentumModeToggle(nextEnabled) {
   setMomentumError("");
 }
 
-const momentumRunwayMessage = getMomentumRunwayMessage(visibleTasks, keystoneTaskId);
-
 function handleEnableCrossContextRunway() {
   const hasOptions = hasCrossContextLowerLoadOptions(visibleTasks, keystoneTaskId);
 
@@ -514,33 +414,7 @@ const handleUnsnooze = async (taskId) => {
   });
 };
 
-// Helper to avoid filtered, completed, or snoozed tasks from interfering with reordering tasks
-function reorderByVisibleSwap(allTasks, visibleTasks, taskId, direction) {
-  const visibleIndex = visibleTasks.findIndex((task) => task.id === taskId);
-  if (visibleIndex === -1) return allTasks;
 
-  const targetIndex =
-    direction === "up" ? visibleIndex - 1 : visibleIndex + 1;
-
-  if (targetIndex < 0 || targetIndex >= visibleTasks.length) {
-    return allTasks;
-  }
-
-  const currentVisibleTask = visibleTasks[visibleIndex];
-  const targetVisibleTask = visibleTasks[targetIndex];
-
-  const updatedTasks = allTasks.map((task) => {
-    if (task.id === currentVisibleTask.id) {
-      return { ...task, position: targetVisibleTask.position };
-    }
-    if (task.id === targetVisibleTask.id) {
-      return { ...task, position: currentVisibleTask.position };
-    }
-    return task;
-  });
-
-  return [...updatedTasks].sort((a, b) => (a.position ?? 0) - (b.position ?? 0));
-}
 
   // Move handlers for moving tasks up/down
   async function handleMoveTaskUp(id) {
@@ -818,105 +692,21 @@ async function handleToggleTask(id) {
 
 
       {advancedFeaturesEnabled && momentumModeEnabled && (
-        <div className="momentum-panel">
-          {!momentumRunActive ? (
-            <>
-              <p className="momentum-panel__title">Momentum Mode</p>
-
-              <div className="momentum-panel__section">
-                <p>Choose your Keystone task</p>
-                <p className="momentum-panel__help">
-                  Click a task card to select it.
-                </p>
-              </div>
-
-              <div className="momentum-panel__section">
-                <p>How tired are you today?</p>
-                <div className="momentum-energy-options">
-                  <button
-                    type="button"
-                    className={momentumEnergy === "tired" ? "is-selected" : ""}
-                    onClick={() => {
-                      setMomentumEnergy("tired");
-                      setMomentumError("");
-                    }}
-                  >
-                    Tired
-                  </button>
-                  <button
-                    type="button"
-                    className={momentumEnergy === "normal" ? "is-selected" : ""}
-                    onClick={() => {
-                      setMomentumEnergy("normal");
-                      setMomentumError("");
-                    }}
-                  >
-                    Normal
-                  </button>
-                  <button
-                    type="button"
-                    className={momentumEnergy === "ambitious" ? "is-selected" : ""}
-                    onClick={() => {
-                      setMomentumEnergy("ambitious");
-                      setMomentumError("");
-                    }}
-                  >
-                    Ambitious
-                  </button>
-                </div>
-              </div>
-
-              {momentumError && (
-                <p className="momentum-panel__error">{momentumError}</p>
-              )}
-
-              <div className="momentum-panel__actions">
-                <button type="button" onClick={handleStartMomentumRun}>
-                  Start Momentum Run
-                </button>
-
-                <button
-                  type="button"
-                  onClick={handlePickKeystoneForMe}
-                >
-                  I'm too tired, pick for me
-                </button>
-              </div>
-            </>
-          ) : (
-            <>
-              <p className="momentum-panel__title">Momentum Run active</p>
-              <p>
-                Energy: <strong>{momentumEnergy}</strong>
-              </p>
-              {momentumNeedsFallback && !allowCrossContextRunway && !momentumError && (
-                <div className="momentum-panel__fallback">
-                  <p className="momentum-panel__help">
-                    No lower-load tasks available in this context.
-                  </p>
-                  <button
-                    type="button"
-                    onClick={handleEnableCrossContextRunway}
-                  >
-                    Bring in easier tasks from another context
-                  </button>
-                </div>
-              )}
-              {allowCrossContextRunway && !momentumError && (
-              <p className="momentum-panel__help">
-                Using lower-load tasks from another context to build runway.
-              </p>
-            )}
-            {momentumError && (
-              <p>{momentumError}</p>
-            )}
-            
-              <button type="button" onClick={handleEndMomentumRun}>
-                End Run
-              </button>
-            </>
-          )}
-        </div>
+        <MomentumPanel
+          momentumRunActive={momentumRunActive}
+          momentumEnergy={momentumEnergy}
+          momentumError={momentumError}
+          momentumNeedsFallback={momentumNeedsFallback}
+          allowCrossContextRunway={allowCrossContextRunway}
+          onSelectEnergy={(energy) => {
+            setMomentumEnergy(energy);
+            setMomentumError("");
+          }}
+          onStartMomentumRun={handleStartMomentumRun}
+          onPickKeystoneForMe={handlePickKeystoneForMe}
+          onEnableCrossContextRunway={handleEnableCrossContextRunway}
+          onEndMomentumRun={handleEndMomentumRun}
+        />
       )}
 
 
