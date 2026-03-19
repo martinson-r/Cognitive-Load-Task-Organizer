@@ -575,12 +575,6 @@ async function handleToggleTask(id) {
             <span>Advanced Features</span>
           </label>
         </div>
-        <div className="info-banner">
-        <p>No account required.</p>
-        <p>Data is stored locally in your browser using IndexedDB. 
-        This app does not include authentication or encryption.</p>
-        <p><strong>Do not store sensitive information in this app.</strong></p>
-      </div>
       </header>
 
       <section className="task-input">
@@ -605,112 +599,6 @@ async function handleToggleTask(id) {
         />
       </section>
 
-      
-
-      <div className="top-controls">
-        {advancedFeaturesEnabled && (
-          <div className="advanced-features-panel">
-            <p className="advanced-features-note">
-              Advanced features enabled. Focus View, Snooze, and Momentum Mode will appear here.
-            </p>
-            <label>
-              <input
-                type="checkbox"
-                checked={showSnoozedTasks}
-                onChange={(e) => setShowSnoozedTasks(e.target.checked)}
-              />
-              View Snoozed Tasks
-            </label>
-
-            <label>
-              <input
-                type="checkbox"
-                checked={focusModeEnabled}
-                onChange={(e) => setFocusModeEnabled(e.target.checked)}
-              />
-              Focus Mode (show only 7 tasks)
-            </label>
-
-            <label>
-              <input
-                type="checkbox"
-                checked={momentumModeEnabled}
-                onChange={(e) => handleMomentumModeToggle(e.target.checked)}
-              />
-              Momentum Mode
-            </label>
-          </div>
-        )}
-
-        <div className="task-visibility-controls">
-          <label className="show-completed-toggle">
-            <input
-              type="checkbox"
-              checked={showCompleted}
-              onChange={(e) => setShowCompleted(e.target.checked)}
-            />
-            Show completed tasks
-          </label>
-        </div>
-
-        <div className="sort-controls">
-          <label>
-            Order mode
-            <select value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
-              <option value="custom">Custom Order</option>
-              <option value="sorted">Auto Sort</option>
-            </select>
-          </label>
-
-          {viewMode === "sorted" && (
-            <>
-              <label>
-                Sort by
-                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                  <option value="load">Cognitive Load</option>
-                  <option value="priority">Priority</option>
-                </select>
-              </label>
-
-              <label>
-                Direction
-                <select
-                  value={sortDirection}
-                  onChange={(e) => setSortDirection(e.target.value)}
-                >
-                  <option value="asc">Low to High</option>
-                  <option value="desc">High to Low</option>
-                </select>
-              </label>
-            </>
-          )}
-        </div>
-
-
-        {advancedFeaturesEnabled && momentumModeEnabled && (
-          <MomentumPanel
-            momentumRunActive={momentumRunActive}
-            momentumEnergy={momentumEnergy}
-            momentumError={momentumError}
-            momentumNeedsFallback={momentumNeedsFallback}
-            allowCrossContextRunway={allowCrossContextRunway}
-            onSelectEnergy={(energy) => {
-              setMomentumEnergy(energy);
-              setMomentumError("");
-            }}
-            onStartMomentumRun={handleStartMomentumRun}
-            onPickKeystoneForMe={handlePickKeystoneForMe}
-            onEnableCrossContextRunway={handleEnableCrossContextRunway}
-            onEndMomentumRun={handleEndMomentumRun}
-          />
-        )}
-
-
-        
-      </div>
-
-      
-
       <section className="filters">
         <FilterBar
           filterLoad={filterLoad}
@@ -724,6 +612,125 @@ async function handleToggleTask(id) {
           priorityLabels={PRIORITY_LABELS}
         />
       </section>
+
+      <div className="top-controls">
+        <div className="mode-strip">
+          <button
+            className={viewMode === "custom" && !momentumModeEnabled ? "active" : ""}
+            onClick={() => {
+              setMomentumModeEnabled(false);
+              setViewMode("custom");
+            }}
+          >
+            Custom
+          </button>
+
+          <button
+            className={viewMode === "sorted" ? "active" : ""}
+            onClick={() => {
+              setMomentumModeEnabled(false);
+              setViewMode("sorted");
+            }}
+          >
+            Sorted
+          </button>
+
+          {advancedFeaturesEnabled && (<button
+            className={momentumModeEnabled ? "active" : ""}
+            onClick={() => {
+              setMomentumModeEnabled(true);
+            }}
+          >
+            Momentum
+          </button>)}
+        </div>
+        <div className="mode-controls">
+          {advancedFeaturesEnabled && (
+            <div className="advanced-features-panel">
+              
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={showSnoozedTasks}
+                    onChange={(e) => setShowSnoozedTasks(e.target.checked)}
+                  />
+                  View Snoozed Tasks
+                </label>
+
+                <label>
+                  <input
+                    type="checkbox"
+                    checked={focusModeEnabled}
+                    onChange={(e) => setFocusModeEnabled(e.target.checked)}
+                  />
+                  Focus Mode (show only 7 tasks)
+                </label>
+  
+            </div>
+          )}
+
+          <div className="task-visibility-controls">
+            
+              <label className="show-completed-toggle">
+                <input
+                  type="checkbox"
+                  checked={showCompleted}
+                  onChange={(e) => setShowCompleted(e.target.checked)}
+                />
+                Show completed tasks
+              </label>
+
+          </div>
+
+          {viewMode === "sorted" && (
+            <div className="sort-controls">
+                {viewMode === "sorted" && (
+                  <>
+                    <label>
+                      Sort by
+                      <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                        <option value="load">Cognitive Load</option>
+                        <option value="priority">Priority</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      Direction
+                      <select
+                        value={sortDirection}
+                        onChange={(e) => setSortDirection(e.target.value)}
+                      >
+                        <option value="asc">Low to High</option>
+                        <option value="desc">High to Low</option>
+                      </select>
+                    </label>
+                  </>
+                )}
+            </div>
+          )}
+
+          {advancedFeaturesEnabled && momentumModeEnabled && (
+            <div className="momentum-controls">
+              <MomentumPanel
+                momentumRunActive={momentumRunActive}
+                momentumEnergy={momentumEnergy}
+                momentumError={momentumError}
+                momentumNeedsFallback={momentumNeedsFallback}
+                allowCrossContextRunway={allowCrossContextRunway}
+                onSelectEnergy={(energy) => {
+                  setMomentumEnergy(energy);
+                  setMomentumError("");
+                }}
+                onStartMomentumRun={handleStartMomentumRun}
+                onPickKeystoneForMe={handlePickKeystoneForMe}
+                onEnableCrossContextRunway={handleEnableCrossContextRunway}
+                onEndMomentumRun={handleEndMomentumRun}
+              />
+            </div>
+          )}
+
+        </div>
+      </div>
 
       <section className="task-list-section">
         {focusModeEnabled && (
@@ -776,15 +783,6 @@ async function handleToggleTask(id) {
           ))}
         </ul>
       </section>
-
-
-
-
-
-
-
-
-      
     </div>
   );
 }
