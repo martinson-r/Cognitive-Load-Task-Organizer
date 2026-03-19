@@ -1,3 +1,5 @@
+import '../styles/filter-bar.css';
+
 function FilterBar({
   filterLoad,
   setFilterLoad,

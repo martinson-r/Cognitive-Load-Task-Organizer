@@ -1,0 +1,53 @@
+@media (max-width: 640px) {
+
+  .task-form {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .task-form input,
+  .task-form select,
+  .task-form button {
+    width: 100%;
+  }
+
+}
+
+.task-form {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.task-form input,
+.task-form select,
+.task-form button {
+  padding: 0.5rem;
+}
+
+.task-form input,
+.task-form select {
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.task-form input {
+  flex: 1;
+}
+
+/* Fix irritating down arrow antics */
+.task-form select, 
+.edit-select {
+  appearance: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+
+  min-width: 8.5rem;
+  padding: 0.5rem 2rem 0.5rem 0.75rem;
+
+  background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%23333' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.6rem center;
+  background-size: 0.9rem;
+}

@@ -1,3 +1,5 @@
+import "../styles/momentum-panel.css";
+
 function MomentumPanel({
   momentumRunActive,
   momentumEnergy,

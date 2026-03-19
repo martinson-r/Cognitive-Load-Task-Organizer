@@ -1,3 +1,5 @@
+import "../styles/task-form.css";
+
 function TaskForm({
   input,
   setInput,
