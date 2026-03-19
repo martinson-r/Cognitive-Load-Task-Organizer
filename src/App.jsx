@@ -560,207 +560,308 @@ async function handleToggleTask(id) {
   }
 }
 
+if (!settingsLoaded) {
+    return <div className="app app--loading" />;
+  }
+
+
   return (
     <div className="app">
-      <div className="toolbar-row">
-        <label className="toggle-row">
-          <input
-            type="checkbox"
-            checked={advancedFeaturesEnabled}
-            onChange={(e) => setAdvancedFeaturesEnabled(e.target.checked)}
-          />
-          <span>Advanced Features</span>
-        </label>
-      </div>
-      <h1>Cognitive Load Task Organizer</h1>
-      <div className="info-banner">
-        <p>No account required.</p>
-        <p>Data is stored locally in your browser using IndexedDB. 
-        This app does not include authentication or encryption.</p>
-        <p><strong>Do not store sensitive information in this app.</strong></p>
-      </div>
 
-      <TaskForm
-        input={input}
-        setInput={setInput}
-        load={load}
-        setLoad={setLoad}
-        priority={priority}
-        setPriority={setPriority}
-        context={context}
-        onContextChange={handleContextChange}
-        contextOptions={contextOptions}
-        showCustomContextInput={showCustomContextInput}
-        newContextInput={newContextInput}
-        setNewContextInput={setNewContextInput}
-        onAddCustomContext={handleAddCustomContext}
-        onCancelCustomContext={handleCancelCustomContext}
-        onSubmit={addTask}
-        loadLabels={LOAD_LABELS}
-        priorityLabels={PRIORITY_LABELS}
-      />
-
-      <FilterBar
-        filterLoad={filterLoad}
-        setFilterLoad={setFilterLoad}
-        filterPriority={filterPriority}
-        setFilterPriority={setFilterPriority}
-        filterContext={filterContext}
-        setFilterContext={setFilterContext}
-        contextOptions={contextOptions}
-        loadLabels={LOAD_LABELS}
-        priorityLabels={PRIORITY_LABELS}
-      />
-
-      {advancedFeaturesEnabled && (
-        <div className="advanced-features-panel">
-          <p className="advanced-features-note">
-            Advanced features enabled. Focus View, Snooze, and Momentum Mode will appear here.
-          </p>
-          <label>
+      <header className="app-header">
+        <h1>Cognitive Load Task Organizer</h1>
+        <div className="advanced-toggle toolbar-row">
+          <label className="toggle toggle--labeled">
+            <span className="toggle__label">Advanced Features</span>
             <input
               type="checkbox"
-              checked={showSnoozedTasks}
-              onChange={(e) => setShowSnoozedTasks(e.target.checked)}
+              checked={advancedFeaturesEnabled}
+              onChange={(e) => setAdvancedFeaturesEnabled(e.target.checked)}
+              aria-label="Advanced Features"
             />
-            View Snoozed Tasks
-          </label>
-
-           <label>
-            <input
-              type="checkbox"
-              checked={focusModeEnabled}
-              onChange={(e) => setFocusModeEnabled(e.target.checked)}
-            />
-            Focus Mode (show only 7 tasks)
-          </label>
-
-          <label>
-            <input
-              type="checkbox"
-              checked={momentumModeEnabled}
-              onChange={(e) => handleMomentumModeToggle(e.target.checked)}
-            />
-            Momentum Mode
+            <span className="toggle__track" aria-hidden="true">
+              <span className="toggle__state toggle__state--off">OFF</span>
+              <span className="toggle__state toggle__state--on">ON</span>
+              <span className="toggle__thumb" />
+            </span>
           </label>
         </div>
-      )}
+      </header>
 
-      <div className="task-visibility-controls">
-        <label className="show-completed-toggle">
-          <input
-            type="checkbox"
-            checked={showCompleted}
-            onChange={(e) => setShowCompleted(e.target.checked)}
-          />
-          Show completed tasks
+      <section className="task-input">
+        <TaskForm
+          input={input}
+          setInput={setInput}
+          load={load}
+          setLoad={setLoad}
+          priority={priority}
+          setPriority={setPriority}
+          context={context}
+          onContextChange={handleContextChange}
+          contextOptions={contextOptions}
+          showCustomContextInput={showCustomContextInput}
+          newContextInput={newContextInput}
+          setNewContextInput={setNewContextInput}
+          onAddCustomContext={handleAddCustomContext}
+          onCancelCustomContext={handleCancelCustomContext}
+          onSubmit={addTask}
+          loadLabels={LOAD_LABELS}
+          priorityLabels={PRIORITY_LABELS}
+        />
+      </section>
+
+      <section className="filters">
+        <p className="section-label">Filters</p>
+        <FilterBar
+          filterLoad={filterLoad}
+          setFilterLoad={setFilterLoad}
+          filterPriority={filterPriority}
+          setFilterPriority={setFilterPriority}
+          filterContext={filterContext}
+          setFilterContext={setFilterContext}
+          contextOptions={contextOptions}
+          loadLabels={LOAD_LABELS}
+          priorityLabels={PRIORITY_LABELS}
+        />
+      </section>
+
+      <div className="mode-strip" role="radiogroup" aria-label="View mode">
+        <input
+          type="radio"
+          id="mode-custom"
+          name="view-mode"
+          checked={viewMode === "custom" && !momentumModeEnabled}
+          onChange={() => {
+            setMomentumModeEnabled(false);
+            setViewMode("custom");
+          }}
+          className="mode-radio"
+        />
+        <label htmlFor="mode-custom" className="mode-pill">
+          Custom
         </label>
-      </div>
 
-      <div className="sort-controls">
-        <label>
-          Order mode
-          <select value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
-            <option value="custom">Custom Order</option>
-            <option value="sorted">Auto Sort</option>
-          </select>
+        <input
+          type="radio"
+          id="mode-sorted"
+          name="view-mode"
+          checked={viewMode === "sorted" && !momentumModeEnabled}
+          onChange={() => {
+            setMomentumModeEnabled(false);
+            setViewMode("sorted");
+          }}
+          className="mode-radio"
+        />
+        <label htmlFor="mode-sorted" className="mode-pill">
+          Sorted
         </label>
 
-        {viewMode === "sorted" && (
+        {advancedFeaturesEnabled && (
           <>
-            <label>
-              Sort by
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                <option value="load">Cognitive Load</option>
-                <option value="priority">Priority</option>
-              </select>
-            </label>
-
-            <label>
-              Direction
-              <select
-                value={sortDirection}
-                onChange={(e) => setSortDirection(e.target.value)}
-              >
-                <option value="asc">Low to High</option>
-                <option value="desc">High to Low</option>
-              </select>
+            <input
+              type="radio"
+              id="mode-momentum"
+              name="view-mode"
+              checked={momentumModeEnabled}
+              onChange={() => {
+                setMomentumModeEnabled(true);
+              }}
+              className="mode-radio"
+            />
+            <label htmlFor="mode-momentum" className="mode-pill">
+              Momentum
             </label>
           </>
         )}
       </div>
 
+      <div className="top-controls">
+        {/* <div className="mode-strip">
+          <button
+            className={viewMode === "custom" && !momentumModeEnabled ? "active" : ""}
+            onClick={() => {
+              setMomentumModeEnabled(false);
+              setViewMode("custom");
+            }}
+          >
+            Custom
+          </button>
 
-      {advancedFeaturesEnabled && momentumModeEnabled && (
-        <MomentumPanel
-          momentumRunActive={momentumRunActive}
-          momentumEnergy={momentumEnergy}
-          momentumError={momentumError}
-          momentumNeedsFallback={momentumNeedsFallback}
-          allowCrossContextRunway={allowCrossContextRunway}
-          onSelectEnergy={(energy) => {
-            setMomentumEnergy(energy);
-            setMomentumError("");
-          }}
-          onStartMomentumRun={handleStartMomentumRun}
-          onPickKeystoneForMe={handlePickKeystoneForMe}
-          onEnableCrossContextRunway={handleEnableCrossContextRunway}
-          onEndMomentumRun={handleEndMomentumRun}
-        />
-      )}
+          <button
+            className={viewMode === "sorted" ? "active" : ""}
+            onClick={() => {
+              setMomentumModeEnabled(false);
+              setViewMode("sorted");
+            }}
+          >
+            Sorted
+          </button>
+
+          {advancedFeaturesEnabled && (<button
+            className={momentumModeEnabled ? "active" : ""}
+            onClick={() => {
+              setMomentumModeEnabled(true);
+            }}
+          >
+            Momentum
+          </button>)}
+        </div> */}
+        <div className="mode-controls">
+          {advancedFeaturesEnabled && (
+            <div className="advanced-features-panel">
+              <div className="control-toggles">
 
 
-      {focusModeEnabled && (
-        <div className="focus-mode-info">
-          {displayedCount === totalVisibleCount
-            ? `Showing all ${totalVisibleCount} tasks`
-            : `Showing ${displayedCount} of ${totalVisibleCount} tasks`}
+              <label className="toggle toggle--sm">
+                <span className="toggle__label">View Snoozed Tasks</span>
+                <input
+                    type="checkbox"
+                    checked={showSnoozedTasks}
+                    onChange={(e) => setShowSnoozedTasks(e.target.checked)}
+                  />
+                <span className="toggle__track" aria-hidden="true">
+                  <span className="toggle__state toggle__state--off">OFF</span>
+                  <span className="toggle__state toggle__state--on">ON</span>
+                  <span className="toggle__thumb" />
+                </span>
+              </label>
+
+              <label className="toggle toggle--sm">
+                <span className="toggle__label">Focus Mode (show only 7 tasks)</span>
+                <input
+                    type="checkbox"
+                    checked={focusModeEnabled}
+                    onChange={(e) => setFocusModeEnabled(e.target.checked)}
+                  />
+                <span className="toggle__track" aria-hidden="true">
+                  <span className="toggle__state toggle__state--off">OFF</span>
+                  <span className="toggle__state toggle__state--on">ON</span>
+                  <span className="toggle__thumb" />
+                </span>
+              </label>
+              </div>
+            </div>
+          )}
+
+          <div className="task-visibility-controls">
+            
+              <label className="toggle toggle--sm">
+                <span className="toggle__label">Show completed tasks</span>
+                <input
+                  type="checkbox"
+                  checked={showCompleted}
+                  onChange={(e) => setShowCompleted(e.target.checked)}
+                />
+                <span className="toggle__track" aria-hidden="true">
+                  <span className="toggle__state toggle__state--off">OFF</span>
+                  <span className="toggle__state toggle__state--on">ON</span>
+                  <span className="toggle__thumb" />
+                </span>
+              </label>
+
+          </div>
+
+          {viewMode === "sorted" && (
+            <div className="sort-controls">
+                {viewMode === "sorted" && (
+                  <>
+                    <label>
+                      Sort by
+                      <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                        <option value="load">Cognitive Load</option>
+                        <option value="priority">Priority</option>
+                      </select>
+                    </label>
+
+                    <label>
+                      Direction
+                      <select
+                        value={sortDirection}
+                        onChange={(e) => setSortDirection(e.target.value)}
+                      >
+                        <option value="asc">Low to High</option>
+                        <option value="desc">High to Low</option>
+                      </select>
+                    </label>
+                  </>
+                )}
+            </div>
+          )}
+
+          {advancedFeaturesEnabled && momentumModeEnabled && (
+            <div className="momentum-controls">
+              <MomentumPanel
+                momentumRunActive={momentumRunActive}
+                momentumEnergy={momentumEnergy}
+                momentumError={momentumError}
+                momentumNeedsFallback={momentumNeedsFallback}
+                allowCrossContextRunway={allowCrossContextRunway}
+                onSelectEnergy={(energy) => {
+                  setMomentumEnergy(energy);
+                  setMomentumError("");
+                }}
+                onStartMomentumRun={handleStartMomentumRun}
+                onPickKeystoneForMe={handlePickKeystoneForMe}
+                onEnableCrossContextRunway={handleEnableCrossContextRunway}
+                onEndMomentumRun={handleEndMomentumRun}
+              />
+            </div>
+          )}
+
         </div>
-      )}
+      </div>
 
-      {/* Empty-state message if all tasks are completed */}
-      {displayedTasks.length === 0 && (
-        <p className="empty-state">
-          No visible tasks right now.
-        </p>
-      )}
-      
+      <section className="task-list-section">
+        {focusModeEnabled && (
+          <div className="focus-mode-info">
+            {displayedCount === totalVisibleCount
+              ? `Showing all ${totalVisibleCount} tasks`
+              : `Showing ${displayedCount} of ${totalVisibleCount} tasks`}
+          </div>
+        )}
 
-      <ul className="task-list">
-        {/* Render only visible tasks */}
-        {displayedTasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            editingTaskId={editingTaskId}
-            editTitle={editTitle}
-            setEditTitle={setEditTitle}
-            editLoad={editLoad}
-            setEditLoad={setEditLoad}
-            editPriority={editPriority}
-            setEditPriority={setEditPriority}
-            editContext={editContext}
-            setEditContext={setEditContext}
-            contextOptions={contextOptions}
-            onStartEdit={handleStartEdit}
-            onCancelEdit={handleCancelEdit}
-            onSaveEdit={handleSaveEdit}
-            onDeleteTask={handleDeleteTask}
-            onToggleTask={handleToggleTask}
-            onMoveTaskUp={handleMoveTaskUp}
-            onMoveTaskDown={handleMoveTaskDown}
-            onSnooze={handleSnooze}
-            onUnsnooze={handleUnsnooze}
-            advancedFeaturesEnabled={advancedFeaturesEnabled}
-            loadLabels={LOAD_LABELS}
-            priorityLabels={PRIORITY_LABELS}
-            momentumModeEnabled={momentumModeEnabled}
-            momentumRunActive={momentumRunActive}
-            isKeystone={task.id === keystoneTaskId}
-            onSetKeystone={handleSetKeystone}
-          />
-        ))}
-      </ul>
+        {/* Empty-state message if all tasks are completed */}
+        {displayedTasks.length === 0 && (
+          <p className="empty-state">
+            No visible tasks right now.
+          </p>
+        )}
+        <ul className="task-list">
+          {/* Render only visible tasks */}
+          {displayedTasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              editingTaskId={editingTaskId}
+              editTitle={editTitle}
+              setEditTitle={setEditTitle}
+              editLoad={editLoad}
+              setEditLoad={setEditLoad}
+              editPriority={editPriority}
+              setEditPriority={setEditPriority}
+              editContext={editContext}
+              setEditContext={setEditContext}
+              contextOptions={contextOptions}
+              onStartEdit={handleStartEdit}
+              onCancelEdit={handleCancelEdit}
+              onSaveEdit={handleSaveEdit}
+              onDeleteTask={handleDeleteTask}
+              onToggleTask={handleToggleTask}
+              onMoveTaskUp={handleMoveTaskUp}
+              onMoveTaskDown={handleMoveTaskDown}
+              onSnooze={handleSnooze}
+              onUnsnooze={handleUnsnooze}
+              advancedFeaturesEnabled={advancedFeaturesEnabled}
+              loadLabels={LOAD_LABELS}
+              priorityLabels={PRIORITY_LABELS}
+              momentumModeEnabled={momentumModeEnabled}
+              momentumRunActive={momentumRunActive}
+              isKeystone={task.id === keystoneTaskId}
+              onSetKeystone={handleSetKeystone}
+            />
+          ))}
+        </ul>
+      </section>
     </div>
   );
 }

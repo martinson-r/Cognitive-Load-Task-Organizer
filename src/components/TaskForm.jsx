@@ -1,3 +1,5 @@
+import "../styles/task-form.css";
+
 function TaskForm({
   input,
   setInput,
@@ -20,38 +22,40 @@ function TaskForm({
   return (
     <div className="task-form-wrapper">
       <form className="task-form" onSubmit={onSubmit}>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          placeholder="Add a task..."
-        />
+        
+          <input
+            value={input}
+            onChange={(e) => setInput(e.target.value)}
+            placeholder="Add a task..."
+          />
+          <div className="task-form-row">
+          <select value={load} onChange={(e) => setLoad(e.target.value)}>
+            {Object.entries(loadLabels).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
 
-        <select value={load} onChange={(e) => setLoad(e.target.value)}>
-          {Object.entries(loadLabels).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          <select value={priority} onChange={(e) => setPriority(e.target.value)}>
+            {Object.entries(priorityLabels).map(([value, label]) => (
+              <option key={value} value={value}>
+                {label}
+              </option>
+            ))}
+          </select>
 
-        <select value={priority} onChange={(e) => setPriority(e.target.value)}>
-          {Object.entries(priorityLabels).map(([value, label]) => (
-            <option key={value} value={value}>
-              {label}
-            </option>
-          ))}
-        </select>
+          <select value={context} onChange={(e) => onContextChange(e.target.value)}>
+            {contextOptions.map((option) => (
+              <option key={option} value={option}>
+                {option}
+              </option>
+            ))}
+            <option value="__add_custom__">+ Add custom context</option>
+          </select>
 
-        <select value={context} onChange={(e) => onContextChange(e.target.value)}>
-          {contextOptions.map((option) => (
-            <option key={option} value={option}>
-              {option}
-            </option>
-          ))}
-          <option value="__add_custom__">+ Add custom context</option>
-        </select>
-
-        <button type="submit">Add</button>
+          <button type="submit">Add</button>
+        </div>
       </form>
 
       {showCustomContextInput && (

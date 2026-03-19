@@ -1,4 +1,5 @@
 import { useEffect, useRef, useState } from "react";
+import "../styles/task-card.css";
 
 import { 
         PencilIcon, 
@@ -245,7 +246,7 @@ function TaskCard({
                 </button>
             )}
 
-            {momentumModeEnabled && !momentumRunActive && (
+            {advancedFeaturesEnabled && momentumModeEnabled && !momentumRunActive && (
                 isKeystone ? (
                     <span className="keystone-badge">Keystone</span>
                 ) : (
