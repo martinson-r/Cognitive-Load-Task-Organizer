@@ -560,6 +560,11 @@ async function handleToggleTask(id) {
   }
 }
 
+if (!settingsLoaded) {
+    return <div className="app app--loading" />;
+  }
+
+
   return (
     <div className="app">
 
@@ -606,6 +611,7 @@ async function handleToggleTask(id) {
       </section>
 
       <section className="filters">
+        <p className="section-label">Filters</p>
         <FilterBar
           filterLoad={filterLoad}
           setFilterLoad={setFilterLoad}
@@ -619,8 +625,58 @@ async function handleToggleTask(id) {
         />
       </section>
 
+      <div className="mode-strip" role="radiogroup" aria-label="View mode">
+        <input
+          type="radio"
+          id="mode-custom"
+          name="view-mode"
+          checked={viewMode === "custom" && !momentumModeEnabled}
+          onChange={() => {
+            setMomentumModeEnabled(false);
+            setViewMode("custom");
+          }}
+          className="mode-radio"
+        />
+        <label htmlFor="mode-custom" className="mode-pill">
+          Custom
+        </label>
+
+        <input
+          type="radio"
+          id="mode-sorted"
+          name="view-mode"
+          checked={viewMode === "sorted" && !momentumModeEnabled}
+          onChange={() => {
+            setMomentumModeEnabled(false);
+            setViewMode("sorted");
+          }}
+          className="mode-radio"
+        />
+        <label htmlFor="mode-sorted" className="mode-pill">
+          Sorted
+        </label>
+
+        {advancedFeaturesEnabled && (
+          <>
+            <input
+              type="radio"
+              id="mode-momentum"
+              name="view-mode"
+              checked={momentumModeEnabled}
+              onChange={() => {
+                setMomentumModeEnabled(true);
+              }}
+              className="mode-radio"
+            />
+            <label htmlFor="mode-momentum" className="mode-pill">
+              Momentum
+            </label>
+          </>
+        )}
+      </div>
+
       <div className="top-controls">
-        <div className="mode-strip">
+        {/* <div className="mode-strip">
           <button
             className={viewMode === "custom" && !momentumModeEnabled ? "active" : ""}
             onClick={() => {
@@ -649,7 +705,7 @@ async function handleToggleTask(id) {
           >
             Momentum
           </button>)}
-        </div>
+        </div> */}
         <div className="mode-controls">
           {advancedFeaturesEnabled && (
             <div className="advanced-features-panel">
