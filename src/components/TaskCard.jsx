@@ -246,7 +246,7 @@ function TaskCard({
                 </button>
             )}
 
-            {momentumModeEnabled && !momentumRunActive && (
+            {advancedFeaturesEnabled && momentumModeEnabled && !momentumRunActive && (
                 isKeystone ? (
                     <span className="keystone-badge">Keystone</span>
                 ) : (

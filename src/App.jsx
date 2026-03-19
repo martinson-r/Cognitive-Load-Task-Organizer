@@ -566,13 +566,19 @@ async function handleToggleTask(id) {
       <header className="app-header">
         <h1>Cognitive Load Task Organizer</h1>
         <div className="advanced-toggle toolbar-row">
-          <label className="toggle-row">
+          <label className="toggle toggle--labeled">
+            <span className="toggle__label">Advanced Features</span>
             <input
               type="checkbox"
               checked={advancedFeaturesEnabled}
               onChange={(e) => setAdvancedFeaturesEnabled(e.target.checked)}
+              aria-label="Advanced Features"
             />
-            <span>Advanced Features</span>
+            <span className="toggle__track" aria-hidden="true">
+              <span className="toggle__state toggle__state--off">OFF</span>
+              <span className="toggle__state toggle__state--on">ON</span>
+              <span className="toggle__thumb" />
+            </span>
           </label>
         </div>
       </header>
@@ -647,37 +653,54 @@ async function handleToggleTask(id) {
         <div className="mode-controls">
           {advancedFeaturesEnabled && (
             <div className="advanced-features-panel">
-              
-                <label>
-                  <input
+              <div className="control-toggles">
+
+
+              <label className="toggle toggle--sm">
+                <span className="toggle__label">View Snoozed Tasks</span>
+                <input
                     type="checkbox"
                     checked={showSnoozedTasks}
                     onChange={(e) => setShowSnoozedTasks(e.target.checked)}
                   />
-                  View Snoozed Tasks
-                </label>
+                <span className="toggle__track" aria-hidden="true">
+                  <span className="toggle__state toggle__state--off">OFF</span>
+                  <span className="toggle__state toggle__state--on">ON</span>
+                  <span className="toggle__thumb" />
+                </span>
+              </label>
 
-                <label>
-                  <input
+              <label className="toggle toggle--sm">
+                <span className="toggle__label">Focus Mode (show only 7 tasks)</span>
+                <input
                     type="checkbox"
                     checked={focusModeEnabled}
                     onChange={(e) => setFocusModeEnabled(e.target.checked)}
                   />
-                  Focus Mode (show only 7 tasks)
-                </label>
-  
+                <span className="toggle__track" aria-hidden="true">
+                  <span className="toggle__state toggle__state--off">OFF</span>
+                  <span className="toggle__state toggle__state--on">ON</span>
+                  <span className="toggle__thumb" />
+                </span>
+              </label>
+              </div>
             </div>
           )}
 
           <div className="task-visibility-controls">
             
-              <label className="show-completed-toggle">
+              <label className="toggle toggle--sm">
+                <span className="toggle__label">Show completed tasks</span>
                 <input
                   type="checkbox"
                   checked={showCompleted}
                   onChange={(e) => setShowCompleted(e.target.checked)}
                 />
-                Show completed tasks
+                <span className="toggle__track" aria-hidden="true">
+                  <span className="toggle__state toggle__state--off">OFF</span>
+                  <span className="toggle__state toggle__state--on">ON</span>
+                  <span className="toggle__thumb" />
+                </span>
               </label>
 
           </div>
