@@ -562,205 +562,229 @@ async function handleToggleTask(id) {
 
   return (
     <div className="app">
-      <div className="toolbar-row">
-        <label className="toggle-row">
-          <input
-            type="checkbox"
-            checked={advancedFeaturesEnabled}
-            onChange={(e) => setAdvancedFeaturesEnabled(e.target.checked)}
-          />
-          <span>Advanced Features</span>
-        </label>
-      </div>
-      <h1>Cognitive Load Task Organizer</h1>
-      <div className="info-banner">
+
+      <header className="app-header">
+        <h1>Cognitive Load Task Organizer</h1>
+        <div className="advanced-toggle toolbar-row">
+          <label className="toggle-row">
+            <input
+              type="checkbox"
+              checked={advancedFeaturesEnabled}
+              onChange={(e) => setAdvancedFeaturesEnabled(e.target.checked)}
+            />
+            <span>Advanced Features</span>
+          </label>
+        </div>
+        <div className="info-banner">
         <p>No account required.</p>
         <p>Data is stored locally in your browser using IndexedDB. 
         This app does not include authentication or encryption.</p>
         <p><strong>Do not store sensitive information in this app.</strong></p>
       </div>
+      </header>
 
-      <TaskForm
-        input={input}
-        setInput={setInput}
-        load={load}
-        setLoad={setLoad}
-        priority={priority}
-        setPriority={setPriority}
-        context={context}
-        onContextChange={handleContextChange}
-        contextOptions={contextOptions}
-        showCustomContextInput={showCustomContextInput}
-        newContextInput={newContextInput}
-        setNewContextInput={setNewContextInput}
-        onAddCustomContext={handleAddCustomContext}
-        onCancelCustomContext={handleCancelCustomContext}
-        onSubmit={addTask}
-        loadLabels={LOAD_LABELS}
-        priorityLabels={PRIORITY_LABELS}
-      />
-
-      <FilterBar
-        filterLoad={filterLoad}
-        setFilterLoad={setFilterLoad}
-        filterPriority={filterPriority}
-        setFilterPriority={setFilterPriority}
-        filterContext={filterContext}
-        setFilterContext={setFilterContext}
-        contextOptions={contextOptions}
-        loadLabels={LOAD_LABELS}
-        priorityLabels={PRIORITY_LABELS}
-      />
-
-      {advancedFeaturesEnabled && (
-        <div className="advanced-features-panel">
-          <p className="advanced-features-note">
-            Advanced features enabled. Focus View, Snooze, and Momentum Mode will appear here.
-          </p>
-          <label>
-            <input
-              type="checkbox"
-              checked={showSnoozedTasks}
-              onChange={(e) => setShowSnoozedTasks(e.target.checked)}
-            />
-            View Snoozed Tasks
-          </label>
-
-           <label>
-            <input
-              type="checkbox"
-              checked={focusModeEnabled}
-              onChange={(e) => setFocusModeEnabled(e.target.checked)}
-            />
-            Focus Mode (show only 7 tasks)
-          </label>
-
-          <label>
-            <input
-              type="checkbox"
-              checked={momentumModeEnabled}
-              onChange={(e) => handleMomentumModeToggle(e.target.checked)}
-            />
-            Momentum Mode
-          </label>
-        </div>
-      )}
-
-      <div className="task-visibility-controls">
-        <label className="show-completed-toggle">
-          <input
-            type="checkbox"
-            checked={showCompleted}
-            onChange={(e) => setShowCompleted(e.target.checked)}
-          />
-          Show completed tasks
-        </label>
-      </div>
-
-      <div className="sort-controls">
-        <label>
-          Order mode
-          <select value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
-            <option value="custom">Custom Order</option>
-            <option value="sorted">Auto Sort</option>
-          </select>
-        </label>
-
-        {viewMode === "sorted" && (
-          <>
-            <label>
-              Sort by
-              <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                <option value="load">Cognitive Load</option>
-                <option value="priority">Priority</option>
-              </select>
-            </label>
-
-            <label>
-              Direction
-              <select
-                value={sortDirection}
-                onChange={(e) => setSortDirection(e.target.value)}
-              >
-                <option value="asc">Low to High</option>
-                <option value="desc">High to Low</option>
-              </select>
-            </label>
-          </>
-        )}
-      </div>
-
-
-      {advancedFeaturesEnabled && momentumModeEnabled && (
-        <MomentumPanel
-          momentumRunActive={momentumRunActive}
-          momentumEnergy={momentumEnergy}
-          momentumError={momentumError}
-          momentumNeedsFallback={momentumNeedsFallback}
-          allowCrossContextRunway={allowCrossContextRunway}
-          onSelectEnergy={(energy) => {
-            setMomentumEnergy(energy);
-            setMomentumError("");
-          }}
-          onStartMomentumRun={handleStartMomentumRun}
-          onPickKeystoneForMe={handlePickKeystoneForMe}
-          onEnableCrossContextRunway={handleEnableCrossContextRunway}
-          onEndMomentumRun={handleEndMomentumRun}
+      <section className="task-input">
+        <TaskForm
+          input={input}
+          setInput={setInput}
+          load={load}
+          setLoad={setLoad}
+          priority={priority}
+          setPriority={setPriority}
+          context={context}
+          onContextChange={handleContextChange}
+          contextOptions={contextOptions}
+          showCustomContextInput={showCustomContextInput}
+          newContextInput={newContextInput}
+          setNewContextInput={setNewContextInput}
+          onAddCustomContext={handleAddCustomContext}
+          onCancelCustomContext={handleCancelCustomContext}
+          onSubmit={addTask}
+          loadLabels={LOAD_LABELS}
+          priorityLabels={PRIORITY_LABELS}
         />
-      )}
+      </section>
 
-
-      {focusModeEnabled && (
-        <div className="focus-mode-info">
-          {displayedCount === totalVisibleCount
-            ? `Showing all ${totalVisibleCount} tasks`
-            : `Showing ${displayedCount} of ${totalVisibleCount} tasks`}
-        </div>
-      )}
-
-      {/* Empty-state message if all tasks are completed */}
-      {displayedTasks.length === 0 && (
-        <p className="empty-state">
-          No visible tasks right now.
-        </p>
-      )}
       
 
-      <ul className="task-list">
-        {/* Render only visible tasks */}
-        {displayedTasks.map((task) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            editingTaskId={editingTaskId}
-            editTitle={editTitle}
-            setEditTitle={setEditTitle}
-            editLoad={editLoad}
-            setEditLoad={setEditLoad}
-            editPriority={editPriority}
-            setEditPriority={setEditPriority}
-            editContext={editContext}
-            setEditContext={setEditContext}
-            contextOptions={contextOptions}
-            onStartEdit={handleStartEdit}
-            onCancelEdit={handleCancelEdit}
-            onSaveEdit={handleSaveEdit}
-            onDeleteTask={handleDeleteTask}
-            onToggleTask={handleToggleTask}
-            onMoveTaskUp={handleMoveTaskUp}
-            onMoveTaskDown={handleMoveTaskDown}
-            onSnooze={handleSnooze}
-            onUnsnooze={handleUnsnooze}
-            advancedFeaturesEnabled={advancedFeaturesEnabled}
-            loadLabels={LOAD_LABELS}
-            priorityLabels={PRIORITY_LABELS}
-            momentumModeEnabled={momentumModeEnabled}
+      <div className="top-controls">
+        {advancedFeaturesEnabled && (
+          <div className="advanced-features-panel">
+            <p className="advanced-features-note">
+              Advanced features enabled. Focus View, Snooze, and Momentum Mode will appear here.
+            </p>
+            <label>
+              <input
+                type="checkbox"
+                checked={showSnoozedTasks}
+                onChange={(e) => setShowSnoozedTasks(e.target.checked)}
+              />
+              View Snoozed Tasks
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                checked={focusModeEnabled}
+                onChange={(e) => setFocusModeEnabled(e.target.checked)}
+              />
+              Focus Mode (show only 7 tasks)
+            </label>
+
+            <label>
+              <input
+                type="checkbox"
+                checked={momentumModeEnabled}
+                onChange={(e) => handleMomentumModeToggle(e.target.checked)}
+              />
+              Momentum Mode
+            </label>
+          </div>
+        )}
+
+        <div className="task-visibility-controls">
+          <label className="show-completed-toggle">
+            <input
+              type="checkbox"
+              checked={showCompleted}
+              onChange={(e) => setShowCompleted(e.target.checked)}
+            />
+            Show completed tasks
+          </label>
+        </div>
+
+        <div className="sort-controls">
+          <label>
+            Order mode
+            <select value={viewMode} onChange={(e) => setViewMode(e.target.value)}>
+              <option value="custom">Custom Order</option>
+              <option value="sorted">Auto Sort</option>
+            </select>
+          </label>
+
+          {viewMode === "sorted" && (
+            <>
+              <label>
+                Sort by
+                <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                  <option value="load">Cognitive Load</option>
+                  <option value="priority">Priority</option>
+                </select>
+              </label>
+
+              <label>
+                Direction
+                <select
+                  value={sortDirection}
+                  onChange={(e) => setSortDirection(e.target.value)}
+                >
+                  <option value="asc">Low to High</option>
+                  <option value="desc">High to Low</option>
+                </select>
+              </label>
+            </>
+          )}
+        </div>
+
+
+        {advancedFeaturesEnabled && momentumModeEnabled && (
+          <MomentumPanel
             momentumRunActive={momentumRunActive}
-            isKeystone={task.id === keystoneTaskId}
-            onSetKeystone={handleSetKeystone}
+            momentumEnergy={momentumEnergy}
+            momentumError={momentumError}
+            momentumNeedsFallback={momentumNeedsFallback}
+            allowCrossContextRunway={allowCrossContextRunway}
+            onSelectEnergy={(energy) => {
+              setMomentumEnergy(energy);
+              setMomentumError("");
+            }}
+            onStartMomentumRun={handleStartMomentumRun}
+            onPickKeystoneForMe={handlePickKeystoneForMe}
+            onEnableCrossContextRunway={handleEnableCrossContextRunway}
+            onEndMomentumRun={handleEndMomentumRun}
           />
-        ))}
-      </ul>
+        )}
+
+
+        
+      </div>
+
+      
+
+      <section className="filters">
+        <FilterBar
+          filterLoad={filterLoad}
+          setFilterLoad={setFilterLoad}
+          filterPriority={filterPriority}
+          setFilterPriority={setFilterPriority}
+          filterContext={filterContext}
+          setFilterContext={setFilterContext}
+          contextOptions={contextOptions}
+          loadLabels={LOAD_LABELS}
+          priorityLabels={PRIORITY_LABELS}
+        />
+      </section>
+
+      <section className="task-list-section">
+        {focusModeEnabled && (
+          <div className="focus-mode-info">
+            {displayedCount === totalVisibleCount
+              ? `Showing all ${totalVisibleCount} tasks`
+              : `Showing ${displayedCount} of ${totalVisibleCount} tasks`}
+          </div>
+        )}
+
+        {/* Empty-state message if all tasks are completed */}
+        {displayedTasks.length === 0 && (
+          <p className="empty-state">
+            No visible tasks right now.
+          </p>
+        )}
+        <ul className="task-list">
+          {/* Render only visible tasks */}
+          {displayedTasks.map((task) => (
+            <TaskCard
+              key={task.id}
+              task={task}
+              editingTaskId={editingTaskId}
+              editTitle={editTitle}
+              setEditTitle={setEditTitle}
+              editLoad={editLoad}
+              setEditLoad={setEditLoad}
+              editPriority={editPriority}
+              setEditPriority={setEditPriority}
+              editContext={editContext}
+              setEditContext={setEditContext}
+              contextOptions={contextOptions}
+              onStartEdit={handleStartEdit}
+              onCancelEdit={handleCancelEdit}
+              onSaveEdit={handleSaveEdit}
+              onDeleteTask={handleDeleteTask}
+              onToggleTask={handleToggleTask}
+              onMoveTaskUp={handleMoveTaskUp}
+              onMoveTaskDown={handleMoveTaskDown}
+              onSnooze={handleSnooze}
+              onUnsnooze={handleUnsnooze}
+              advancedFeaturesEnabled={advancedFeaturesEnabled}
+              loadLabels={LOAD_LABELS}
+              priorityLabels={PRIORITY_LABELS}
+              momentumModeEnabled={momentumModeEnabled}
+              momentumRunActive={momentumRunActive}
+              isKeystone={task.id === keystoneTaskId}
+              onSetKeystone={handleSetKeystone}
+            />
+          ))}
+        </ul>
+      </section>
+
+
+
+
+
+
+
+
+      
     </div>
   );
 }
