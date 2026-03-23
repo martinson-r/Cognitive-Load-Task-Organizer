@@ -9,6 +9,7 @@ This app optimizes for *ability to act*.
 
 ## Live Demo
 **[Cognitive Load Task Organizer](https://cognitiveorganizer.netlify.app/)**
+No signup required. Data is stored locally in your browser.
 
 ## Case Study
 **[View Case Study](https://hanasays.myportfolio.com/cognitive-load-task-organizer)**
