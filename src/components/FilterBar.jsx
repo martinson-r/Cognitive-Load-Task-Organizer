@@ -27,6 +27,7 @@ function FilterBar({
             className={filterSelectClass}
             value={filterLoad}
             onChange={(e) => setFilterLoad(e.target.value)}
+            aria-label="Filter by cognitive load"
           >
             <option value="all">All cognitive loads</option>
             {Object.entries(loadLabels).map(([value, label]) => (
@@ -40,6 +41,7 @@ function FilterBar({
             className={filterSelectClass}
             value={filterPriority}
             onChange={(e) => setFilterPriority(e.target.value)}
+            aria-label="Filter by priority"
           >
             <option value="all">All priorities</option>
             {Object.entries(priorityLabels).map(([value, label]) => (
@@ -53,6 +55,7 @@ function FilterBar({
             className={filterSelectClass}
             value={filterContext}
             onChange={(e) => setFilterContext(e.target.value)}
+            aria-label="Filter by context"
           >
             <option value="all">All contexts</option>
             {contextOptions.map((option) => (

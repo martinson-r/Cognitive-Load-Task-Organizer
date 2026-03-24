@@ -594,6 +594,7 @@ if (!settingsLoaded) {
         </div>
       </header>
 
+      <main className="app-main">
       <section className="task-input">
         <TaskForm
           input={input}
@@ -869,6 +870,7 @@ if (!settingsLoaded) {
           ))}
         </ul>
       </section>
+      </main>
     </div>
   );
 }

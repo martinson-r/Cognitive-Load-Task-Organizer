@@ -115,7 +115,7 @@ button {
 }
 
 .empty-state {
-  opacity: 0.75;
+  color: #6b7280; /* was opacity: 0.75 on body text, which fell below 4.5:1; explicit color passes WCAG AA */
   margin-bottom: 1rem;
 }
 

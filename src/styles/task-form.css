@@ -17,7 +17,7 @@
 }
 
 .task-form-trigger__placeholder {
-  color: #9ca3af;
+  color: #6b7280; /* was #9ca3af (~2.85:1 contrast); #6b7280 passes WCAG AA at ~4.63:1 */
   font-size: 0.95rem;
 }
 
