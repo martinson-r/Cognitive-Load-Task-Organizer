@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from "react";
 import "../styles/task-form.css";
+import { LOAD_PILL_COLORS, PRIORITY_PILL_COLORS, getContextColor } from "../constants/TaskOptions";
 
 const LOAD_SHORT = {
   low: "low load",
@@ -14,7 +15,7 @@ const PRIORITY_SHORT = {
 };
 
 // Second-layer picker modal — opens on top of the task modal
-function SegmentPicker({ label, options, value, onChange, onClose }) {
+function SegmentPicker({ label, options, value, onChange, onClose, getOptionColor }) {
   const [hasScrollableContent, setHasScrollableContent] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
   const scrollRef = useRef(null);
@@ -61,19 +62,24 @@ function SegmentPicker({ label, options, value, onChange, onClose }) {
             className="segment-picker__options"
             ref={scrollRef}
           >
-            {options.map((opt) => (
-              <button
-                key={opt.value}
-                type="button"
-                className={`segment-picker__option ${value === opt.value ? "segment-picker__option--selected" : ""}`}
-                onClick={() => { onChange(opt.value); onClose(); }}
-              >
-                {opt.label}
-                {value === opt.value && (
-                  <span className="segment-picker__check" aria-hidden="true">✓</span>
-                )}
-              </button>
-            ))}
+            {options.map((opt) => {
+              const isSelected = value === opt.value;
+              const color = getOptionColor ? getOptionColor(opt.value) : null;
+              return (
+                <button
+                  key={opt.value}
+                  type="button"
+                  className={`segment-picker__option ${isSelected ? "segment-picker__option--selected" : ""}`}
+                  style={!isSelected && color ? { background: color.bg, color: color.text, borderColor: "transparent" } : undefined}
+                  onClick={() => { onChange(opt.value); onClose(); }}
+                >
+                  {opt.label}
+                  {isSelected && (
+                    <span className="segment-picker__check" aria-hidden="true">✓</span>
+                  )}
+                </button>
+              );
+            })}
           </div>
           {hasScrollableContent && !isScrolledToBottom && (
             <div className="segment-picker__fade" aria-hidden="true" />
@@ -85,9 +91,10 @@ function SegmentPicker({ label, options, value, onChange, onClose }) {
 }
 
 // Stable segment button — never expands in place
-function SegmentGroup({ label, options, value, onChange }) {
+function SegmentGroup({ label, options, value, onChange, getOptionColor }) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const selectedLabel = options.find((o) => o.value === value)?.label ?? value;
+  const color = getOptionColor ? getOptionColor(value) : null;
 
   return (
     <div className="segment-group">
@@ -96,9 +103,10 @@ function SegmentGroup({ label, options, value, onChange }) {
         type="button"
         className="segment-selected"
         onClick={() => setPickerOpen(true)}
+        style={color ? { background: color.bg, color: color.text, borderColor: "transparent" } : undefined}
       >
         <span className="segment-selected__text">{selectedLabel}</span>
-        <span className="segment-caret" aria-hidden="true">›</span>
+        <span className="segment-caret" aria-hidden="true" style={color ? { color: color.text, opacity: 0.6 } : undefined}>›</span>
       </button>
 
       {pickerOpen && (
@@ -108,6 +116,7 @@ function SegmentGroup({ label, options, value, onChange }) {
           value={value}
           onChange={onChange}
           onClose={() => setPickerOpen(false)}
+          getOptionColor={getOptionColor}
         />
       )}
     </div>
@@ -207,18 +216,21 @@ function TaskForm({
                 options={loadOptions}
                 value={load}
                 onChange={setLoad}
+                getOptionColor={(val) => LOAD_PILL_COLORS[val]}
               />
               <SegmentGroup
                 label="Priority"
                 options={priorityOptions}
                 value={priority}
                 onChange={setPriority}
+                getOptionColor={(val) => PRIORITY_PILL_COLORS[val]}
               />
               <SegmentGroup
                 label="Context"
                 options={contextSegmentOptions}
                 value={context}
                 onChange={onContextChange}
+                getOptionColor={(val) => val === "__add_custom__" ? null : getContextColor(val)}
               />
             </div>
 
