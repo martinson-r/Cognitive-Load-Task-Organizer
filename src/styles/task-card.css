@@ -145,6 +145,10 @@
 }
 
 /* ── Edit mode ── */
+.task-content--editing {
+  width: 100%;
+}
+
 .edit-input,
 .edit-select {
   padding: 0.5rem;

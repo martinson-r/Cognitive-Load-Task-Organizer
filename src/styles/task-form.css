@@ -364,3 +364,27 @@
   opacity: 0.4;
   cursor: not-allowed;
 }
+
+/* ── Edit modal actions ── */
+.task-modal__edit-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.task-modal__edit-actions .task-modal__save {
+  flex: 1;
+}
+
+.task-modal__cancel {
+  height: 44px;
+  padding: 0 1.25rem;
+  border-radius: 8px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  font-size: 0.95rem;
+  cursor: pointer;
+}
+
+.task-modal__cancel:hover {
+  background: #f3f4f6;
+}

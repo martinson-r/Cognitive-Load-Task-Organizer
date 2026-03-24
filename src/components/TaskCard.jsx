@@ -1,7 +1,12 @@
 import { useEffect, useRef, useState } from "react";
 import "../styles/task-card.css";
 import { PencilIcon, TrashIcon, ArrowUpIcon, ArrowDownIcon } from "@heroicons/react/24/outline";
-import { LOAD_PILL_COLORS, PRIORITY_PILL_COLORS, LOAD_PILL_LABELS, PRIORITY_PILL_LABELS, getContextColor } from "../constants/TaskOptions";
+import {
+  LOAD_PILL_COLORS, PRIORITY_PILL_COLORS,
+  LOAD_PILL_LABELS, PRIORITY_PILL_LABELS,
+  getContextColor,
+} from "../constants/TaskOptions";
+import EditTaskModal from "./EditTaskModal";
 
 function Pill({ label, bg, text }) {
   return (
@@ -73,126 +78,112 @@ function TaskCard({
   }
 
   return (
-    <li className={[
-      "task-item",
-      `task-item--${task.load}`,
-      isSnoozed ? "task-card--snoozed" : "",
-      isKeystone ? "task-card--keystone" : "",
-      task.done ? "task-item--done" : "",
-    ].filter(Boolean).join(" ")}>
+    <>
+      <li className={[
+        "task-item",
+        `task-item--${task.load}`,
+        isSnoozed ? "task-card--snoozed" : "",
+        isKeystone ? "task-card--keystone" : "",
+        task.done ? "task-item--done" : "",
+      ].filter(Boolean).join(" ")}>
 
-      {isEditing ? (
-        <>
-          <div className="task-content">
+        <div className="task-content">
+          <label className="task-title-row">
             <input
-              className="edit-input"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
+              type="checkbox"
+              className="task-checkbox"
+              checked={task.done}
+              onChange={() => onToggleTask(task.id)}
             />
-            <select className="edit-select" value={editLoad} onChange={(e) => setEditLoad(e.target.value)}>
-              {Object.entries(loadLabels).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </select>
-            <select className="edit-select" value={editPriority} onChange={(e) => setEditPriority(e.target.value)}>
-              {Object.entries(priorityLabels).map(([value, label]) => (
-                <option key={value} value={value}>{label}</option>
-              ))}
-            </select>
-            <select className="edit-select" value={editContext} onChange={(e) => setEditContext(e.target.value)}>
-              {contextOptions.map((option) => (
-                <option key={option} value={option}>{option}</option>
-              ))}
-            </select>
-          </div>
-          <div className="task-actions">
-            <button className="save-button" onClick={() => onSaveEdit(task.id)}>Save</button>
-            <button className="cancel-button" onClick={onCancelEdit}>Cancel</button>
-          </div>
-        </>
-      ) : (
-        <>
-          <div className="task-content">
-            <label className="task-title-row">
-              <input
-                type="checkbox"
-                className="task-checkbox"
-                checked={task.done}
-                onChange={() => onToggleTask(task.id)}
-              />
-              <span className="task-title">{task.title}</span>
-            </label>
+            <span className="task-title">{task.title}</span>
+          </label>
 
-            <div className="task-meta">
-              <Pill
-                label={LOAD_PILL_LABELS[task.load] ?? task.load}
-                bg={loadColors.bg}
-                text={loadColors.text}
-              />
-              <Pill
-                label={PRIORITY_PILL_LABELS[priorityValue] ?? priorityValue}
-                bg={priorityColors.bg}
-                text={priorityColors.text}
-              />
-              <Pill
-                label={contextValue}
-                bg={contextColors.bg}
-                text={contextColors.text}
-              />
+          <div className="task-meta">
+            <Pill
+              label={LOAD_PILL_LABELS[task.load] ?? task.load}
+              bg={loadColors.bg}
+              text={loadColors.text}
+            />
+            <Pill
+              label={PRIORITY_PILL_LABELS[priorityValue] ?? priorityValue}
+              bg={priorityColors.bg}
+              text={priorityColors.text}
+            />
+            <Pill
+              label={contextValue}
+              bg={contextColors.bg}
+              text={contextColors.text}
+            />
+          </div>
+        </div>
+
+        <div className="task-actions">
+          <button className="move-button" onClick={() => onMoveTaskUp(task.id)} aria-label="Move task up">
+            <ArrowUpIcon className="icon" />
+          </button>
+          <button className="move-button" onClick={() => onMoveTaskDown(task.id)} aria-label="Move task down">
+            <ArrowDownIcon className="icon" />
+          </button>
+
+          {isSnoozed && (
+            <span className="task-snooze-info">
+              Snoozed · {formatSnoozeRemaining(task.snoozedUntil)}
+            </span>
+          )}
+
+          {advancedFeaturesEnabled && !isSnoozed && (
+            <div className="task-action-menu" ref={snoozeMenuRef}>
+              <button type="button" className="task-action-button" onClick={() => setShowSnoozeMenu((prev) => !prev)}>
+                Snooze
+              </button>
+              {showSnoozeMenu && (
+                <div className="task-submenu">
+                  <button type="button" onClick={() => { onSnooze(task.id, 24); setShowSnoozeMenu(false); }}>Snooze 24h</button>
+                  <button type="button" onClick={() => { onSnooze(task.id, 48); setShowSnoozeMenu(false); }}>Snooze 48h</button>
+                  <button type="button" onClick={() => { onSnooze(task.id, 72); setShowSnoozeMenu(false); }}>Snooze 72h</button>
+                </div>
+              )}
             </div>
-          </div>
+          )}
 
-          <div className="task-actions">
-            <button className="move-button" onClick={() => onMoveTaskUp(task.id)} aria-label="Move task up">
-              <ArrowUpIcon className="icon" />
-            </button>
-            <button className="move-button" onClick={() => onMoveTaskDown(task.id)} aria-label="Move task down">
-              <ArrowDownIcon className="icon" />
-            </button>
+          {advancedFeaturesEnabled && isSnoozed && (
+            <button onClick={() => onUnsnooze(task.id)}>Un-snooze</button>
+          )}
 
-            {isSnoozed && (
-              <span className="task-snooze-info">
-                Snoozed · {formatSnoozeRemaining(task.snoozedUntil)}
-              </span>
-            )}
+          {advancedFeaturesEnabled && momentumModeEnabled && !momentumRunActive && (
+            isKeystone ? (
+              <span className="keystone-badge">Keystone</span>
+            ) : (
+              <button type="button" onClick={() => onSetKeystone(task.id)}>Set Keystone</button>
+            )
+          )}
 
-            {advancedFeaturesEnabled && !isSnoozed && (
-              <div className="task-action-menu" ref={snoozeMenuRef}>
-                <button type="button" className="task-action-button" onClick={() => setShowSnoozeMenu((prev) => !prev)}>
-                  Snooze
-                </button>
-                {showSnoozeMenu && (
-                  <div className="task-submenu">
-                    <button type="button" onClick={() => { onSnooze(task.id, 24); setShowSnoozeMenu(false); }}>Snooze 24h</button>
-                    <button type="button" onClick={() => { onSnooze(task.id, 48); setShowSnoozeMenu(false); }}>Snooze 48h</button>
-                    <button type="button" onClick={() => { onSnooze(task.id, 72); setShowSnoozeMenu(false); }}>Snooze 72h</button>
-                  </div>
-                )}
-              </div>
-            )}
+          <button className="edit-button icon-button" onClick={() => onStartEdit(task)} aria-label="Edit task">
+            <PencilIcon className="icon" />
+          </button>
+          <button className="delete-button icon-button" onClick={() => onDeleteTask(task.id)} aria-label="Delete task">
+            <TrashIcon className="icon" />
+          </button>
+        </div>
+      </li>
 
-            {advancedFeaturesEnabled && isSnoozed && (
-              <button onClick={() => onUnsnooze(task.id)}>Un-snooze</button>
-            )}
-
-            {advancedFeaturesEnabled && momentumModeEnabled && !momentumRunActive && (
-              isKeystone ? (
-                <span className="keystone-badge">Keystone</span>
-              ) : (
-                <button type="button" onClick={() => onSetKeystone(task.id)}>Set Keystone</button>
-              )
-            )}
-
-            <button className="edit-button icon-button" onClick={() => onStartEdit(task)} aria-label="Edit task">
-              <PencilIcon className="icon" />
-            </button>
-            <button className="delete-button icon-button" onClick={() => onDeleteTask(task.id)} aria-label="Delete task">
-              <TrashIcon className="icon" />
-            </button>
-          </div>
-        </>
+      {isEditing && (
+        <EditTaskModal
+          task={task}
+          editTitle={editTitle}
+          setEditTitle={setEditTitle}
+          editLoad={editLoad}
+          setEditLoad={setEditLoad}
+          editPriority={editPriority}
+          setEditPriority={setEditPriority}
+          editContext={editContext}
+          setEditContext={setEditContext}
+          contextOptions={contextOptions}
+          onSave={() => onSaveEdit(task.id)}
+          onCancel={onCancelEdit}
+        />
       )}
-    </li>
+    </>
   );
 }
 
