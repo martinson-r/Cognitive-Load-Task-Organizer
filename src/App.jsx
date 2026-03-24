@@ -266,6 +266,12 @@ useEffect(() => {
   }
 }, [tasks, keystoneTaskId, momentumRunActive]);
 
+function handleResetFilters() {
+  setFilterLoad("all");
+  setFilterPriority("all");
+  setFilterContext("all");
+}
+
 // Set keystone task
 function handleSetKeystone(taskId) {
   setKeystoneTaskId(taskId);
@@ -622,6 +628,7 @@ if (!settingsLoaded) {
           contextOptions={contextOptions}
           loadLabels={LOAD_LABELS}
           priorityLabels={PRIORITY_LABELS}
+          onResetFilters={handleResetFilters}
         />
       </section>
 
