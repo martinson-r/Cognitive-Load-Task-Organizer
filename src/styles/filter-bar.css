@@ -1,17 +1,95 @@
-@media (max-width: 640px) {
-
-  .filter-bar {
-    flex-direction: column;
-  }
-
-  .filter-bar select {
-    width: 100%;
-  }
+.filter-bar-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
 }
 
 .filter-bar {
   display: flex;
   gap: 0.5rem;
-  margin-bottom: 1rem;
   flex-wrap: wrap;
+}
+
+@media (max-width: 640px) {
+  .filter-bar {
+    flex-direction: column;
+  }
+
+  .filter-select-wrap {
+    width: 100%;
+  }
+}
+
+/* ── Filter select wrapper ── */
+.filter-select-wrap {
+  border-radius: 8px;
+  border: 2px solid transparent;
+  transition: border-color 0.15s ease;
+}
+
+.filter-select-wrap--active {
+  border-color: #304C89;
+  background-color: #eef2ff;
+  border-radius: 8px;
+}
+
+/* ── Filter selects ── */
+.filter-select {
+  height: 44px;
+  padding: 0 2.25rem 0 14px;
+  border: 1px solid #cfcfd6;
+  border-radius: 8px;
+  background: transparent;
+  color: #1f2430;
+  font: inherit;
+  appearance: none;
+  -webkit-appearance: none;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 0.9rem;
+  cursor: pointer;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.filter-select-wrap--active .filter-select {
+  border-color: transparent;
+  color: #1e3a8a;
+  font-weight: 500;
+  background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%231e3a8a' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>");
+}
+
+.filter-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(48, 76, 137, 0.2);
+}
+
+/* ── Status row ── */
+.filter-bar__status {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.filter-bar__active-label {
+  font-size: 0.78rem;
+  color: #9ca3af;
+  letter-spacing: 0.01em;
+}
+
+.filter-bar__reset {
+  font-size: 0.78rem;
+  color: #304C89;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.filter-bar__reset:hover {
+  color: #1e3a8a;
 }
