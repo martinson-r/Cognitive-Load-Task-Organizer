@@ -147,14 +147,18 @@ function TaskCard({
           )}
 
           {advancedFeaturesEnabled && isSnoozed && (
-            <button onClick={() => onUnsnooze(task.id)}>Un-snooze</button>
+            <button type="button" className="task-action-button" onClick={() => onUnsnooze(task.id)}>
+              Un-snooze
+            </button>
           )}
 
           {advancedFeaturesEnabled && momentumModeEnabled && !momentumRunActive && (
             isKeystone ? (
               <span className="keystone-badge">Keystone</span>
             ) : (
-              <button type="button" onClick={() => onSetKeystone(task.id)}>Set Keystone</button>
+              <button type="button" className="task-action-button" onClick={() => onSetKeystone(task.id)}>
+                Set Keystone
+              </button>
             )
           )}
 
