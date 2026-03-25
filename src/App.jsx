@@ -37,6 +37,7 @@ import TaskCard from "./components/TaskCard";
 import FilterBar from "./components/FilterBar";
 import MomentumPanel from "./components/MomentumPanel";
 import SettingsModal from "./components/SettingsModal";
+import FAQModal from "./components/FAQModal";
 
 // Settings saver helper
 function persistSettings(settingsLoaded, settings) {
@@ -83,6 +84,7 @@ function App() {
   const [importError, setImportError] = useState(null);
   const [importSuccess, setImportSuccess] = useState(null);
   const [settingsOpen, setSettingsOpen] = useState(false);
+  const [faqOpen, setFaqOpen] = useState(false);
 
   // Derive available context options
   const contextOptions = Array.from(
@@ -634,6 +636,15 @@ function App() {
         <div className="header-controls">
           <button
             type="button"
+            className="faq-trigger"
+            onClick={() => setFaqOpen(true)}
+            aria-label="Open FAQ"
+          >
+            ?
+          </button>
+
+          <button
+            type="button"
             className="settings-trigger"
             onClick={() => setSettingsOpen(true)}
             aria-label="Open settings"
@@ -661,6 +672,10 @@ function App() {
           </div>
         </div>
       </header>
+
+      {faqOpen && (
+        <FAQModal onClose={() => setFaqOpen(false)} />
+      )}
 
       {settingsOpen && (
         <SettingsModal

@@ -1,0 +1,138 @@
+.faq-modal {
+  max-width: 560px;
+  max-height: 85vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.faq-modal__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.faq-modal__body {
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0;
+  padding-right: 0.25rem; /* breathing room from scrollbar */
+}
+
+/* ── Sections ── */
+.faq-section {
+  padding: 1.1rem 0;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+.faq-section:first-child {
+  padding-top: 0;
+}
+
+.faq-section:last-child {
+  border-bottom: none;
+  padding-bottom: 0;
+}
+
+.faq-section__title {
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  margin: 0 0 0.85rem;
+}
+
+/* ── Items ── */
+.faq-item {
+  margin-bottom: 1rem;
+}
+
+.faq-item:last-child {
+  margin-bottom: 0;
+}
+
+.faq-item__q {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #111827;
+  margin: 0 0 0.3rem;
+}
+
+.faq-item__a {
+  font-size: 0.875rem;
+  color: #4b5563;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.faq-item__a code {
+  font-size: 0.8rem;
+  background: #f3f4f6;
+  padding: 1px 5px;
+  border-radius: 4px;
+  color: #374151;
+}
+
+.faq-item__a strong {
+  color: #111827;
+}
+
+/* ── Warning item ── */
+.faq-item--warning .faq-item__q {
+  color: #92400e;
+}
+
+.faq-item--warning .faq-item__a {
+  color: #78350f;
+}
+
+/* ── Links section ── */
+.faq-links {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.faq-link {
+  font-size: 0.875rem;
+  color: #2563eb;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+}
+
+.faq-link:hover {
+  text-decoration: underline;
+  color: #1d4ed8;
+}
+
+.faq-link::after {
+  content: "↗";
+  font-size: 0.75rem;
+  opacity: 0.6;
+}
+
+/* ── Help trigger button in header ── */
+.faq-trigger {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.faq-trigger:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
