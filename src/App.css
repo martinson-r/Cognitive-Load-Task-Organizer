@@ -443,3 +443,82 @@ button {
   height: 44px;
 }
 }
+
+/* Export / Import button row */
+.data-controls {
+  display: flex;
+  gap: 0.4rem;
+}
+
+.data-btn {
+  height: 32px;
+  padding: 0 0.85rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: background 0.15s ease;
+}
+
+.data-btn:hover {
+  background: #f3f4f6;
+}
+
+/* The Import label acts like a button */
+.data-btn--import {
+  cursor: pointer;
+}
+
+/* Status messages */
+.import-status {
+  font-size: 0.8rem;
+  margin: 0;
+}
+
+.import-status--error {
+  color: #b00020;
+}
+
+.import-status--success {
+  color: #15803d;
+}
+
+/* Responsive: stack on small screens */
+@media (max-width: 640px) {
+  .header-controls {
+    align-items: flex-start;
+  }
+}
+
+/* Header: gear + Advanced Features toggle stacked, right-aligned */
+.header-controls {
+  margin: 0 20px;
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+ 
+/* Import status bar — shown below the header after import */
+.import-status-bar {
+  margin-bottom: 1rem;
+}
+ 
+.import-status {
+  font-size: 0.85rem;
+  margin: 0;
+}
+ 
+.import-status--error {
+  color: #b00020;
+}
+ 
+.import-status--success {
+  color: #15803d;
+}
