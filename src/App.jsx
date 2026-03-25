@@ -579,6 +579,15 @@ function App() {
     setImportError(null);
     setImportSuccess(null);
 
+    if (file.size > 5 * 1024 * 1024) {
+      const proceed = window.confirm(
+        "This file is over 5MB, which is unusually large for a task export. " +
+        "Importing it may take a while and could cause performance issues.\n\n" +
+        "Continue anyway?"
+      );
+      if (!proceed) return;
+    }
+
     const replace = window.confirm(
       "Replace or merge?\n\n" +
       "OK     → Replace all existing tasks with the imported ones.\n" +
