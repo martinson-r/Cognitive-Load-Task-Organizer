@@ -1,0 +1,108 @@
+.settings-modal {
+  max-width: 420px;
+}
+
+.settings-modal__title {
+  font-size: 1rem;
+  font-weight: 600;
+  color: #111827;
+}
+
+.settings-modal__section {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+}
+
+.settings-modal__section + .settings-modal__section {
+  padding-top: 1.25rem;
+  margin-top: 0.25rem;
+  border-top: 1px solid #e5e7eb;
+}
+
+.settings-modal__section--danger {
+  border-top-color: #fecaca;
+}
+
+.settings-modal__section-title {
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: #6b7280;
+  margin: 0;
+}
+
+.settings-modal__section-title--danger {
+  color: #b91c1c;
+}
+
+.settings-modal__section-desc {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.settings-modal__row {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+
+/* ── Settings buttons ── */
+.settings-btn {
+  height: 36px;
+  padding: 0 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  background: #fff;
+  color: #374151;
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  transition: background 0.15s ease;
+}
+
+.settings-btn:hover {
+  background: #f3f4f6;
+}
+
+.settings-btn--danger {
+  border-color: #fca5a5;
+  color: #b91c1c;
+  background: #fff;
+}
+
+.settings-btn--danger:hover {
+  background: #fef2f2;
+  border-color: #f87171;
+}
+
+/* ── Gear button in header ── */
+.settings-trigger {
+  width: 32px;
+  height: 32px;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #6b7280;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  flex-shrink: 0;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.settings-trigger:hover {
+  background: #f3f4f6;
+  color: #111827;
+}
+
+.settings-trigger svg {
+  width: 16px;
+  height: 16px;
+}

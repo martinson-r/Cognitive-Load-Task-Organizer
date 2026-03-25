@@ -17,24 +17,26 @@ import {
   DEFAULT_CONTEXT_OPTIONS,
 } from "./constants/TaskOptions";
 
-import { 
-  pickKeystoneForMe, 
-  getMomentumTasks, 
+import {
+  pickKeystoneForMe,
+  getMomentumTasks,
   hasCrossContextLowerLoadOptions,
-  getRunwayNeedsFallback, 
-  getMomentumRunwayMessage,
+  getRunwayNeedsFallback,
 } from "./utils/momentum";
 
 import {
   getVisibleTasks,
   normalizeTaskPositions,
   reorderByVisibleSwap,
-} from './utils/taskView';
+} from "./utils/taskView";
+
+import { exportTasks, importTasks } from "./utils/importExport";
 
 import TaskForm from "./components/TaskForm";
 import TaskCard from "./components/TaskCard";
 import FilterBar from "./components/FilterBar";
 import MomentumPanel from "./components/MomentumPanel";
+import SettingsModal from "./components/SettingsModal";
 
 // Settings saver helper
 function persistSettings(settingsLoaded, settings) {
@@ -78,10 +80,13 @@ function App() {
   const [momentumError, setMomentumError] = useState("");
   const [settingsLoaded, setSettingsLoaded] = useState(false);
   const [allowCrossContextRunway, setAllowCrossContextRunway] = useState(false);
+  const [importError, setImportError] = useState(null);
+  const [importSuccess, setImportSuccess] = useState(null);
+  const [settingsOpen, setSettingsOpen] = useState(false);
 
-  // Derive available context options (can dedupe later if needed)
+  // Derive available context options
   const contextOptions = Array.from(
-  new Set([
+    new Set([
       ...DEFAULT_CONTEXT_OPTIONS,
       ...customContexts,
       ...(editContext ? [editContext] : []),
@@ -89,67 +94,66 @@ function App() {
   );
 
   const visibleTasks = getVisibleTasks({
-  tasks,
-  showSnoozedTasks,
-  showCompleted,
-  filterLoad,
-  filterPriority,
-  filterContext,
-  viewMode,
-  sortBy,
-  sortDirection,
-});
+    tasks,
+    showSnoozedTasks,
+    showCompleted,
+    filterLoad,
+    filterPriority,
+    filterContext,
+    viewMode,
+    sortBy,
+    sortDirection,
+  });
 
-const activeTasks =
-  momentumModeEnabled && momentumRunActive
-    ? getMomentumTasks({
-        tasks: visibleTasks,
-        keystoneTaskId,
-        energy: momentumEnergy,
-        allowCrossContextRunway,
-      })
-    : visibleTasks;
+  const activeTasks =
+    momentumModeEnabled && momentumRunActive
+      ? getMomentumTasks({
+          tasks: visibleTasks,
+          keystoneTaskId,
+          energy: momentumEnergy,
+          allowCrossContextRunway,
+        })
+      : visibleTasks;
 
-// help users pick a keystone if they're tired
-function handlePickKeystoneForMe() {
-  const suggestedTask = pickKeystoneForMe(visibleTasks);
+  // help users pick a keystone if they're tired
+  function handlePickKeystoneForMe() {
+    const suggestedTask = pickKeystoneForMe(visibleTasks);
 
-  if (!suggestedTask) {
-    setMomentumError("No eligible tasks available to choose from.");
-    return;
+    if (!suggestedTask) {
+      setMomentumError("No eligible tasks available to choose from.");
+      return;
+    }
+
+    setKeystoneTaskId(suggestedTask.id);
+    setMomentumEnergy("tired");
+    setMomentumError("");
   }
 
-  setKeystoneTaskId(suggestedTask.id);
-  setMomentumEnergy("tired");
-  setMomentumError("");
-}
-
-const displayedTasks = 
+  const displayedTasks =
     focusModeEnabled || (momentumModeEnabled && momentumRunActive)
-    ? activeTasks.slice(0, 7)
-    : activeTasks;
+      ? activeTasks.slice(0, 7)
+      : activeTasks;
 
-const totalVisibleCount = activeTasks.length;
-const displayedCount = displayedTasks.length;
+  const totalVisibleCount = activeTasks.length;
+  const displayedCount = displayedTasks.length;
 
-// Setting this separation up ahead of time, not used quite yet 
-const isFocusClipped = focusModeEnabled;
-const isMomentumClipped = momentumModeEnabled && momentumRunActive;
-const isClippedMode = isFocusClipped || isMomentumClipped;
+  const isFocusClipped = focusModeEnabled;
+  const isMomentumClipped = momentumModeEnabled && momentumRunActive;
+  const isClippedMode = isFocusClipped || isMomentumClipped;
 
-const momentumNeedsFallback =
-momentumModeEnabled &&
-keystoneTaskId &&
-getRunwayNeedsFallback(visibleTasks, keystoneTaskId);
+  const momentumNeedsFallback =
+    momentumModeEnabled &&
+    keystoneTaskId &&
+    getRunwayNeedsFallback(visibleTasks, keystoneTaskId);
 
-  // load stored tasks from IndexedDB
+  // Load stored tasks from IndexedDB
   useEffect(() => {
     async function loadAppData() {
       try {
         const [
-          storedTasks, 
-          storedCustomContexts, 
-          storedAdvancedFeatures, 
+          storedTasks,
+          storedCustomContexts,
+          storedAdvancedFeatures,
           storedShowSnoozedTasks,
           storedShowCompleted,
           storedFilterLoad,
@@ -214,9 +218,26 @@ getRunwayNeedsFallback(visibleTasks, keystoneTaskId);
     loadAppData();
   }, []);
 
-  // Get existing settings, guarded by settingsLoaded
+  // Persist settings, guarded by settingsLoaded
   useEffect(() => {
-  persistSettings(settingsLoaded, {
+    persistSettings(settingsLoaded, {
+      advancedFeaturesEnabled,
+      showSnoozedTasks,
+      showCompleted,
+      viewMode,
+      sortBy,
+      sortDirection,
+      filterLoad,
+      filterPriority,
+      filterContext,
+      focusModeEnabled,
+      momentumModeEnabled,
+      momentumEnergy,
+      momentumRunActive,
+      keystoneTaskId,
+    });
+  }, [
+    settingsLoaded,
     advancedFeaturesEnabled,
     showSnoozedTasks,
     showCompleted,
@@ -231,65 +252,45 @@ getRunwayNeedsFallback(visibleTasks, keystoneTaskId);
     momentumEnergy,
     momentumRunActive,
     keystoneTaskId,
-  });
-}, [
-  settingsLoaded,
-  advancedFeaturesEnabled,
-  showSnoozedTasks,
-  showCompleted,
-  viewMode,
-  sortBy,
-  sortDirection,
-  filterLoad,
-  filterPriority,
-  filterContext,
-  focusModeEnabled,
-  momentumModeEnabled,
-  momentumEnergy,
-  momentumRunActive,
-  keystoneTaskId,
-]);
+  ]);
 
-// Stop Momentum Run if task no longer exists or is no longer eligible
-useEffect(() => {
-  if (!momentumRunActive) return;
-  if (!keystoneTaskId) {
-    setMomentumRunActive(false);
-    return;
+  // Stop Momentum Run if keystone task no longer exists
+  useEffect(() => {
+    if (!momentumRunActive) return;
+    if (!keystoneTaskId) {
+      setMomentumRunActive(false);
+      return;
+    }
+
+    const keystoneTask = tasks.find((task) => task.id === keystoneTaskId);
+
+    if (!keystoneTask) {
+      setKeystoneTaskId(null);
+      setMomentumRunActive(false);
+    }
+  }, [tasks, keystoneTaskId, momentumRunActive]);
+
+  function handleResetFilters() {
+    setFilterLoad("all");
+    setFilterPriority("all");
+    setFilterContext("all");
   }
 
-  const keystoneTask = tasks.find((task) => task.id === keystoneTaskId);
-
-  if (!keystoneTask) {
-    setKeystoneTaskId(null);
-    setMomentumRunActive(false);
+  // Set keystone task
+  function handleSetKeystone(taskId) {
+    setKeystoneTaskId(taskId);
+    setAllowCrossContextRunway(false);
+    setMomentumError("");
   }
-}, [tasks, keystoneTaskId, momentumRunActive]);
-
-function handleResetFilters() {
-  setFilterLoad("all");
-  setFilterPriority("all");
-  setFilterContext("all");
-}
-
-// Set keystone task
-function handleSetKeystone(taskId) {
-  setKeystoneTaskId(taskId);
-  setAllowCrossContextRunway(false);
-  setMomentumError("");
-}
-
-
 
   // Functions for handling custom context inputs
   function handleContextChange(value) {
-  if (value === "__add_custom__") {
-    setShowCustomContextInput(true);
-    return;
+    if (value === "__add_custom__") {
+      setShowCustomContextInput(true);
+      return;
+    }
+    setContext(value);
   }
-
-  setContext(value);
-}
 
   async function handleAddCustomContext() {
     const trimmedContext = newContextInput.trim().toLowerCase();
@@ -322,136 +323,134 @@ function handleSetKeystone(taskId) {
   }
 
   function handleStartMomentumRun() {
-  if (!keystoneTaskId) {
-    setMomentumError("Select a Keystone task to start.");
-    return;
+    if (!keystoneTaskId) {
+      setMomentumError("Select a Keystone task to start.");
+      return;
+    }
+
+    if (!momentumEnergy) {
+      setMomentumError("Choose how tired you are first.");
+      return;
+    }
+
+    setMomentumError("");
+    setMomentumRunActive(true);
   }
 
-  if (!momentumEnergy) {
-    setMomentumError("Choose how tired you are first.");
-    return;
+  function handleEndMomentumRun() {
+    setMomentumRunActive(false);
+    setKeystoneTaskId(null);
+    setMomentumEnergy("");
+    setMomentumError("");
+    setAllowCrossContextRunway(false);
   }
 
-  setMomentumError("");
-  setMomentumRunActive(true);
-}
+  // Helper to warn user if they uncheck Momentum Mode toggle
+  function handleMomentumModeToggle(nextEnabled) {
+    if (nextEnabled) {
+      setMomentumModeEnabled(true);
+      return;
+    }
 
-function handleEndMomentumRun() {
-  setMomentumRunActive(false);
-  setKeystoneTaskId(null);
-  setMomentumEnergy("");
-  setMomentumError("");
-  setAllowCrossContextRunway(false);
-}
+    const hasMomentumState =
+      momentumRunActive || keystoneTaskId != null || momentumEnergy !== "";
 
-// Helper to warn user if they uncheck Momentum Mode toggle
-function handleMomentumModeToggle(nextEnabled) {
-  if (nextEnabled) {
-    setMomentumModeEnabled(true);
-    return;
-  }
+    if (!hasMomentumState) {
+      setMomentumModeEnabled(false);
+      return;
+    }
 
-  const hasMomentumState =
-    momentumRunActive || keystoneTaskId != null || momentumEnergy !== "";
+    const confirmed = window.confirm(
+      "Turn off Momentum Mode? This will clear your current Momentum selections and end any active run."
+    );
 
-  if (!hasMomentumState) {
+    if (!confirmed) return;
+
     setMomentumModeEnabled(false);
-    return;
+    setMomentumRunActive(false);
+    setKeystoneTaskId(null);
+    setMomentumEnergy("");
+    setMomentumError("");
   }
 
-  const confirmed = window.confirm(
-    "Turn off Momentum Mode? This will clear your current Momentum selections and end any active run."
-  );
+  function handleEnableCrossContextRunway() {
+    const hasOptions = hasCrossContextLowerLoadOptions(visibleTasks, keystoneTaskId);
 
-  if (!confirmed) return;
+    if (!hasOptions) {
+      setMomentumError("No lower-load tasks are available from another context.");
+      return;
+    }
 
-  setMomentumModeEnabled(false);
-  setMomentumRunActive(false);
-  setKeystoneTaskId(null);
-  setMomentumEnergy("");
-  setMomentumError("");
-}
-
-function handleEnableCrossContextRunway() {
-  const hasOptions = hasCrossContextLowerLoadOptions(visibleTasks, keystoneTaskId);
-
-  if (!hasOptions) {
-    setMomentumError("No lower-load tasks are available from another context.");
-    return;
+    setAllowCrossContextRunway(true);
+    setMomentumError("");
   }
 
-  setAllowCrossContextRunway(true);
-  setMomentumError("");
-}
+  const handleSnooze = async (taskId, hours = 24) => {
+    const snoozedUntil = Date.now() + hours * 60 * 60 * 1000;
 
-const handleSnooze = async (taskId, hours = 24) => {
-  const snoozedUntil = Date.now() + hours * 60 * 60 * 1000;
+    setTasks((prevTasks) => {
+      const updatedTasks = prevTasks.map((task) =>
+        task.id === taskId ? { ...task, snoozedUntil } : task
+      );
 
-  setTasks((prevTasks) => {
-    const updatedTasks = prevTasks.map((task) =>
-      task.id === taskId ? { ...task, snoozedUntil } : task
-    );
+      const updatedTask = updatedTasks.find((task) => task.id === taskId);
+      if (updatedTask) {
+        saveTask(updatedTask).catch((error) => {
+          console.error("Failed to snooze task:", error);
+        });
+      }
 
-    const updatedTask = updatedTasks.find((task) => task.id === taskId);
-    if (updatedTask) {
-      saveTask(updatedTask).catch((error) => {
-        console.error("Failed to snooze task:", error);
-      });
-    }
+      return updatedTasks;
+    });
+  };
 
-    return updatedTasks;
-  });
-};
+  const handleUnsnooze = async (taskId) => {
+    setTasks((prevTasks) => {
+      const updatedTasks = prevTasks.map((task) =>
+        task.id === taskId ? { ...task, snoozedUntil: null } : task
+      );
 
-const handleUnsnooze = async (taskId) => {
-  setTasks((prevTasks) => {
-    const updatedTasks = prevTasks.map((task) =>
-      task.id === taskId ? { ...task, snoozedUntil: null } : task
-    );
+      const updatedTask = updatedTasks.find((task) => task.id === taskId);
+      if (updatedTask) {
+        saveTask(updatedTask).catch((error) => {
+          console.error("Failed to unsnooze task:", error);
+        });
+      }
 
-    const updatedTask = updatedTasks.find((task) => task.id === taskId);
-    if (updatedTask) {
-      saveTask(updatedTask).catch((error) => {
-        console.error("Failed to unsnooze task:", error);
-      });
-    }
+      return updatedTasks;
+    });
+  };
 
-    return updatedTasks;
-  });
-};
-
-
-
-  // Move handlers for moving tasks up/down
+  // Move handlers
   async function handleMoveTaskUp(id) {
-  if (viewMode !== "custom") return;
+    if (viewMode !== "custom") return;
 
-  const reorderedTasks = reorderByVisibleSwap(tasks, visibleTasks, id, "up");
+    const reorderedTasks = reorderByVisibleSwap(tasks, visibleTasks, id, "up");
 
-  if (reorderedTasks === tasks) return;
+    if (reorderedTasks === tasks) return;
 
-  try {
-    await Promise.all(reorderedTasks.map((task) => saveTask(task)));
-    setTasks(reorderedTasks);
-  } catch (error) {
-    console.error("Failed to move task up:", error);
+    try {
+      await Promise.all(reorderedTasks.map((task) => saveTask(task)));
+      setTasks(reorderedTasks);
+    } catch (error) {
+      console.error("Failed to move task up:", error);
+    }
   }
-}
 
-async function handleMoveTaskDown(id) {
-  if (viewMode !== "custom") return;
+  async function handleMoveTaskDown(id) {
+    if (viewMode !== "custom") return;
 
-  const reorderedTasks = reorderByVisibleSwap(tasks, visibleTasks, id, "down");
+    const reorderedTasks = reorderByVisibleSwap(tasks, visibleTasks, id, "down");
 
-  if (reorderedTasks === tasks) return;
+    if (reorderedTasks === tasks) return;
 
-  try {
-    await Promise.all(reorderedTasks.map((task) => saveTask(task)));
-    setTasks(reorderedTasks);
-  } catch (error) {
-    console.error("Failed to move task down:", error);
+    try {
+      await Promise.all(reorderedTasks.map((task) => saveTask(task)));
+      setTasks(reorderedTasks);
+    } catch (error) {
+      console.error("Failed to move task down:", error);
+    }
   }
-}
 
   async function addTask(e) {
     e.preventDefault();
@@ -473,7 +472,6 @@ async function handleMoveTaskDown(id) {
 
     try {
       await Promise.all(reorderedTasks.map((task) => saveTask(task)));
-
       setTasks(reorderedTasks);
       setInput("");
       setLoad("medium");
@@ -484,275 +482,332 @@ async function handleMoveTaskDown(id) {
     }
   }
 
-async function handleDeleteTask(id) {
-  try {
-    const remainingTasks = normalizeTaskPositions(
-      tasks.filter((task) => task.id !== id)
+  async function handleDeleteTask(id) {
+    try {
+      const remainingTasks = normalizeTaskPositions(
+        tasks.filter((task) => task.id !== id)
+      );
+
+      await deleteTask(id);
+      await Promise.all(remainingTasks.map((task) => saveTask(task)));
+
+      setTasks(remainingTasks);
+    } catch (error) {
+      console.error("Failed to delete task:", error);
+    }
+  }
+
+  function handleStartEdit(task) {
+    setEditingTaskId(task.id);
+    setEditTitle(task.title);
+    setEditLoad(task.load);
+    setEditPriority(task.priority ?? "medium");
+    setEditContext(task.context ?? "general");
+  }
+
+  function handleCancelEdit() {
+    setEditingTaskId(null);
+    setEditTitle("");
+    setEditLoad("medium");
+    setEditPriority("medium");
+    setEditContext("general");
+  }
+
+  async function handleSaveEdit(id) {
+    const trimmedTitle = editTitle.trim();
+
+    if (!trimmedTitle) return;
+
+    const taskToUpdate = tasks.find((task) => task.id === id);
+
+    if (!taskToUpdate) return;
+
+    const updatedTask = {
+      ...taskToUpdate,
+      title: trimmedTitle,
+      load: editLoad,
+      priority: editPriority,
+      context: editContext,
+    };
+
+    try {
+      await saveTask(updatedTask);
+      setTasks((prev) =>
+        prev.map((task) => (task.id === id ? updatedTask : task))
+      );
+      handleCancelEdit();
+    } catch (error) {
+      console.error("Failed to save edited task:", error);
+    }
+  }
+
+  async function handleToggleTask(id) {
+    const taskToUpdate = tasks.find((task) => task.id === id);
+
+    if (!taskToUpdate) return;
+
+    const updatedTask = {
+      ...taskToUpdate,
+      done: !taskToUpdate.done,
+    };
+
+    try {
+      await saveTask(updatedTask);
+      setTasks((prev) =>
+        prev.map((task) => (task.id === id ? updatedTask : task))
+      );
+    } catch (error) {
+      console.error("Failed to update task:", error);
+    }
+  }
+
+  // Import / Export / Clear handlers
+  async function handleExport() {
+    try {
+      await exportTasks();
+    } catch (err) {
+      console.error("Export failed:", err);
+    }
+  }
+
+  async function handleImportFile(e) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    e.target.value = "";
+
+    setImportError(null);
+    setImportSuccess(null);
+
+    if (file.size > 5 * 1024 * 1024) {
+      const proceed = window.confirm(
+        "This file is over 5MB, which is unusually large for a task export. " +
+        "Importing it may take a while and could cause performance issues.\n\n" +
+        "Continue anyway?"
+      );
+      if (!proceed) return;
+    }
+
+    const replace = window.confirm(
+      "Replace or merge?\n\n" +
+      "OK     → Replace all existing tasks with the imported ones.\n" +
+      "Cancel → Merge: adds imported tasks alongside yours. Tasks with matching IDs will be overwritten by the imported version."
     );
 
-    await deleteTask(id);
-    await Promise.all(remainingTasks.map((task) => saveTask(task)));
-
-    setTasks(remainingTasks);
-  } catch (error) {
-    console.error("Failed to delete task:", error);
+    try {
+      const imported = await importTasks(file, { replace });
+      setImportSuccess(
+        `Imported ${imported.length} task${imported.length !== 1 ? "s" : ""}. Reloading…`
+      );
+      setTimeout(() => window.location.reload(), 1000);
+    } catch (err) {
+      console.error("Import failed:", err);
+      setImportError(err.message);
+    }
   }
-}
 
-function handleStartEdit(task) {
-  setEditingTaskId(task.id);
-  setEditTitle(task.title);
-  setEditLoad(task.load);
-  setEditPriority(task.priority ?? "medium"); // Being extra safe in case old tasks don't have a priority set
-  setEditContext(task.context ?? "general");
-}
-
-function handleCancelEdit() {
-  setEditingTaskId(null);
-  setEditTitle("");
-  setEditLoad("medium");
-  setEditPriority("medium");
-  setEditContext("general");
-}
-
-async function handleSaveEdit(id) {
-  const trimmedTitle = editTitle.trim();
-
-  if (!trimmedTitle) return;
-
-  const taskToUpdate = tasks.find((task) => task.id === id);
-
-  if (!taskToUpdate) return;
-
-   const updatedTask = {
-    ...taskToUpdate,
-    title: trimmedTitle,
-    load: editLoad,
-    priority: editPriority,
-    context: editContext,
-  };
-
-  try {
-    await saveTask(updatedTask);
-    setTasks((prev) =>
-      prev.map((task) => (task.id === id ? updatedTask : task))
+  async function handleClearAllTasks() {
+    const confirmed = window.confirm(
+      "Delete all tasks? This cannot be undone."
     );
-    handleCancelEdit();
-  } catch (error) {
-    console.error("Failed to save edited task:", error);
+    if (!confirmed) return;
+
+    try {
+      const all = await getAllTasks();
+      await Promise.all(all.map((t) => deleteTask(t.id)));
+      setTasks([]);
+      setSettingsOpen(false);
+    } catch (err) {
+      console.error("Failed to clear tasks:", err);
+    }
   }
-}
 
-async function handleToggleTask(id) {
-  const taskToUpdate = tasks.find((task) => task.id === id);
-
-  if (!taskToUpdate) return;
-
-  const updatedTask = {
-    ...taskToUpdate,
-    done: !taskToUpdate.done,
-  };
-
-  try {
-    await saveTask(updatedTask);
-
-    setTasks((prev) =>
-      prev.map((task) =>
-        task.id === id ? updatedTask : task
-      )
-    );
-  } catch (error) {
-    console.error("Failed to update task:", error);
-  }
-}
-
-if (!settingsLoaded) {
+  if (!settingsLoaded) {
     return <div className="app app--loading" />;
   }
-
 
   return (
     <div className="app">
 
       <header className="app-header">
         <h1>Cognitive Load Task Organizer</h1>
-        <div className="advanced-toggle toolbar-row">
-          <label className="toggle toggle--labeled">
-            <span className="toggle__label">Advanced Features</span>
-            <input
-              type="checkbox"
-              checked={advancedFeaturesEnabled}
-              onChange={(e) => setAdvancedFeaturesEnabled(e.target.checked)}
-              aria-label="Advanced Features"
-            />
-            <span className="toggle__track" aria-hidden="true">
-              <span className="toggle__state toggle__state--off">OFF</span>
-              <span className="toggle__state toggle__state--on">ON</span>
-              <span className="toggle__thumb" />
-            </span>
-          </label>
+        <div className="header-controls">
+          <button
+            type="button"
+            className="settings-trigger"
+            onClick={() => setSettingsOpen(true)}
+            aria-label="Open settings"
+          >
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+              <path fillRule="evenodd" clipRule="evenodd" d="M11.078 2.25c-.917 0-1.699.663-1.85 1.567L9.05 4.889c-.02.12-.115.26-.297.348a7.493 7.493 0 0 0-.986.57c-.166.115-.334.126-.45.083L6.3 5.508a1.875 1.875 0 0 0-2.282.819l-.922 1.597a1.875 1.875 0 0 0 .432 2.385l.84.692c.095.078.17.229.154.43a7.598 7.598 0 0 0 0 1.139c.015.2-.059.352-.153.43l-.841.692a1.875 1.875 0 0 0-.432 2.385l.922 1.597a1.875 1.875 0 0 0 2.282.818l1.019-.382c.115-.043.283-.031.45.082.312.214.641.405.985.57.182.088.277.228.297.35l.178 1.071c.151.904.933 1.567 1.85 1.567h1.844c.916 0 1.699-.663 1.85-1.567l.178-1.072c.02-.12.114-.26.297-.349.344-.165.673-.356.985-.57.167-.114.335-.125.45-.082l1.02.382a1.875 1.875 0 0 0 2.28-.819l.923-1.597a1.875 1.875 0 0 0-.432-2.385l-.84-.692c-.095-.078-.17-.229-.154-.43a7.614 7.614 0 0 0 0-1.139c-.016-.2.059-.352.153-.43l.84-.692c.708-.582.891-1.59.433-2.385l-.922-1.597a1.875 1.875 0 0 0-2.282-.818l-1.02.382c-.114.043-.282.031-.449-.083a7.49 7.49 0 0 0-.985-.57c-.183-.087-.277-.227-.297-.348l-.179-1.072a1.875 1.875 0 0 0-1.85-1.567h-1.843ZM12 15.75a3.75 3.75 0 1 0 0-7.5 3.75 3.75 0 0 0 0 7.5Z" />
+            </svg>
+          </button>
+
+          <div className="advanced-toggle toolbar-row">
+            <label className="toggle toggle--labeled">
+              <span className="toggle__label">Advanced Features</span>
+              <input
+                type="checkbox"
+                checked={advancedFeaturesEnabled}
+                onChange={(e) => setAdvancedFeaturesEnabled(e.target.checked)}
+                aria-label="Advanced Features"
+              />
+              <span className="toggle__track" aria-hidden="true">
+                <span className="toggle__state toggle__state--off">OFF</span>
+                <span className="toggle__state toggle__state--on">ON</span>
+                <span className="toggle__thumb" />
+              </span>
+            </label>
+          </div>
         </div>
       </header>
 
+      {settingsOpen && (
+        <SettingsModal
+          onClose={() => {
+            setSettingsOpen(false);
+            setImportError(null);
+            setImportSuccess(null);
+          }}
+          onExport={handleExport}
+          onImportFile={handleImportFile}
+          onClearAllTasks={handleClearAllTasks}
+        />
+      )}
+
+      {(importError || importSuccess) && (
+        <div className="import-status-bar">
+          {importError && <p className="import-status import-status--error">{importError}</p>}
+          {importSuccess && <p className="import-status import-status--success">{importSuccess}</p>}
+        </div>
+      )}
+
       <main className="app-main">
-      <section className="task-input">
-        <TaskForm
-          input={input}
-          setInput={setInput}
-          load={load}
-          setLoad={setLoad}
-          priority={priority}
-          setPriority={setPriority}
-          context={context}
-          onContextChange={handleContextChange}
-          contextOptions={contextOptions}
-          showCustomContextInput={showCustomContextInput}
-          newContextInput={newContextInput}
-          setNewContextInput={setNewContextInput}
-          onAddCustomContext={handleAddCustomContext}
-          onCancelCustomContext={handleCancelCustomContext}
-          onSubmit={addTask}
-          loadLabels={LOAD_LABELS}
-          priorityLabels={PRIORITY_LABELS}
-        />
-      </section>
+        <section className="task-input">
+          <TaskForm
+            input={input}
+            setInput={setInput}
+            load={load}
+            setLoad={setLoad}
+            priority={priority}
+            setPriority={setPriority}
+            context={context}
+            onContextChange={handleContextChange}
+            contextOptions={contextOptions}
+            showCustomContextInput={showCustomContextInput}
+            newContextInput={newContextInput}
+            setNewContextInput={setNewContextInput}
+            onAddCustomContext={handleAddCustomContext}
+            onCancelCustomContext={handleCancelCustomContext}
+            onSubmit={addTask}
+            loadLabels={LOAD_LABELS}
+            priorityLabels={PRIORITY_LABELS}
+          />
+        </section>
 
-      <section className="filters">
-        <p className="section-label">Filters</p>
-        <FilterBar
-          filterLoad={filterLoad}
-          setFilterLoad={setFilterLoad}
-          filterPriority={filterPriority}
-          setFilterPriority={setFilterPriority}
-          filterContext={filterContext}
-          setFilterContext={setFilterContext}
-          contextOptions={contextOptions}
-          loadLabels={LOAD_LABELS}
-          priorityLabels={PRIORITY_LABELS}
-          onResetFilters={handleResetFilters}
-        />
-      </section>
+        <section className="filters">
+          <p className="section-label">Filters</p>
+          <FilterBar
+            filterLoad={filterLoad}
+            setFilterLoad={setFilterLoad}
+            filterPriority={filterPriority}
+            setFilterPriority={setFilterPriority}
+            filterContext={filterContext}
+            setFilterContext={setFilterContext}
+            contextOptions={contextOptions}
+            loadLabels={LOAD_LABELS}
+            priorityLabels={PRIORITY_LABELS}
+            onResetFilters={handleResetFilters}
+          />
+        </section>
 
-      <div className="mode-strip" role="radiogroup" aria-label="View mode">
-        <input
-          type="radio"
-          id="mode-custom"
-          name="view-mode"
-          checked={viewMode === "custom" && !momentumModeEnabled}
-          onChange={() => {
-            setMomentumModeEnabled(false);
-            setViewMode("custom");
-          }}
-          className="mode-radio"
-        />
-        <label htmlFor="mode-custom" className="mode-pill">
-          Custom
-        </label>
-
-        <input
-          type="radio"
-          id="mode-sorted"
-          name="view-mode"
-          checked={viewMode === "sorted" && !momentumModeEnabled}
-          onChange={() => {
-            setMomentumModeEnabled(false);
-            setViewMode("sorted");
-          }}
-          className="mode-radio"
-        />
-        <label htmlFor="mode-sorted" className="mode-pill">
-          Sorted
-        </label>
-
-        {advancedFeaturesEnabled && (
-          <>
-            <input
-              type="radio"
-              id="mode-momentum"
-              name="view-mode"
-              checked={momentumModeEnabled}
-              onChange={() => {
-                setMomentumModeEnabled(true);
-              }}
-              className="mode-radio"
-            />
-            <label htmlFor="mode-momentum" className="mode-pill">
-              Momentum
-            </label>
-          </>
-        )}
-      </div>
-
-      <div className="top-controls">
-        {/* <div className="mode-strip">
-          <button
-            className={viewMode === "custom" && !momentumModeEnabled ? "active" : ""}
-            onClick={() => {
+        <div className="mode-strip" role="radiogroup" aria-label="View mode">
+          <input
+            type="radio"
+            id="mode-custom"
+            name="view-mode"
+            checked={viewMode === "custom" && !momentumModeEnabled}
+            onChange={() => {
               setMomentumModeEnabled(false);
               setViewMode("custom");
             }}
-          >
+            className="mode-radio"
+          />
+          <label htmlFor="mode-custom" className="mode-pill">
             Custom
-          </button>
+          </label>
 
-          <button
-            className={viewMode === "sorted" ? "active" : ""}
-            onClick={() => {
+          <input
+            type="radio"
+            id="mode-sorted"
+            name="view-mode"
+            checked={viewMode === "sorted" && !momentumModeEnabled}
+            onChange={() => {
               setMomentumModeEnabled(false);
               setViewMode("sorted");
             }}
-          >
+            className="mode-radio"
+          />
+          <label htmlFor="mode-sorted" className="mode-pill">
             Sorted
-          </button>
+          </label>
 
-          {advancedFeaturesEnabled && (<button
-            className={momentumModeEnabled ? "active" : ""}
-            onClick={() => {
-              setMomentumModeEnabled(true);
-            }}
-          >
-            Momentum
-          </button>)}
-        </div> */}
-        <div className="mode-controls">
           {advancedFeaturesEnabled && (
-            <div className="advanced-features-panel">
-              <div className="control-toggles">
-
-
-              <label className="toggle toggle--sm">
-                <span className="toggle__label">View Snoozed Tasks</span>
-                <input
-                    type="checkbox"
-                    checked={showSnoozedTasks}
-                    onChange={(e) => setShowSnoozedTasks(e.target.checked)}
-                  />
-                <span className="toggle__track" aria-hidden="true">
-                  <span className="toggle__state toggle__state--off">OFF</span>
-                  <span className="toggle__state toggle__state--on">ON</span>
-                  <span className="toggle__thumb" />
-                </span>
+            <>
+              <input
+                type="radio"
+                id="mode-momentum"
+                name="view-mode"
+                checked={momentumModeEnabled}
+                onChange={() => {
+                  setMomentumModeEnabled(true);
+                }}
+                className="mode-radio"
+              />
+              <label htmlFor="mode-momentum" className="mode-pill">
+                Momentum
               </label>
-
-              <label className="toggle toggle--sm">
-                <span className="toggle__label">Focus Mode (show only 7 tasks)</span>
-                <input
-                    type="checkbox"
-                    checked={focusModeEnabled}
-                    onChange={(e) => setFocusModeEnabled(e.target.checked)}
-                  />
-                <span className="toggle__track" aria-hidden="true">
-                  <span className="toggle__state toggle__state--off">OFF</span>
-                  <span className="toggle__state toggle__state--on">ON</span>
-                  <span className="toggle__thumb" />
-                </span>
-              </label>
-              </div>
-            </div>
+            </>
           )}
+        </div>
 
-          <div className="task-visibility-controls">
-            
+        <div className="top-controls">
+          <div className="mode-controls">
+            {advancedFeaturesEnabled && (
+              <div className="advanced-features-panel">
+                <div className="control-toggles">
+                  <label className="toggle toggle--sm">
+                    <span className="toggle__label">View Snoozed Tasks</span>
+                    <input
+                      type="checkbox"
+                      checked={showSnoozedTasks}
+                      onChange={(e) => setShowSnoozedTasks(e.target.checked)}
+                    />
+                    <span className="toggle__track" aria-hidden="true">
+                      <span className="toggle__state toggle__state--off">OFF</span>
+                      <span className="toggle__state toggle__state--on">ON</span>
+                      <span className="toggle__thumb" />
+                    </span>
+                  </label>
+
+                  <label className="toggle toggle--sm">
+                    <span className="toggle__label">Focus Mode (show only 7 tasks)</span>
+                    <input
+                      type="checkbox"
+                      checked={focusModeEnabled}
+                      onChange={(e) => setFocusModeEnabled(e.target.checked)}
+                    />
+                    <span className="toggle__track" aria-hidden="true">
+                      <span className="toggle__state toggle__state--off">OFF</span>
+                      <span className="toggle__state toggle__state--on">ON</span>
+                      <span className="toggle__thumb" />
+                    </span>
+                  </label>
+                </div>
+              </div>
+            )}
+
+            <div className="task-visibility-controls">
               <label className="toggle toggle--sm">
                 <span className="toggle__label">Show completed tasks</span>
                 <input
@@ -766,110 +821,103 @@ if (!settingsLoaded) {
                   <span className="toggle__thumb" />
                 </span>
               </label>
+            </div>
 
+            {viewMode === "sorted" && (
+              <div className="sort-controls">
+                <label>
+                  Sort by
+                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                    <option value="load">Cognitive Load</option>
+                    <option value="priority">Priority</option>
+                  </select>
+                </label>
+
+                <label>
+                  Direction
+                  <select
+                    value={sortDirection}
+                    onChange={(e) => setSortDirection(e.target.value)}
+                  >
+                    <option value="asc">Low to High</option>
+                    <option value="desc">High to Low</option>
+                  </select>
+                </label>
+              </div>
+            )}
+
+            {advancedFeaturesEnabled && momentumModeEnabled && (
+              <div className="momentum-controls">
+                <MomentumPanel
+                  momentumRunActive={momentumRunActive}
+                  momentumEnergy={momentumEnergy}
+                  momentumError={momentumError}
+                  momentumNeedsFallback={momentumNeedsFallback}
+                  allowCrossContextRunway={allowCrossContextRunway}
+                  onSelectEnergy={(energy) => {
+                    setMomentumEnergy(energy);
+                    setMomentumError("");
+                  }}
+                  onStartMomentumRun={handleStartMomentumRun}
+                  onPickKeystoneForMe={handlePickKeystoneForMe}
+                  onEnableCrossContextRunway={handleEnableCrossContextRunway}
+                  onEndMomentumRun={handleEndMomentumRun}
+                />
+              </div>
+            )}
           </div>
-
-          {viewMode === "sorted" && (
-            <div className="sort-controls">
-                {viewMode === "sorted" && (
-                  <>
-                    <label>
-                      Sort by
-                      <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                        <option value="load">Cognitive Load</option>
-                        <option value="priority">Priority</option>
-                      </select>
-                    </label>
-
-                    <label>
-                      Direction
-                      <select
-                        value={sortDirection}
-                        onChange={(e) => setSortDirection(e.target.value)}
-                      >
-                        <option value="asc">Low to High</option>
-                        <option value="desc">High to Low</option>
-                      </select>
-                    </label>
-                  </>
-                )}
-            </div>
-          )}
-
-          {advancedFeaturesEnabled && momentumModeEnabled && (
-            <div className="momentum-controls">
-              <MomentumPanel
-                momentumRunActive={momentumRunActive}
-                momentumEnergy={momentumEnergy}
-                momentumError={momentumError}
-                momentumNeedsFallback={momentumNeedsFallback}
-                allowCrossContextRunway={allowCrossContextRunway}
-                onSelectEnergy={(energy) => {
-                  setMomentumEnergy(energy);
-                  setMomentumError("");
-                }}
-                onStartMomentumRun={handleStartMomentumRun}
-                onPickKeystoneForMe={handlePickKeystoneForMe}
-                onEnableCrossContextRunway={handleEnableCrossContextRunway}
-                onEndMomentumRun={handleEndMomentumRun}
-              />
-            </div>
-          )}
-
         </div>
-      </div>
 
-      <section className="task-list-section">
-        {focusModeEnabled && (
-          <div className="focus-mode-info">
-            {displayedCount === totalVisibleCount
-              ? `Showing all ${totalVisibleCount} tasks`
-              : `Showing ${displayedCount} of ${totalVisibleCount} tasks`}
-          </div>
-        )}
+        <section className="task-list-section">
+          {focusModeEnabled && (
+            <div className="focus-mode-info">
+              {displayedCount === totalVisibleCount
+                ? `Showing all ${totalVisibleCount} tasks`
+                : `Showing ${displayedCount} of ${totalVisibleCount} tasks`}
+            </div>
+          )}
 
-        {/* Empty-state message if all tasks are completed */}
-        {displayedTasks.length === 0 && (
-          <p className="empty-state">
-            No visible tasks right now.
-          </p>
-        )}
-        <ul className="task-list">
-          {/* Render only visible tasks */}
-          {displayedTasks.map((task) => (
-            <TaskCard
-              key={task.id}
-              task={task}
-              editingTaskId={editingTaskId}
-              editTitle={editTitle}
-              setEditTitle={setEditTitle}
-              editLoad={editLoad}
-              setEditLoad={setEditLoad}
-              editPriority={editPriority}
-              setEditPriority={setEditPriority}
-              editContext={editContext}
-              setEditContext={setEditContext}
-              contextOptions={contextOptions}
-              onStartEdit={handleStartEdit}
-              onCancelEdit={handleCancelEdit}
-              onSaveEdit={handleSaveEdit}
-              onDeleteTask={handleDeleteTask}
-              onToggleTask={handleToggleTask}
-              onMoveTaskUp={handleMoveTaskUp}
-              onMoveTaskDown={handleMoveTaskDown}
-              onSnooze={handleSnooze}
-              onUnsnooze={handleUnsnooze}
-              advancedFeaturesEnabled={advancedFeaturesEnabled}
-              loadLabels={LOAD_LABELS}
-              priorityLabels={PRIORITY_LABELS}
-              momentumModeEnabled={momentumModeEnabled}
-              momentumRunActive={momentumRunActive}
-              isKeystone={task.id === keystoneTaskId}
-              onSetKeystone={handleSetKeystone}
-            />
-          ))}
-        </ul>
-      </section>
+          {displayedTasks.length === 0 && (
+            <p className="empty-state">
+              No visible tasks right now.
+            </p>
+          )}
+
+          <ul className="task-list">
+            {displayedTasks.map((task) => (
+              <TaskCard
+                key={task.id}
+                task={task}
+                editingTaskId={editingTaskId}
+                editTitle={editTitle}
+                setEditTitle={setEditTitle}
+                editLoad={editLoad}
+                setEditLoad={setEditLoad}
+                editPriority={editPriority}
+                setEditPriority={setEditPriority}
+                editContext={editContext}
+                setEditContext={setEditContext}
+                contextOptions={contextOptions}
+                onStartEdit={handleStartEdit}
+                onCancelEdit={handleCancelEdit}
+                onSaveEdit={handleSaveEdit}
+                onDeleteTask={handleDeleteTask}
+                onToggleTask={handleToggleTask}
+                onMoveTaskUp={handleMoveTaskUp}
+                onMoveTaskDown={handleMoveTaskDown}
+                onSnooze={handleSnooze}
+                onUnsnooze={handleUnsnooze}
+                advancedFeaturesEnabled={advancedFeaturesEnabled}
+                loadLabels={LOAD_LABELS}
+                priorityLabels={PRIORITY_LABELS}
+                momentumModeEnabled={momentumModeEnabled}
+                momentumRunActive={momentumRunActive}
+                isKeystone={task.id === keystoneTaskId}
+                onSetKeystone={handleSetKeystone}
+              />
+            ))}
+          </ul>
+        </section>
       </main>
     </div>
   );
