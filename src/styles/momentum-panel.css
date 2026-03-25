@@ -20,23 +20,92 @@
   opacity: 0.75;
 }
 
+/* ── Energy option pills ── */
 .momentum-energy-options {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  margin-top: 0.4rem;
 }
 
-.momentum-energy-options .is-selected {
+.momentum-energy-btn {
+  height: 34px;
+  padding: 0 1rem;
+  border: 1px solid #d1d5db;
+  border-radius: 999px;
+  background: #fff;
+  color: #374151;
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.momentum-energy-btn:hover {
+  background: #f3f4f6;
+  border-color: #9ca3af;
+}
+
+.momentum-energy-btn.is-selected {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
   font-weight: 600;
 }
 
-.momentum-panel__error {
-  color: #b00020;
-  margin: 0.5rem 0;
+/* ── Shared action button base ── */
+.momentum-btn {
+  height: 36px;
+  padding: 0 1rem;
+  border-radius: 6px;
+  border: 1px solid #d1d5db;
+  background: #fff;
+  color: #374151;
+  font: inherit;
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background 0.15s ease;
 }
 
+.momentum-btn:hover {
+  background: #f3f4f6;
+}
+
+/* Primary variant */
+.momentum-btn--primary {
+  background: #111827;
+  color: #fff;
+  border-color: #111827;
+}
+
+.momentum-btn--primary:hover {
+  background: #1f2937;
+}
+
+/* ── Action row ── */
 .momentum-panel__actions {
   display: flex;
   gap: 0.5rem;
   flex-wrap: wrap;
+  margin-top: 0.5rem;
+}
+
+/* ── Error ── */
+.momentum-panel__error {
+  color: #b00020;
+  font-size: 0.875rem;
+  margin: 0.5rem 0 0.25rem;
+}
+
+/* ── Fallback / cross-context ── */
+.momentum-panel__fallback {
+  margin: 0.5rem 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+/* ── Active run footer ── */
+.momentum-panel__run-footer {
+  margin-top: 0.75rem;
 }
