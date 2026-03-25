@@ -30,7 +30,7 @@ function MomentumPanel({
             <div className="momentum-energy-options">
               <button
                 type="button"
-                className={momentumEnergy === "tired" ? "is-selected" : ""}
+                className={`momentum-energy-btn${momentumEnergy === "tired" ? " is-selected" : ""}`}
                 onClick={() => onSelectEnergy("tired")}
               >
                 Tired
@@ -38,7 +38,7 @@ function MomentumPanel({
 
               <button
                 type="button"
-                className={momentumEnergy === "normal" ? "is-selected" : ""}
+                className={`momentum-energy-btn${momentumEnergy === "normal" ? " is-selected" : ""}`}
                 onClick={() => onSelectEnergy("normal")}
               >
                 Normal
@@ -46,7 +46,7 @@ function MomentumPanel({
 
               <button
                 type="button"
-                className={momentumEnergy === "ambitious" ? "is-selected" : ""}
+                className={`momentum-energy-btn${momentumEnergy === "ambitious" ? " is-selected" : ""}`}
                 onClick={() => onSelectEnergy("ambitious")}
               >
                 Ambitious
@@ -59,11 +59,19 @@ function MomentumPanel({
           )}
 
           <div className="momentum-panel__actions">
-            <button type="button" onClick={onStartMomentumRun}>
+            <button
+              type="button"
+              className="momentum-btn momentum-btn--primary"
+              onClick={onStartMomentumRun}
+            >
               Start Momentum Run
             </button>
 
-            <button type="button" onClick={onPickKeystoneForMe}>
+            <button
+              type="button"
+              className="momentum-btn"
+              onClick={onPickKeystoneForMe}
+            >
               I&apos;m too tired, pick for me
             </button>
           </div>
@@ -80,7 +88,11 @@ function MomentumPanel({
               <p className="momentum-panel__help">
                 No lower-load tasks available in this context.
               </p>
-              <button type="button" onClick={onEnableCrossContextRunway}>
+              <button
+                type="button"
+                className="momentum-btn"
+                onClick={onEnableCrossContextRunway}
+              >
                 Bring in easier tasks from another context
               </button>
             </div>
@@ -96,9 +108,15 @@ function MomentumPanel({
             <p className="momentum-panel__error">{momentumError}</p>
           )}
 
-          <button type="button" onClick={onEndMomentumRun}>
-            End Run
-          </button>
+          <div className="momentum-panel__run-footer">
+            <button
+              type="button"
+              className="momentum-btn"
+              onClick={onEndMomentumRun}
+            >
+              End Run
+            </button>
+          </div>
         </>
       )}
     </div>
