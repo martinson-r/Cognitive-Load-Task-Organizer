@@ -7,6 +7,7 @@ const SETTING_KEYS = [
   "filterLoad",
   "filterPriority",
   "filterContext",
+  "filtersExpanded",
   "viewMode",
   "sortBy",
   "sortDirection",
@@ -69,7 +70,6 @@ export async function importTasks(file, { replace = false } = {}) {
       try {
         const parsed = JSON.parse(e.target.result);
 
-        // Accept a bare array OR our versioned export format
         const incoming = Array.isArray(parsed) ? parsed : parsed?.tasks;
 
         if (!Array.isArray(incoming)) {
@@ -97,7 +97,6 @@ export async function importTasks(file, { replace = false } = {}) {
 
         await Promise.all(normalized.map((t) => saveTask(t)));
 
-        // Restore settings if present (version 2+ exports)
         if (parsed?.settings && !Array.isArray(parsed)) {
           const { customContexts, ...otherSettings } = parsed.settings;
 

@@ -1,4 +1,3 @@
-
 import {
   LOAD_RANK,
   PRIORITY_RANK,
@@ -6,6 +5,7 @@ import {
 
 export function getVisibleTasks({
   tasks,
+  advancedFeaturesEnabled,
   showSnoozedTasks,
   showCompleted,
   filterLoad,
@@ -18,10 +18,12 @@ export function getVisibleTasks({
   const now = Date.now();
 
   let visibleTasks = tasks.filter((task) => {
-    const isSnoozed =
-      task.snoozedUntil && task.snoozedUntil > now;
+    // Snooze filtering only applies in Advanced Mode
+    if (advancedFeaturesEnabled) {
+      const isSnoozed = task.snoozedUntil && task.snoozedUntil > now;
+      if (!showSnoozedTasks && isSnoozed) return false;
+    }
 
-    if (!showSnoozedTasks && isSnoozed) return false;
     if (!showCompleted && task.done) return false;
     if (filterLoad !== "all" && task.load !== filterLoad) return false;
     if (filterPriority !== "all" && task.priority !== filterPriority) return false;
