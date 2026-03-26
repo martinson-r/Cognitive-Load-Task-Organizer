@@ -49,11 +49,11 @@ button {
 }
 
 .task-input {
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .filters {
-  margin-bottom: 1.25rem;
+  margin-bottom: 0.75rem;
 }
 
 .top-controls {
@@ -521,4 +521,61 @@ button {
  
 .import-status--success {
   color: #15803d;
+}
+
+/* Header: gear + ? + Advanced Features toggle */
+.header-controls {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: 0.5rem;
+  flex-shrink: 0;
+}
+
+/* Import status bar */
+.import-status-bar {
+  margin-bottom: 1rem;
+}
+
+.import-status {
+  font-size: 0.85rem;
+  margin: 0;
+}
+
+.import-status--error {
+  color: #b00020;
+}
+
+.import-status--success {
+  color: #15803d;
+}
+
+/* Empty state inline action links */
+.empty-state {
+  color: #6b7280;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: 0.9rem;
+}
+
+.empty-state__link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: #304C89;
+  font: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.empty-state__link:hover {
+  color: #1e3a8a;
 }

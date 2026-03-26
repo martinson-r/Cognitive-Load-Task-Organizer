@@ -48,7 +48,8 @@ function TaskCard({
   const isEditing = editingTaskId === task.id;
   const priorityValue = task.priority ?? "medium";
   const contextValue = task.context ?? "general";
-  const isSnoozed = task.snoozedUntil && task.snoozedUntil > Date.now();
+  // Snoozed state only applies visually/functionally in Advanced Mode
+  const isSnoozed = advancedFeaturesEnabled && task.snoozedUntil && task.snoozedUntil > Date.now();
   const [showSnoozeMenu, setShowSnoozeMenu] = useState(false);
   const snoozeMenuRef = useRef(null);
 
@@ -131,7 +132,7 @@ function TaskCard({
             </span>
           )}
 
-          {advancedFeaturesEnabled && !isSnoozed && (
+          {advancedFeaturesEnabled && !isSnoozed && !task.done && (
             <div className="task-action-menu" ref={snoozeMenuRef}>
               <button type="button" className="task-action-button" onClick={() => setShowSnoozeMenu((prev) => !prev)}>
                 Snooze
@@ -146,6 +147,7 @@ function TaskCard({
             </div>
           )}
 
+          {/* Un-snooze only available in Advanced Mode */}
           {advancedFeaturesEnabled && isSnoozed && (
             <button type="button" className="task-action-button" onClick={() => onUnsnooze(task.id)}>
               Un-snooze

@@ -39,7 +39,6 @@ import MomentumPanel from "./components/MomentumPanel";
 import SettingsModal from "./components/SettingsModal";
 import FAQModal from "./components/FAQModal";
 
-// Settings saver helper
 function persistSettings(settingsLoaded, settings) {
   if (!settingsLoaded) return;
 
@@ -68,6 +67,7 @@ function App() {
   const [filterLoad, setFilterLoad] = useState("all");
   const [filterPriority, setFilterPriority] = useState("all");
   const [filterContext, setFilterContext] = useState("all");
+  const [filtersExpanded, setFiltersExpanded] = useState(false);
   const [viewMode, setViewMode] = useState("custom");
   const [sortBy, setSortBy] = useState("load");
   const [sortDirection, setSortDirection] = useState("asc");
@@ -86,7 +86,6 @@ function App() {
   const [settingsOpen, setSettingsOpen] = useState(false);
   const [faqOpen, setFaqOpen] = useState(false);
 
-  // Derive available context options
   const contextOptions = Array.from(
     new Set([
       ...DEFAULT_CONTEXT_OPTIONS,
@@ -97,6 +96,7 @@ function App() {
 
   const visibleTasks = getVisibleTasks({
     tasks,
+    advancedFeaturesEnabled,
     showSnoozedTasks,
     showCompleted,
     filterLoad,
@@ -117,7 +117,6 @@ function App() {
         })
       : visibleTasks;
 
-  // help users pick a keystone if they're tired
   function handlePickKeystoneForMe() {
     const suggestedTask = pickKeystoneForMe(visibleTasks);
 
@@ -139,16 +138,31 @@ function App() {
   const totalVisibleCount = activeTasks.length;
   const displayedCount = displayedTasks.length;
 
-  const isFocusClipped = focusModeEnabled;
-  const isMomentumClipped = momentumModeEnabled && momentumRunActive;
-  const isClippedMode = isFocusClipped || isMomentumClipped;
-
   const momentumNeedsFallback =
     momentumModeEnabled &&
     keystoneTaskId &&
     getRunwayNeedsFallback(visibleTasks, keystoneTaskId);
 
-  // Load stored tasks from IndexedDB
+  // ── Empty state logic ──────────────────────────────────────────────────────
+  const now = Date.now();
+  const hasActiveFilters =
+    filterLoad !== "all" || filterPriority !== "all" || filterContext !== "all";
+  const activeFilterCount =
+    (filterLoad !== "all" ? 1 : 0) +
+    (filterPriority !== "all" ? 1 : 0) +
+    (filterContext !== "all" ? 1 : 0);
+
+  const nonDoneTasks = tasks.filter((t) => !t.done);
+  const snoozedNonDoneTasks = advancedFeaturesEnabled
+    ? nonDoneTasks.filter((t) => t.snoozedUntil && t.snoozedUntil > now)
+    : [];
+  const snoozedCount = snoozedNonDoneTasks.length;
+
+  const showEmptyState = displayedTasks.length === 0;
+  const allDone = nonDoneTasks.length === 0 && tasks.length > 0;
+  const noTasksAtAll = tasks.length === 0;
+
+  // ── Load stored data ───────────────────────────────────────────────────────
   useEffect(() => {
     async function loadAppData() {
       try {
@@ -161,6 +175,7 @@ function App() {
           storedFilterLoad,
           storedFilterPriority,
           storedFilterContext,
+          storedFiltersExpanded,
           storedViewMode,
           storedSortBy,
           storedSortDirection,
@@ -178,6 +193,7 @@ function App() {
           getSetting("filterLoad", "all"),
           getSetting("filterPriority", "all"),
           getSetting("filterContext", "all"),
+          getSetting("filtersExpanded", false),
           getSetting("viewMode", "custom"),
           getSetting("sortBy", "load"),
           getSetting("sortDirection", "asc"),
@@ -203,6 +219,7 @@ function App() {
         setFilterLoad(storedFilterLoad);
         setFilterPriority(storedFilterPriority);
         setFilterContext(storedFilterContext);
+        setFiltersExpanded(storedFiltersExpanded);
         setViewMode(storedViewMode);
         setSortBy(storedSortBy);
         setSortDirection(storedSortDirection);
@@ -220,18 +237,18 @@ function App() {
     loadAppData();
   }, []);
 
-  // Persist settings, guarded by settingsLoaded
   useEffect(() => {
     persistSettings(settingsLoaded, {
       advancedFeaturesEnabled,
       showSnoozedTasks,
       showCompleted,
-      viewMode,
-      sortBy,
-      sortDirection,
       filterLoad,
       filterPriority,
       filterContext,
+      filtersExpanded,
+      viewMode,
+      sortBy,
+      sortDirection,
       focusModeEnabled,
       momentumModeEnabled,
       momentumEnergy,
@@ -243,12 +260,13 @@ function App() {
     advancedFeaturesEnabled,
     showSnoozedTasks,
     showCompleted,
-    viewMode,
-    sortBy,
-    sortDirection,
     filterLoad,
     filterPriority,
     filterContext,
+    filtersExpanded,
+    viewMode,
+    sortBy,
+    sortDirection,
     focusModeEnabled,
     momentumModeEnabled,
     momentumEnergy,
@@ -256,16 +274,13 @@ function App() {
     keystoneTaskId,
   ]);
 
-  // Stop Momentum Run if keystone task no longer exists
   useEffect(() => {
     if (!momentumRunActive) return;
     if (!keystoneTaskId) {
       setMomentumRunActive(false);
       return;
     }
-
     const keystoneTask = tasks.find((task) => task.id === keystoneTaskId);
-
     if (!keystoneTask) {
       setKeystoneTaskId(null);
       setMomentumRunActive(false);
@@ -278,14 +293,12 @@ function App() {
     setFilterContext("all");
   }
 
-  // Set keystone task
   function handleSetKeystone(taskId) {
     setKeystoneTaskId(taskId);
     setAllowCrossContextRunway(false);
     setMomentumError("");
   }
 
-  // Functions for handling custom context inputs
   function handleContextChange(value) {
     if (value === "__add_custom__") {
       setShowCustomContextInput(true);
@@ -296,7 +309,6 @@ function App() {
 
   async function handleAddCustomContext() {
     const trimmedContext = newContextInput.trim().toLowerCase();
-
     if (!trimmedContext) return;
 
     if (contextOptions.includes(trimmedContext)) {
@@ -329,12 +341,10 @@ function App() {
       setMomentumError("Select a Keystone task to start.");
       return;
     }
-
     if (!momentumEnergy) {
       setMomentumError("Choose how tired you are first.");
       return;
     }
-
     setMomentumError("");
     setMomentumRunActive(true);
   }
@@ -347,61 +357,32 @@ function App() {
     setAllowCrossContextRunway(false);
   }
 
-  // Helper to warn user if they uncheck Momentum Mode toggle
-  function handleMomentumModeToggle(nextEnabled) {
-    if (nextEnabled) {
-      setMomentumModeEnabled(true);
-      return;
-    }
-
-    const hasMomentumState =
-      momentumRunActive || keystoneTaskId != null || momentumEnergy !== "";
-
-    if (!hasMomentumState) {
-      setMomentumModeEnabled(false);
-      return;
-    }
-
-    const confirmed = window.confirm(
-      "Turn off Momentum Mode? This will clear your current Momentum selections and end any active run."
-    );
-
-    if (!confirmed) return;
-
-    setMomentumModeEnabled(false);
-    setMomentumRunActive(false);
-    setKeystoneTaskId(null);
-    setMomentumEnergy("");
-    setMomentumError("");
-  }
-
   function handleEnableCrossContextRunway() {
     const hasOptions = hasCrossContextLowerLoadOptions(visibleTasks, keystoneTaskId);
-
     if (!hasOptions) {
       setMomentumError("No lower-load tasks are available from another context.");
       return;
     }
-
     setAllowCrossContextRunway(true);
     setMomentumError("");
   }
 
   const handleSnooze = async (taskId, hours = 24) => {
+    const taskToSnooze = tasks.find((t) => t.id === taskId);
+    if (!taskToSnooze || taskToSnooze.done) return; // can't snooze a completed task
+
     const snoozedUntil = Date.now() + hours * 60 * 60 * 1000;
 
     setTasks((prevTasks) => {
       const updatedTasks = prevTasks.map((task) =>
         task.id === taskId ? { ...task, snoozedUntil } : task
       );
-
       const updatedTask = updatedTasks.find((task) => task.id === taskId);
       if (updatedTask) {
         saveTask(updatedTask).catch((error) => {
           console.error("Failed to snooze task:", error);
         });
       }
-
       return updatedTasks;
     });
   };
@@ -411,26 +392,34 @@ function App() {
       const updatedTasks = prevTasks.map((task) =>
         task.id === taskId ? { ...task, snoozedUntil: null } : task
       );
-
       const updatedTask = updatedTasks.find((task) => task.id === taskId);
       if (updatedTask) {
         saveTask(updatedTask).catch((error) => {
           console.error("Failed to unsnooze task:", error);
         });
       }
-
       return updatedTasks;
     });
   };
 
-  // Move handlers
+  async function handleUnsnoozeAll() {
+    const updatedTasks = tasks.map((task) =>
+      task.snoozedUntil && task.snoozedUntil > Date.now()
+        ? { ...task, snoozedUntil: null }
+        : task
+    );
+    try {
+      await Promise.all(updatedTasks.map((t) => saveTask(t)));
+      setTasks(updatedTasks);
+    } catch (err) {
+      console.error("Failed to unsnooze all tasks:", err);
+    }
+  }
+
   async function handleMoveTaskUp(id) {
     if (viewMode !== "custom") return;
-
     const reorderedTasks = reorderByVisibleSwap(tasks, visibleTasks, id, "up");
-
     if (reorderedTasks === tasks) return;
-
     try {
       await Promise.all(reorderedTasks.map((task) => saveTask(task)));
       setTasks(reorderedTasks);
@@ -441,11 +430,8 @@ function App() {
 
   async function handleMoveTaskDown(id) {
     if (viewMode !== "custom") return;
-
     const reorderedTasks = reorderByVisibleSwap(tasks, visibleTasks, id, "down");
-
     if (reorderedTasks === tasks) return;
-
     try {
       await Promise.all(reorderedTasks.map((task) => saveTask(task)));
       setTasks(reorderedTasks);
@@ -456,7 +442,6 @@ function App() {
 
   async function addTask(e) {
     e.preventDefault();
-
     if (!input.trim()) return;
 
     const newTask = {
@@ -489,10 +474,8 @@ function App() {
       const remainingTasks = normalizeTaskPositions(
         tasks.filter((task) => task.id !== id)
       );
-
       await deleteTask(id);
       await Promise.all(remainingTasks.map((task) => saveTask(task)));
-
       setTasks(remainingTasks);
     } catch (error) {
       console.error("Failed to delete task:", error);
@@ -517,11 +500,9 @@ function App() {
 
   async function handleSaveEdit(id) {
     const trimmedTitle = editTitle.trim();
-
     if (!trimmedTitle) return;
 
     const taskToUpdate = tasks.find((task) => task.id === id);
-
     if (!taskToUpdate) return;
 
     const updatedTask = {
@@ -545,12 +526,13 @@ function App() {
 
   async function handleToggleTask(id) {
     const taskToUpdate = tasks.find((task) => task.id === id);
-
     if (!taskToUpdate) return;
 
     const updatedTask = {
       ...taskToUpdate,
       done: !taskToUpdate.done,
+      // Completing a task clears any active snooze
+      snoozedUntil: taskToUpdate.done ? taskToUpdate.snoozedUntil : null,
     };
 
     try {
@@ -563,7 +545,6 @@ function App() {
     }
   }
 
-  // Import / Export / Clear handlers
   async function handleExport() {
     try {
       await exportTasks();
@@ -577,15 +558,13 @@ function App() {
     if (!file) return;
 
     e.target.value = "";
-
     setImportError(null);
     setImportSuccess(null);
 
     if (file.size > 5 * 1024 * 1024) {
       const proceed = window.confirm(
         "This file is over 5MB, which is unusually large for a task export. " +
-        "Importing it may take a while and could cause performance issues.\n\n" +
-        "Continue anyway?"
+        "Importing it may take a while and could cause performance issues.\n\nContinue anyway?"
       );
       if (!proceed) return;
     }
@@ -609,9 +588,7 @@ function App() {
   }
 
   async function handleClearAllTasks() {
-    const confirmed = window.confirm(
-      "Delete all tasks? This cannot be undone."
-    );
+    const confirmed = window.confirm("Delete all tasks? This cannot be undone.");
     if (!confirmed) return;
 
     try {
@@ -721,7 +698,6 @@ function App() {
         </section>
 
         <section className="filters">
-          <p className="section-label">Filters</p>
           <FilterBar
             filterLoad={filterLoad}
             setFilterLoad={setFilterLoad}
@@ -733,6 +709,16 @@ function App() {
             loadLabels={LOAD_LABELS}
             priorityLabels={PRIORITY_LABELS}
             onResetFilters={handleResetFilters}
+            filtersExpanded={filtersExpanded}
+            onToggleFilters={() => setFiltersExpanded((prev) => !prev)}
+            showCompleted={showCompleted}
+            setShowCompleted={setShowCompleted}
+            advancedFeaturesEnabled={advancedFeaturesEnabled}
+            showSnoozedTasks={showSnoozedTasks}
+            setShowSnoozedTasks={setShowSnoozedTasks}
+            focusModeEnabled={focusModeEnabled}
+            setFocusModeEnabled={setFocusModeEnabled}
+            snoozedCount={snoozedCount}
           />
         </section>
 
@@ -748,9 +734,7 @@ function App() {
             }}
             className="mode-radio"
           />
-          <label htmlFor="mode-custom" className="mode-pill">
-            Custom
-          </label>
+          <label htmlFor="mode-custom" className="mode-pill">Custom</label>
 
           <input
             type="radio"
@@ -763,9 +747,7 @@ function App() {
             }}
             className="mode-radio"
           />
-          <label htmlFor="mode-sorted" className="mode-pill">
-            Sorted
-          </label>
+          <label htmlFor="mode-sorted" className="mode-pill">Sorted</label>
 
           {advancedFeaturesEnabled && (
             <>
@@ -774,70 +756,16 @@ function App() {
                 id="mode-momentum"
                 name="view-mode"
                 checked={momentumModeEnabled}
-                onChange={() => {
-                  setMomentumModeEnabled(true);
-                }}
+                onChange={() => setMomentumModeEnabled(true)}
                 className="mode-radio"
               />
-              <label htmlFor="mode-momentum" className="mode-pill">
-                Momentum
-              </label>
+              <label htmlFor="mode-momentum" className="mode-pill">Momentum</label>
             </>
           )}
         </div>
 
         <div className="top-controls">
           <div className="mode-controls">
-            {advancedFeaturesEnabled && (
-              <div className="advanced-features-panel">
-                <div className="control-toggles">
-                  <label className="toggle toggle--sm">
-                    <span className="toggle__label">View Snoozed Tasks</span>
-                    <input
-                      type="checkbox"
-                      checked={showSnoozedTasks}
-                      onChange={(e) => setShowSnoozedTasks(e.target.checked)}
-                    />
-                    <span className="toggle__track" aria-hidden="true">
-                      <span className="toggle__state toggle__state--off">OFF</span>
-                      <span className="toggle__state toggle__state--on">ON</span>
-                      <span className="toggle__thumb" />
-                    </span>
-                  </label>
-
-                  <label className="toggle toggle--sm">
-                    <span className="toggle__label">Focus Mode (show only 7 tasks)</span>
-                    <input
-                      type="checkbox"
-                      checked={focusModeEnabled}
-                      onChange={(e) => setFocusModeEnabled(e.target.checked)}
-                    />
-                    <span className="toggle__track" aria-hidden="true">
-                      <span className="toggle__state toggle__state--off">OFF</span>
-                      <span className="toggle__state toggle__state--on">ON</span>
-                      <span className="toggle__thumb" />
-                    </span>
-                  </label>
-                </div>
-              </div>
-            )}
-
-            <div className="task-visibility-controls">
-              <label className="toggle toggle--sm">
-                <span className="toggle__label">Show completed tasks</span>
-                <input
-                  type="checkbox"
-                  checked={showCompleted}
-                  onChange={(e) => setShowCompleted(e.target.checked)}
-                />
-                <span className="toggle__track" aria-hidden="true">
-                  <span className="toggle__state toggle__state--off">OFF</span>
-                  <span className="toggle__state toggle__state--on">ON</span>
-                  <span className="toggle__thumb" />
-                </span>
-              </label>
-            </div>
-
             {viewMode === "sorted" && (
               <div className="sort-controls">
                 <label>
@@ -892,10 +820,48 @@ function App() {
             </div>
           )}
 
-          {displayedTasks.length === 0 && (
-            <p className="empty-state">
-              No visible tasks right now.
-            </p>
+          {showEmptyState && (
+            <div className="empty-state">
+              {noTasksAtAll && (
+                <p>No tasks in list, <button type="button" className="empty-state__link" onClick={() => document.querySelector('.task-form-trigger')?.click()}>add a task</button>.</p>
+              )}
+
+              {allDone && (
+                <p>All done for today! ...or not quite? <button type="button" className="empty-state__link" onClick={() => document.querySelector('.task-form-trigger')?.click()}>Add a new task.</button></p>
+              )}
+
+              {!noTasksAtAll && !allDone && (
+                <>
+                  {hasActiveFilters && (
+                    <p>
+                      No visible tasks, {activeFilterCount} filter{activeFilterCount !== 1 ? "s" : ""} active.{" "}
+                      <button type="button" className="empty-state__link" onClick={handleResetFilters}>
+                        Reset filters
+                      </button>
+                    </p>
+                  )}
+
+                  {snoozedCount > 0 && (
+                    <p>
+                      {snoozedCount} snoozed task{snoozedCount !== 1 ? "s" : ""}.{" "}
+                      {filtersExpanded ? (
+                        <button type="button" className="empty-state__link" onClick={handleUnsnoozeAll}>
+                          Unsnooze
+                        </button>
+                      ) : (
+                        <button type="button" className="empty-state__link" onClick={() => setShowSnoozedTasks(true)}>
+                          View snoozed tasks
+                        </button>
+                      )}
+                    </p>
+                  )}
+
+                  {!hasActiveFilters && snoozedCount === 0 && (
+                    <p>No visible tasks right now.</p>
+                  )}
+                </>
+              )}
+            </div>
           )}
 
           <ul className="task-list">
