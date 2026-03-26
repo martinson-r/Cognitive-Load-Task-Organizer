@@ -8,8 +8,8 @@
 }
 
 .filter-bar-wrapper--active {
-  border-color: rgb(143, 0, 0);
-  background-color: rgb(250, 240, 240);
+  border-color: #d9d9d9;
+  background-color: rgb(250, 248, 240);
 }
 
 /* ── Header bar ── */
