@@ -176,6 +176,14 @@
   box-shadow: 0 0 0 2px rgba(48, 76, 137, 0.2);
 }
 
+/* ── Snoozed tasks hint ── */
+.filter-bar__snooze-hint {
+  font-size: 0.78rem;
+  color: #6b7280;
+  margin: 0;
+  padding-left: 0.1rem;
+}
+
 /* ── Toggles inside filter bar ── */
 .filter-bar__toggles {
   display: flex;

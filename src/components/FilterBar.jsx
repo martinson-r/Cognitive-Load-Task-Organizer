@@ -21,6 +21,7 @@ function FilterBar({
   setShowSnoozedTasks,
   focusModeEnabled,
   setFocusModeEnabled,
+  snoozedCount,
 }) {
   const activeFilterCount =
     (filterLoad !== 'all' ? 1 : 0) +
@@ -149,6 +150,12 @@ function FilterBar({
                   <span className="toggle__thumb" />
                 </span>
               </label>
+
+              {snoozedCount > 0 && (
+                <p className="filter-bar__snooze-hint">
+                  {snoozedCount} task{snoozedCount !== 1 ? "s" : ""} currently snoozed
+                </p>
+              )}
 
               <label className="toggle toggle--sm">
                 <span className="toggle__label">Focus Mode (show only 7 tasks)</span>

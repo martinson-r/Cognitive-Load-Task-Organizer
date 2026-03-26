@@ -718,6 +718,7 @@ function App() {
             setShowSnoozedTasks={setShowSnoozedTasks}
             focusModeEnabled={focusModeEnabled}
             setFocusModeEnabled={setFocusModeEnabled}
+            snoozedCount={snoozedCount}
           />
         </section>
 
