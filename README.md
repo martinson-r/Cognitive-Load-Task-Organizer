@@ -117,8 +117,7 @@ This allows the app to scale beyond a trivial demo while remaining fully offline
 
 ## Why No TypeScript?
 
-This project intentionally uses JavaScript to reduce friction and move quickly during early-stage iteration.  
-TypeScript may be introduced in a future iteration.
+I use TypeScript professionally (UW), but for this project I intentionally skipped it to move faster and validate the product idea. If I scaled it, I’d absolutely add TypeScript.
 
 
 ## Security Considerations
