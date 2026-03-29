@@ -40,7 +40,7 @@ function FilterBar({
     } else {
       el.style.maxHeight = '0px';
     }
-  }, [filtersExpanded, advancedFeaturesEnabled, showCompleted]);
+  }, [filtersExpanded, advancedFeaturesEnabled, showCompleted, snoozedCount]);
 
   return (
     <div className={`filter-bar-wrapper${hasActiveFilters ? ' filter-bar-wrapper--active' : ''}`}>
