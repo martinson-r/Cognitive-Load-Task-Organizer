@@ -116,11 +116,17 @@
   color: var(--icon);
 }
 
-.delete-button:hover .icon {
+.icon-subtle {
+  width: 18px;
+  height: 18px;
+  color: var(--icon-subtle);
+}
+
+.delete-button:hover .icon-subtle {
   color: var(--action-delete);
 }
 
-.edit-button:hover .icon {
+.edit-button:hover .icon-subtle {
   color: var(--action-edit);
 }
 
