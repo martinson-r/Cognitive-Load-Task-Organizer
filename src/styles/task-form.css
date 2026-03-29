@@ -1,13 +1,12 @@
-/* ── Trigger ── */
 .task-form-trigger {
   display: flex;
   align-items: center;
   width: 100%;
-  height: 44px;
-  padding: 0 14px;
+  height: 2.75rem;
+  padding: 0 var(--space-2);
   border: 1px solid #cfcfd6;
-  border-radius: 8px;
-  background: #fff;
+  border-radius: var(--radius-input);
+  background: var(--bg);
   cursor: text;
   text-align: left;
 }
@@ -17,11 +16,10 @@
 }
 
 .task-form-trigger__placeholder {
-  color: #6b7280; /* was #9ca3af (~2.85:1 contrast); #6b7280 passes WCAG AA at ~4.63:1 */
+  color: #6b7280;
   font-size: 0.95rem;
 }
 
-/* ── Task modal backdrop ── */
 .task-modal-backdrop {
   position: fixed;
   inset: 0;
@@ -38,48 +36,47 @@
   }
 }
 
-/* ── Task modal ── */
 .task-modal {
-  background: #fff;
-  border-radius: 16px 16px 0 0;
-  padding: 1.25rem 1.25rem 2rem;
+  background: var(--bg);
+  border-radius: var(--radius-modal) var(--radius-modal) 0 0;
+  padding: var(--space-3) var(--space-3) var(--space-4);
   width: 100%;
   max-width: 560px;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.12);
   display: flex;
   flex-direction: column;
-  gap: 1.25rem;
+  gap: var(--space-3);
 }
 
 @media (min-width: 640px) {
   .task-modal {
-    border-radius: 16px;
+    border-radius: var(--radius-modal);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.18);
   }
 }
 
-/* ── Modal header ── */
 .task-modal__header {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-2);
   justify-content: space-between;
 }
 
 .task-modal__name-input {
   flex: 1;
-  height: 44px;
-  padding: 0 12px;
+  height: 2.75rem;
+  padding: 0 var(--space-2);
   border: 1px solid #cfcfd6;
-  border-radius: 8px;
-  font-size: 1rem;
-  background: #fff;
-  color: #1f2430;
+  border-radius: var(--radius-input);
+  font-size: var(--font-primary-size);
+  line-height: var(--font-primary-line);
+  background: var(--bg);
+  color: var(--text-h);
 }
 
 .task-modal__name-input:focus {
   outline: none;
-  border-color: #304C89;
+  border-color: var(--priority-medium);
   box-shadow: 0 0 0 2px rgba(48, 76, 137, 0.15);
 }
 
@@ -91,7 +88,7 @@
   border: none;
   background: #f3f4f6;
   color: #6b7280;
-  font-size: 1rem;
+  font-size: var(--font-primary-size);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -100,30 +97,28 @@
 
 .task-modal__close:hover {
   background: #e5e7eb;
-  color: #111827;
+  color: var(--text-h);
 }
 
-/* ── Segments ── */
 .task-modal__segments {
   display: flex;
   flex-direction: column;
-  gap: 0.5rem;
+  gap: var(--space-1);
 }
 
 @media (min-width: 640px) {
   .task-modal__segments {
     flex-direction: row;
     align-items: flex-start;
-    gap: 0.75rem;
+    gap: var(--space-2);
   }
 }
 
-/* ── Segment group ── */
 .segment-group {
   display: flex;
   flex-direction: row;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-2);
   min-width: 0;
 }
 
@@ -137,7 +132,7 @@
 }
 
 .segment-group__label {
-  font-size: 0.75rem;
+  font-size: var(--font-chip-mobile-size);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -165,11 +160,11 @@
   justify-content: space-between;
   padding: 0.45rem 0.6rem;
   border: 1px solid #d1d5db;
-  border-radius: 6px;
+  border-radius: var(--radius-button);
   background: #f9fafb;
   font-size: 0.82rem;
   font-weight: 500;
-  color: #1f2430;
+  color: var(--text-h);
   cursor: pointer;
   gap: 4px;
 }
@@ -187,14 +182,13 @@
 }
 
 .segment-caret {
-  font-size: 1rem;
+  font-size: var(--font-primary-size);
   color: #9ca3af;
   flex-shrink: 0;
   transform: rotate(90deg);
   display: inline-block;
 }
 
-/* ── Segment picker backdrop (second layer) ── */
 .segment-picker-backdrop {
   position: fixed;
   inset: 0;
@@ -211,23 +205,22 @@
   }
 }
 
-/* ── Segment picker ── */
 .segment-picker {
-  background: #fff;
+  background: var(--bg);
   border-radius: 16px 16px 0 0;
-  padding: 1.25rem 1.25rem 2.5rem;
+  padding: var(--space-3) var(--space-3) 2.5rem;
   width: 100%;
   max-width: 400px;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
+  gap: var(--space-2);
 }
 
 @media (min-width: 640px) {
   .segment-picker {
-    border-radius: 16px;
-    padding: 1.25rem;
+    border-radius: var(--radius-modal);
+    padding: var(--space-3);
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
   }
 }
@@ -236,7 +229,7 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: 0.25rem;
+  margin-bottom: var(--space-1);
 }
 
 .segment-picker__title {
@@ -247,7 +240,6 @@
   letter-spacing: 0.04em;
 }
 
-/* ── Picker scroll wrap ── */
 .segment-picker__scroll-wrap {
   position: relative;
 }
@@ -255,11 +247,11 @@
 .segment-picker__options {
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: var(--space-1);
   max-height: 55vh;
   overflow-y: auto;
   overscroll-behavior: contain;
-  padding-bottom: 0.25rem;
+  padding-bottom: var(--space-1);
   scrollbar-width: thin;
   scrollbar-color: #d1d5db transparent;
 }
@@ -282,8 +274,8 @@
   width: 100%;
   padding: 0.65rem 0.85rem;
   border: 1px solid #e5e7eb;
-  border-radius: 8px;
-  background: #fff;
+  border-radius: var(--radius-input);
+  background: var(--bg);
   font-size: 0.9rem;
   color: #374151;
   cursor: pointer;
@@ -312,10 +304,9 @@
   opacity: 0.8;
 }
 
-/* ── Custom context row ── */
 .task-modal__custom-context {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-1);
   align-items: center;
 }
 
@@ -324,14 +315,14 @@
   height: 38px;
   padding: 0 10px;
   border: 1px solid #cfcfd6;
-  border-radius: 6px;
+  border-radius: var(--radius-button);
   font-size: 0.9rem;
 }
 
 .task-modal__custom-context button {
   height: 38px;
-  padding: 0 12px;
-  border-radius: 6px;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-button);
   border: 1px solid #d1d5db;
   background: #f9fafb;
   font-size: 0.85rem;
@@ -344,11 +335,10 @@
   color: #fff;
 }
 
-/* ── Save button ── */
 .task-modal__save {
   width: 100%;
-  height: 44px;
-  border-radius: 8px;
+  height: 2.75rem;
+  border-radius: var(--radius-input);
   border: 1px solid #111827;
   background: #111827;
   color: #fff;
@@ -366,10 +356,9 @@
   cursor: not-allowed;
 }
 
-/* ── Edit modal actions ── */
 .task-modal__edit-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-1);
 }
 
 .task-modal__edit-actions .task-modal__save {
@@ -377,11 +366,11 @@
 }
 
 .task-modal__cancel {
-  height: 44px;
+  height: 2.75rem;
   padding: 0 1.25rem;
-  border-radius: 8px;
+  border-radius: var(--radius-input);
   border: 1px solid #d1d5db;
-  background: #fff;
+  background: var(--bg);
   font-size: 0.95rem;
   cursor: pointer;
 }

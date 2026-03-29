@@ -609,7 +609,7 @@ function App() {
     <div className="app">
 
       <header className="app-header">
-        <h1>Cognitive Load Task Organizer</h1>
+        <h1>Cognitive Organizer</h1>
         <div className="header-controls">
           <button
             type="button"
