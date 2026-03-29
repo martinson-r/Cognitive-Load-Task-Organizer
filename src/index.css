@@ -82,6 +82,10 @@
 
 body {
   margin: 0;
+  /* Reserve scrollbar gutter space permanently so the layout doesn't
+     shift width when content grows tall enough to trigger a scrollbar
+     (e.g. momentum panel appearing, filter bar expanding). */
+  scrollbar-gutter: stable;
 }
 
 #root {

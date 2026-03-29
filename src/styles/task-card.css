@@ -23,7 +23,7 @@
   }
 
   .task-actions {
-    justify-content: flex-end;
+    justify-content: flex-start;
     flex-wrap: wrap;
   }
 }
@@ -96,7 +96,9 @@
 .icon-button {
   background: none;
   border: none;
-  padding: var(--space-1);
+  /* Vertical padding only — horizontal padding spreads icons apart and
+     makes them read larger than the bordered move-buttons beside them. */
+  padding: 6px 0;
   cursor: pointer;
   display: flex;
   align-items: center;
