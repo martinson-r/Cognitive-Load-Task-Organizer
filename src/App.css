@@ -65,6 +65,35 @@
   --icon: #555555;
   --icon-hover: #222222;
   --icon-subtle: #858585;
+
+  /* ── Interactive states ───────────────────────────────────────────────────
+   * Toggle Hover  #1F2937  — dark filled button hover (slightly lighter than toggle-on)
+   */
+  --surface-toggle-hover: #1F2937;
+
+  /* ── Semantic colors ─────────────────────────────────────────────────────
+   * Danger        #B91C1C  — destructive actions, error messages
+   * Danger Bg     #FEF2F2  — danger hover/fill background
+   * Danger Border #FECACA  — danger button borders (consolidates fca5a5/f87171/fecaca)
+   * Warning       #92400E  — FAQ warning text (consolidates 92400e/78350f)
+   * Link          #2563EB  — hyperlink text color
+   * Link Hover    #1D4ED8  — hyperlink hover
+   * Success       #15803D  — success/import feedback
+   * Keystone      #FFC353  — keystone task highlight background
+   */
+  --color-danger: #B91C1C;
+  --color-danger-bg: #FEF2F2;
+  --color-danger-border: #FECACA;
+  --color-warning: #92400E;
+  --color-link: #2563EB;
+  --color-link-hover: #1D4ED8;
+  --color-success: #15803D;
+  --color-keystone: #FFC353;
+
+  /* ── Input border ────────────────────────────────────────────────────────
+   * Consolidates cfcfd6 (input) and d9d9d9 (panel/filter borders)
+   */
+  --border-input: #CFCFD6;
 }
 
 input,
@@ -79,7 +108,7 @@ button {
 .sort-controls select {
   height: 2.75rem;
   padding: 0 var(--space-2);
-  border: 1px solid #cfcfd6;
+  border: 1px solid var(--border-input);
   border-radius: var(--radius-input);
   background: var(--bg);
   color: var(--text-h);
@@ -157,7 +186,7 @@ button {
 
 .task-input {
   padding: var(--space-2);
-  border: 1px solid #d9d9d9;
+  border: 1px solid var(--border-input);
   border-radius: var(--radius-card);
   background: var(--surface-subtle);
 }
@@ -185,7 +214,7 @@ button {
 .mode-pill {
   padding: var(--space-2);
   border-radius: var(--radius-input);
-  color: #5b6678;
+  color: var(--text-secondary);
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
   font-weight: 600;
@@ -248,7 +277,7 @@ button {
 .toggle__label {
   font-size: var(--font-primary-size);
   line-height: var(--font-primary-line);
-  color: #5f5b6b;
+  color: var(--text-secondary);
 }
 
 .toggle__track {
@@ -346,7 +375,7 @@ button {
 /* ── Empty state ─────────────────────────────────────────────────────────── */
 
 .empty-state {
-  color: #6b7280;
+  color: var(--text-tertiary);
   margin-bottom: var(--space-2);
   display: flex;
   flex-direction: column;
@@ -380,7 +409,7 @@ button {
 .focus-mode-info {
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
-  color: #6b7280;
+  color: var(--text-tertiary);
   margin-bottom: var(--space-1);
 }
 
@@ -455,10 +484,10 @@ button {
   padding: var(--space-1) var(--space-2);
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
-  background: #f3f4f6;
+  background: var(--surface-light);
   border: none;
   cursor: pointer;
-  color: #374151;
+  color: var(--text-secondary);
   transition: background 0.15s ease, color 0.15s ease;
 }
 
@@ -489,7 +518,7 @@ button {
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
   background: var(--bg);
-  color: #374151;
+  color: var(--text-secondary);
   font: inherit;
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
@@ -500,7 +529,7 @@ button {
 }
 
 .data-btn:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
 .data-btn--import {
@@ -518,11 +547,11 @@ button {
 }
 
 .import-status--error {
-  color: #b00020;
+  color: var(--color-danger);
 }
 
 .import-status--success {
-  color: #15803d;
+  color: var(--color-success);
 }
 
 /* ── Responsive ──────────────────────────────────────────────────────────── */

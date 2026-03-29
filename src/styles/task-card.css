@@ -13,7 +13,7 @@
   border-radius: var(--radius-card);
   margin-bottom: var(--space-2);
   border: 1px solid var(--border-default);
-  background: var(--surface-base);
+  background: var(--bg);
 }
 
 @media (max-width: 640px) {
@@ -55,17 +55,17 @@
   font-weight: 500;
   font-size: var(--font-primary-size);
   line-height: var(--font-primary-line);
-  color: var(--text-primary);
+  color: var(--text-h);
 }
 
 .task-item--done .task-title {
   text-decoration: line-through;
-  color: #9ca3af;
+  color: var(--text-tertiary);
 }
 
 .task-item--done {
-  background: #f9fafb;
-  border-color: #f3f4f6;
+  background: var(--surface-subtle);
+  border-color: var(--surface-light);
 }
 
 .task-meta {
@@ -96,7 +96,8 @@
 .icon-button {
   background: none;
   border: none;
-  /* Vertical padding only — horizontal padding spreads icons apart. */
+  /* Vertical padding only — horizontal padding spreads icons apart and
+     makes them read larger than the bordered move-buttons beside them. */
   padding: 6px 0;
   cursor: pointer;
   display: flex;
@@ -133,7 +134,7 @@
   padding: var(--space-1);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-button);
-  background: var(--surface-base);
+  background: var(--bg);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -159,10 +160,10 @@
 .edit-input,
 .edit-select {
   padding: var(--space-1);
-  border: 1px solid #cfcfd6;
+  border: 1px solid var(--border-input);
   border-radius: var(--radius-button);
   font: inherit;
-  background: var(--surface-base);
+  background: var(--bg);
 }
 
 .edit-input {
@@ -199,12 +200,11 @@
 }
 
 .save-button:hover {
-  /* #1f2937 — dark button hover, no token */
-  background: #1f2937;
+  background: var(--surface-toggle-hover);
 }
 
 .cancel-button {
-  background: var(--surface-base);
+  background: var(--bg);
 }
 
 .cancel-button:hover {
@@ -219,7 +219,7 @@
 .task-snooze-info {
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
-  color: #6b7280;
+  color: var(--text-tertiary);
   white-space: nowrap;
 }
 
@@ -233,7 +233,7 @@
   padding: 0 var(--space-2);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-button);
-  background: var(--surface-base);
+  background: var(--bg);
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
   cursor: pointer;
@@ -254,7 +254,7 @@
   padding: var(--space-1);
   border: 1px solid var(--border-default);
   border-radius: var(--radius-input);
-  background: var(--surface-base);
+  background: var(--bg);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -274,9 +274,9 @@
 }
 
 .task-card--keystone {
-  outline: 2px solid #888;
+  outline: 2px solid var(--text-tertiary);
   outline-offset: 2px;
-  background: #ffc353;
+  background: var(--color-keystone);
 }
 
 .keystone-badge {
@@ -286,6 +286,6 @@
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
   font-weight: 600;
-  background: #eee;
-  color: #333;
+  background: var(--surface-light);
+  color: var(--text-primary);
 }

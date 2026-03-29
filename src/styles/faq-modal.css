@@ -9,7 +9,7 @@
   font-size: var(--font-section-size);
   line-height: var(--font-section-line);
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text-h);
 }
 
 .faq-modal__body {
@@ -36,11 +36,10 @@
 
 .faq-section__title {
   font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #6b7280;
+  color: var(--text-tertiary);
   margin: 0 0 var(--space-2);
 }
 
@@ -53,51 +52,48 @@
 }
 
 .faq-item__q {
-  font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
+  font-size: 0.9rem;
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text-h);
   margin: 0 0 var(--space-2);
 }
 
 .faq-item__a {
-  font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
+  font-size: 0.875rem;
   color: var(--text-secondary);
+  line-height: 1.6;
   margin: 0;
 }
 
 .faq-item__a code {
-  font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
+  font-size: 0.8rem;
   background: var(--surface-light);
   padding: 1px 5px;
   border-radius: var(--radius-input);
-  color: #374151;
+  color: var(--text-secondary);
 }
 
 .faq-item__a strong {
-  color: var(--text-primary);
+  color: var(--text-h);
 }
 
 .faq-item--warning .faq-item__q {
-  color: #92400e;
+  color: var(--color-warning);
 }
 
 .faq-item--warning .faq-item__a {
-  color: #78350f;
+  color: var(--color-warning);
 }
 
 .faq-links {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 0.6rem;
 }
 
 .faq-link {
-  font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
-  color: #2563eb;
+  font-size: 0.875rem;
+  color: var(--color-link);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
@@ -106,7 +102,7 @@
 
 .faq-link:hover {
   text-decoration: underline;
-  color: #1d4ed8;
+  color: var(--color-link-hover);
 }
 
 .faq-link::after {
@@ -120,20 +116,19 @@
   height: 32px;
   border-radius: var(--radius-button);
   border: 1px solid var(--border-strong);
-  background: var(--surface-base);
-  color: #6b7280;
+  background: var(--bg);
+  color: var(--text-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
+  font-size: 0.9rem;
   font-weight: 700;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
 .faq-trigger:hover {
   background: var(--surface-light);
-  color: var(--text-primary);
+  color: var(--text-h);
 }

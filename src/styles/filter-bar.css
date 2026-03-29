@@ -7,7 +7,7 @@
 }
 
 .filter-bar-wrapper--active {
-  border-color: #d9d9d9;
+  border-color: var(--border-input);
   background-color: #FAF8F0;
 }
 
@@ -34,7 +34,7 @@
   font-size: var(--font-section-size);
   line-height: var(--font-section-line);
   font-weight: 600;
-  color: #374151;
+  color: var(--text-secondary);
   flex-shrink: 0;
 }
 
@@ -60,7 +60,7 @@
 }
 
 .filter-bar__no-filters {
-  color: #9ca3af;
+  color: var(--text-tertiary);
 }
 
 .filter-bar__reset-inline {
@@ -76,12 +76,13 @@
 
 .filter-bar__caret {
   font-size: var(--font-primary-size);
-  line-height: 1;
-  color: #6b7280;
+  line-height: var(--font-primary-line);
+  color: var(--text-tertiary);
   display: inline-block;
   transform: rotate(90deg);
   transition: transform 0.2s ease;
   flex-shrink: 0;
+  line-height: 1;
 }
 
 .filter-bar__caret--open {
@@ -131,16 +132,16 @@
 
 .filter-select-wrap--active {
   border-color: var(--priority-medium);
-  background-color: var(--priority-medium-bg);
+  background-color: #eef2ff;
 }
 
 .filter-select {
   height: 44px;
   padding: 0 2.25rem 0 var(--space-2);
-  border: 1px solid #cfcfd6;
+  border: 1px solid var(--border-input);
   border-radius: var(--radius-input);
   background: transparent;
-  color: var(--text-primary);
+  color: var(--text-h);
   font: inherit;
   appearance: none;
   -webkit-appearance: none;
@@ -168,7 +169,7 @@
 .filter-bar__snooze-hint {
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
-  color: #6b7280;
+  color: var(--text-tertiary);
   margin: 0;
   padding-left: 0;
 }

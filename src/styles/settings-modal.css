@@ -6,13 +6,13 @@
   font-size: var(--font-section-size);
   line-height: var(--font-section-line);
   font-weight: 600;
-  color: var(--text-primary);
+  color: var(--text-h);
 }
 
 .settings-modal__section {
   display: flex;
   flex-direction: column;
-  gap: var(--space-1);
+  gap: 0.6rem;
 }
 
 .settings-modal__section + .settings-modal__section {
@@ -22,28 +22,27 @@
 }
 
 .settings-modal__section--danger {
-  border-top-color: #fecaca;
+  border-top-color: var(--color-danger-border);
 }
 
 .settings-modal__section-title {
-  font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
+  font-size: 0.8rem;
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #6b7280;
+  color: var(--text-tertiary);
   margin: 0;
 }
 
 .settings-modal__section-title--danger {
-  color: #b91c1c;
+  color: var(--color-danger);
 }
 
 .settings-modal__section-desc {
-  font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
-  color: #6b7280;
+  font-size: 0.875rem;
+  color: var(--text-tertiary);
   margin: 0;
+  line-height: 1.5;
 }
 
 .settings-modal__row {
@@ -57,11 +56,10 @@
   padding: 0 var(--space-2);
   border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
-  background: var(--surface-base);
-  color: #374151;
+  background: var(--bg);
+  color: var(--text-secondary);
   font: inherit;
-  font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
+  font-size: 0.875rem;
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -73,13 +71,13 @@
 }
 
 .settings-btn--danger {
-  border-color: #fca5a5;
-  color: #b91c1c;
+  border-color: var(--color-danger-border);
+  color: var(--color-danger);
 }
 
 .settings-btn--danger:hover {
-  background: #fef2f2;
-  border-color: #f87171;
+  background: var(--color-danger-bg);
+  border-color: var(--color-danger-border);
 }
 
 .settings-trigger {
@@ -87,8 +85,8 @@
   height: 32px;
   border-radius: var(--radius-button);
   border: 1px solid var(--border-strong);
-  background: var(--surface-base);
-  color: #6b7280;
+  background: var(--bg);
+  color: var(--text-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -99,7 +97,7 @@
 
 .settings-trigger:hover {
   background: var(--surface-light);
-  color: var(--text-primary);
+  color: var(--text-h);
 }
 
 .settings-trigger svg {
