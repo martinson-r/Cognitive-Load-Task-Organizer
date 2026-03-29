@@ -6,7 +6,7 @@
   padding: 0 var(--space-2);
   border: 1px solid #cfcfd6;
   border-radius: var(--radius-input);
-  background: var(--bg);
+  background: var(--surface-base);
   cursor: text;
   text-align: left;
 }
@@ -38,7 +38,7 @@
 }
 
 .task-modal {
-  background: var(--bg);
+  background: var(--surface-base);
   border-radius: var(--radius-modal) var(--radius-modal) 0 0;
   padding: var(--space-3) var(--space-3) var(--space-4);
   width: 100%;
@@ -71,8 +71,8 @@
   border-radius: var(--radius-input);
   font-size: var(--font-primary-size);
   line-height: var(--font-primary-line);
-  background: var(--bg);
-  color: var(--text-h);
+  background: var(--surface-base);
+  color: var(--text-primary);
 }
 
 .task-modal__name-input:focus {
@@ -87,7 +87,7 @@
   height: 36px;
   border-radius: 50%;
   border: none;
-  background: #f3f4f6;
+  background: var(--surface-light);
   color: #6b7280;
   font-size: var(--font-primary-size);
   line-height: var(--font-primary-line);
@@ -98,8 +98,8 @@
 }
 
 .task-modal__close:hover {
-  background: #e5e7eb;
-  color: var(--text-h);
+  background: var(--border-default);
+  color: var(--text-primary);
 }
 
 .task-modal__segments {
@@ -162,20 +162,20 @@
   align-items: center;
   justify-content: space-between;
   padding: var(--space-1) var(--space-2);
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
   background: #f9fafb;
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
   font-weight: 500;
-  color: var(--text-h);
+  color: var(--text-primary);
   cursor: pointer;
   gap: var(--space-1);
 }
 
 .segment-selected:hover {
   border-color: #9ca3af;
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
 .segment-selected__text {
@@ -210,7 +210,7 @@
 }
 
 .segment-picker {
-  background: var(--bg);
+  background: var(--surface-base);
   border-radius: var(--radius-modal) var(--radius-modal) 0 0;
   padding: var(--space-3) var(--space-3) var(--space-4);
   width: 100%;
@@ -258,7 +258,7 @@
   overscroll-behavior: contain;
   padding-bottom: var(--space-1);
   scrollbar-width: thin;
-  scrollbar-color: #d1d5db transparent;
+  scrollbar-color: var(--border-strong) transparent;
 }
 
 .segment-picker__fade {
@@ -278,9 +278,9 @@
   justify-content: space-between;
   width: 100%;
   padding: var(--space-1) var(--space-2);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-input);
-  background: var(--bg);
+  background: var(--surface-base);
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
   color: #374151;
@@ -290,17 +290,18 @@
 
 .segment-picker__option:hover {
   background: #f9fafb;
-  border-color: #d1d5db;
+  border-color: var(--border-strong);
 }
 
 .segment-picker__option--selected {
-  background: #111827;
-  border-color: #111827;
-  color: #fff;
+  background: var(--surface-toggle-on);
+  border-color: var(--surface-toggle-on);
+  color: var(--text-highlight);
   font-weight: 600;
 }
 
 .segment-picker__option--selected:hover {
+  /* #1f2937 — dark button hover, no token */
   background: #1f2937;
   border-color: #1f2937;
 }
@@ -331,7 +332,7 @@
   height: 38px;
   padding: 0 var(--space-2);
   border-radius: var(--radius-button);
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-strong);
   background: #f9fafb;
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
@@ -339,18 +340,18 @@
 }
 
 .task-modal__custom-context button:first-of-type {
-  background: #111827;
-  border-color: #111827;
-  color: #fff;
+  background: var(--surface-toggle-on);
+  border-color: var(--surface-toggle-on);
+  color: var(--text-highlight);
 }
 
 .task-modal__save {
   width: 100%;
   height: 2.75rem;
   border-radius: var(--radius-input);
-  border: 1px solid #111827;
-  background: #111827;
-  color: #fff;
+  border: 1px solid var(--surface-toggle-on);
+  background: var(--surface-toggle-on);
+  color: var(--text-highlight);
   font-size: var(--font-primary-size);
   line-height: var(--font-primary-line);
   font-weight: 600;
@@ -379,13 +380,13 @@
   height: 2.75rem;
   padding: 0 var(--space-2);
   border-radius: var(--radius-input);
-  border: 1px solid #d1d5db;
-  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-base);
   font-size: var(--font-primary-size);
   line-height: var(--font-primary-line);
   cursor: pointer;
 }
 
 .task-modal__cancel:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }

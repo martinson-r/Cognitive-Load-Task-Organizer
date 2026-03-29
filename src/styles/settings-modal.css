@@ -6,19 +6,19 @@
   font-size: var(--font-section-size);
   line-height: var(--font-section-line);
   font-weight: 600;
-  color: var(--text-h);
+  color: var(--text-primary);
 }
 
 .settings-modal__section {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: var(--space-1);
 }
 
 .settings-modal__section + .settings-modal__section {
   padding-top: var(--space-3);
   margin-top: var(--space-1);
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-default);
 }
 
 .settings-modal__section--danger {
@@ -26,7 +26,8 @@
 }
 
 .settings-modal__section-title {
-  font-size: 0.8rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -39,10 +40,10 @@
 }
 
 .settings-modal__section-desc {
-  font-size: 0.875rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   color: #6b7280;
   margin: 0;
-  line-height: 1.5;
 }
 
 .settings-modal__row {
@@ -54,12 +55,13 @@
 .settings-btn {
   height: 36px;
   padding: 0 var(--space-2);
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
-  background: var(--bg);
+  background: var(--surface-base);
   color: #374151;
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -67,7 +69,7 @@
 }
 
 .settings-btn:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
 .settings-btn--danger {
@@ -84,8 +86,8 @@
   width: 32px;
   height: 32px;
   border-radius: var(--radius-button);
-  border: 1px solid #d1d5db;
-  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-base);
   color: #6b7280;
   display: flex;
   align-items: center;
@@ -96,8 +98,8 @@
 }
 
 .settings-trigger:hover {
-  background: #f3f4f6;
-  color: var(--text-h);
+  background: var(--surface-light);
+  color: var(--text-primary);
 }
 
 .settings-trigger svg {

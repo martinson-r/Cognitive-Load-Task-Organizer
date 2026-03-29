@@ -12,8 +12,8 @@
   padding: var(--space-2);
   border-radius: var(--radius-card);
   margin-bottom: var(--space-2);
-  border: 1px solid #e5e7eb;
-  background: var(--bg);
+  border: 1px solid var(--border-default);
+  background: var(--surface-base);
 }
 
 @media (max-width: 640px) {
@@ -46,7 +46,7 @@
   flex-shrink: 0;
   width: 20px;
   height: 20px;
-  accent-color: #111827;
+  accent-color: var(--text-primary);
   cursor: pointer;
   border-radius: var(--radius-input);
 }
@@ -55,7 +55,7 @@
   font-weight: 500;
   font-size: var(--font-primary-size);
   line-height: var(--font-primary-line);
-  color: var(--text-h);
+  color: var(--text-primary);
 }
 
 .task-item--done .task-title {
@@ -96,8 +96,7 @@
 .icon-button {
   background: none;
   border: none;
-  /* Vertical padding only — horizontal padding spreads icons apart and
-     makes them read larger than the bordered move-buttons beside them. */
+  /* Vertical padding only — horizontal padding spreads icons apart. */
   padding: 6px 0;
   cursor: pointer;
   display: flex;
@@ -107,7 +106,7 @@
 }
 
 .icon-button:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
 .icon {
@@ -132,9 +131,9 @@
 
 .move-button {
   padding: var(--space-1);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-button);
-  background: var(--bg);
+  background: var(--surface-base);
   cursor: pointer;
   display: flex;
   align-items: center;
@@ -142,7 +141,7 @@
 }
 
 .move-button:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
 .move-button .icon {
@@ -163,7 +162,7 @@
   border: 1px solid #cfcfd6;
   border-radius: var(--radius-button);
   font: inherit;
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .edit-input {
@@ -187,28 +186,29 @@
   height: 36px;
   padding: 0 var(--space-2);
   border-radius: var(--radius-button);
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-strong);
   cursor: pointer;
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
 }
 
 .save-button {
-  background: #111827;
-  color: #fff;
-  border-color: #111827;
+  background: var(--surface-toggle-on);
+  color: var(--text-highlight);
+  border-color: var(--surface-toggle-on);
 }
 
 .save-button:hover {
+  /* #1f2937 — dark button hover, no token */
   background: #1f2937;
 }
 
 .cancel-button {
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .cancel-button:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
 .task-card--snoozed {
@@ -231,16 +231,16 @@
 .task-action-button {
   height: 34px;
   padding: 0 var(--space-2);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-button);
-  background: var(--bg);
+  background: var(--surface-base);
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
   cursor: pointer;
 }
 
 .task-action-button:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
 .task-submenu {
@@ -252,9 +252,9 @@
   flex-direction: column;
   min-width: 8rem;
   padding: var(--space-1);
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-input);
-  background: var(--bg);
+  background: var(--surface-base);
   box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
@@ -270,7 +270,7 @@
 }
 
 .task-submenu button:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
 .task-card--keystone {

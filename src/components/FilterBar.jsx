@@ -134,7 +134,7 @@ function FilterBar({
           </div>
           <div className="filter-bar__toggles">
             {/* Advanced toggles */}
-            {advancedFeaturesEnabled && (<label className="toggle toggle--sm">
+            {advancedFeaturesEnabled && (<label className="toggle">
                 <span className="toggle__label">View Snoozed Tasks</span>
                 <input
                   type="checkbox"
@@ -155,7 +155,7 @@ function FilterBar({
                 </p>
               )}
 
-              {advancedFeaturesEnabled && (<label className="toggle toggle--sm">
+              {advancedFeaturesEnabled && (<label className="toggle">
                 <span className="toggle__label">Focus Mode (show only 7 tasks)</span>
                 <input
                   type="checkbox"
@@ -173,7 +173,7 @@ function FilterBar({
           )}
 
           {/* Show completed toggle — always visible */}
-            <label className="toggle toggle--sm">
+            <label className="toggle">
               <span className="toggle__label">Show completed tasks</span>
               <input
                 type="checkbox"

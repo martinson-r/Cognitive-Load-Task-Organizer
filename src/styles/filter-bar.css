@@ -1,6 +1,6 @@
 .filter-bar-wrapper {
   /* No margin-bottom — gap on .app-main owns the space between sections */
-  border: 1px solid #e5e7eb;
+  border: 1px solid var(--border-default);
   border-radius: var(--radius-card);
   overflow: hidden;
   transition: border-color 0.15s ease;
@@ -76,13 +76,12 @@
 
 .filter-bar__caret {
   font-size: var(--font-primary-size);
-  line-height: var(--font-primary-line);
+  line-height: 1;
   color: #6b7280;
   display: inline-block;
   transform: rotate(90deg);
   transition: transform 0.2s ease;
   flex-shrink: 0;
-  line-height: 1;
 }
 
 .filter-bar__caret--open {
@@ -100,7 +99,7 @@
   flex-direction: column;
   gap: var(--space-2);
   padding: 0 var(--space-2) var(--space-2);
-  border-top: 1px solid #e5e7eb;
+  border-top: 1px solid var(--border-default);
 }
 
 .filter-bar-wrapper--active .filter-bar__inner {
@@ -132,7 +131,7 @@
 
 .filter-select-wrap--active {
   border-color: var(--priority-medium);
-  background-color: #eef2ff;
+  background-color: var(--priority-medium-bg);
 }
 
 .filter-select {
@@ -141,7 +140,7 @@
   border: 1px solid #cfcfd6;
   border-radius: var(--radius-input);
   background: transparent;
-  color: var(--text-h);
+  color: var(--text-primary);
   font: inherit;
   appearance: none;
   -webkit-appearance: none;

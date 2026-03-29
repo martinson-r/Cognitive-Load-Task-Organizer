@@ -3,7 +3,7 @@
   padding: var(--space-2);
   border: 1px solid #d9d9d9;
   border-radius: var(--radius-card);
-  background: #fafafa;
+  background: var(--surface-subtle);
 }
 
 .momentum-panel__title {
@@ -31,9 +31,9 @@
 .momentum-energy-btn {
   height: 34px;
   padding: 0 var(--space-2);
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-pill);
-  background: var(--bg);
+  background: var(--surface-base);
   color: #374151;
   font: inherit;
   font-size: var(--font-chip-mobile-size);
@@ -43,14 +43,14 @@
 }
 
 .momentum-energy-btn:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
   border-color: #9ca3af;
 }
 
 .momentum-energy-btn.is-selected {
-  background: #111827;
-  color: #fff;
-  border-color: #111827;
+  background: var(--surface-toggle-on);
+  color: var(--text-highlight);
+  border-color: var(--surface-toggle-on);
   font-weight: 600;
 }
 
@@ -58,8 +58,8 @@
   height: 36px;
   padding: 0 var(--space-2);
   border-radius: var(--radius-button);
-  border: 1px solid #d1d5db;
-  background: var(--bg);
+  border: 1px solid var(--border-strong);
+  background: var(--surface-base);
   color: #374151;
   font: inherit;
   font-size: var(--font-chip-mobile-size);
@@ -69,16 +69,17 @@
 }
 
 .momentum-btn:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
 .momentum-btn--primary {
-  background: #111827;
-  color: #fff;
-  border-color: #111827;
+  background: var(--surface-toggle-on);
+  color: var(--text-highlight);
+  border-color: var(--surface-toggle-on);
 }
 
 .momentum-btn--primary:hover {
+  /* #1f2937 — dark button hover, no token */
   background: #1f2937;
 }
 
