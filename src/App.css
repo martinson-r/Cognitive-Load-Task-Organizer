@@ -44,6 +44,8 @@ button {
   background-size: 0.9rem;
 }
 
+/* ── Page shell ──────────────────────────────────────────────────────────── */
+
 .app {
   padding: var(--space-4);
   font-family: system-ui, -apple-system, sans-serif;
@@ -51,100 +53,111 @@ button {
   margin: 0 auto;
 }
 
+/* ── Header ──────────────────────────────────────────────────────────────── */
+
 .app-header {
   display: flex;
   justify-content: space-between;
-  margin-bottom: var(--space-4);
+  align-items: center;
+  margin-bottom: var(--space-3);
+}
+
+/*
+ * index.css sets h1 { margin: var(--space-4) 0 } globally.
+ * Inside a flex container those margins don't collapse — they balloon the
+ * header. Zero them out in this context.
+ */
+.app-header h1 {
+  margin: 0;
+}
+
+.header-controls {
+  display: flex;
+  flex-direction: row-reverse;
+  align-items: center;
+  gap: var(--space-1);
+  flex-shrink: 0;
+  margin: 0 var(--space-2);
 }
 
 .advanced-toggle {
-  margin: var(--space-2) 0;
+  /* No vertical margin — flex gap on header-controls handles spacing */
 }
 
-.info-banner {
-  padding: var(--space-2);
-  border-radius: var(--radius-input);
-  background: #ececec;
-  border: 1px solid var(--icon);
-  margin-bottom: var(--space-2);
+/* ── Main content column ─────────────────────────────────────────────────── */
+
+/*
+ * Single source of truth for vertical rhythm between major sections.
+ * Direct children separated by --space-3. Individual sections must NOT
+ * add their own margin-bottom — the gap owns it.
+ */
+.app-main {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
 }
 
-.info-banner p {
-  margin-bottom: var(--space-1);
-}
+/* ── Task input ───────────────────────────────────────────────────────────── */
 
 .task-input {
-  margin: var(--space-2) 0;
   padding: var(--space-2);
   border: 1px solid #d9d9d9;
   border-radius: var(--radius-card);
   background: #fafafa;
 }
 
-.filters {
-  margin-bottom: var(--space-2);
+/* ── Filters section ─────────────────────────────────────────────────────── */
+
+/* .filters is a bare wrapper — no margin, gap on app-main handles it */
+
+/* ── Mode strip (Custom / Sorted / Momentum) ─────────────────────────────── */
+
+.mode-strip {
+  display: inline-flex;
+  gap: var(--space-1);
+  padding: var(--space-1);
+  border-radius: var(--radius-card);
+  background: #eef1f5;
 }
+
+.mode-radio {
+  position: absolute;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.mode-pill {
+  padding: var(--space-2);
+  border-radius: var(--radius-input);
+  color: #5b6678;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
+  font-weight: 600;
+  cursor: pointer;
+  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.mode-radio:checked + .mode-pill {
+  background: var(--bg);
+  color: #111827;
+  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+}
+
+.mode-radio:focus-visible + .mode-pill {
+  outline: 2px solid #2563eb;
+  outline-offset: 2px;
+}
+
+/* ── Top controls (sort / momentum — only rendered when visible) ──────────── */
 
 .top-controls {
-  margin-bottom: var(--space-4);
-}
-
-.custom-context-row {
-  display: flex;
-  gap: var(--space-1);
-  align-items: center;
-}
-
-.custom-context-row input {
-  flex: 1;
-}
-
-.task-visibility-controls {
-  margin-bottom: var(--space-2);
-}
-
-.show-completed-toggle {
-  display: inline-flex;
-  align-items: center;
-  gap: var(--space-1);
-  font-size: var(--font-primary-size);
-  line-height: var(--font-primary-line);
-}
-
-.empty-state {
-  color: #6b7280;
-  margin-bottom: var(--space-2);
-  display: flex;
-  flex-direction: column;
-  gap: 0.35rem;
-}
-
-.empty-state p {
-  margin: 0;
-  font-size: 0.9rem;
-}
-
-.empty-state__link {
-  background: none;
-  border: none;
-  padding: 0;
-  color: var(--priority-medium);
-  font: inherit;
-  font-size: inherit;
-  cursor: pointer;
-  text-decoration: underline;
-  text-underline-offset: 2px;
-}
-
-.empty-state__link:hover {
-  color: #1e3a8a;
+  /* No margin — gap on app-main owns the spacing */
 }
 
 .sort-controls {
   display: flex;
   gap: var(--space-2);
   flex-wrap: wrap;
-  margin-bottom: var(--space-2);
 }
 
 .sort-controls label {
@@ -155,21 +168,7 @@ button {
   line-height: var(--font-primary-line);
 }
 
-.task-card--snoozed {
-  background: #add8e6;
-}
-
-.task-action-menu {
-  position: relative;
-  display: inline-block;
-}
-
-.focus-mode-info {
-  font-size: var(--font-chip-mobile-size);
-  line-height: var(--font-chip-mobile-line);
-  color: #6b7280;
-  margin-bottom: var(--space-1);
-}
+/* ── Toggles ─────────────────────────────────────────────────────────────── */
 
 .toggle {
   display: inline-flex;
@@ -223,6 +222,9 @@ button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
+  /* 0.625rem is intentional: this is the ON/OFF label inside the toggle
+     track thumb — no token exists at this size and it must stay small
+     to fit within the 1.5rem track height */
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -232,13 +234,13 @@ button {
 }
 
 .toggle__state--off {
-  right: 0.45rem;
+  right: var(--space-1);
   color: #4b5563;
   opacity: 1;
 }
 
 .toggle__state--on {
-  left: 0.45rem;
+  left: var(--space-1);
   color: #fff;
   opacity: 0;
 }
@@ -272,6 +274,77 @@ button {
   margin-bottom: var(--space-2);
 }
 
+/* ── Task visibility ─────────────────────────────────────────────────────── */
+
+.task-visibility-controls {
+  margin-bottom: var(--space-2);
+}
+
+.show-completed-toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-1);
+  font-size: var(--font-primary-size);
+  line-height: var(--font-primary-line);
+}
+
+/* ── Empty state ─────────────────────────────────────────────────────────── */
+
+.empty-state {
+  color: #6b7280;
+  margin-bottom: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.empty-state p {
+  margin: 0;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
+}
+
+.empty-state__link {
+  background: none;
+  border: none;
+  padding: 0;
+  color: var(--priority-medium);
+  font: inherit;
+  font-size: inherit;
+  cursor: pointer;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.empty-state__link:hover {
+  color: #1e3a8a;
+}
+
+/* ── Focus mode ──────────────────────────────────────────────────────────── */
+
+.focus-mode-info {
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
+  color: #6b7280;
+  margin-bottom: var(--space-1);
+}
+
+/* ── Info banner ─────────────────────────────────────────────────────────── */
+
+.info-banner {
+  padding: var(--space-2);
+  border-radius: var(--radius-input);
+  background: #ececec;
+  border: 1px solid var(--icon);
+  margin-bottom: var(--space-2);
+}
+
+.info-banner p {
+  margin-bottom: var(--space-1);
+}
+
+/* ── Task form layout ────────────────────────────────────────────────────── */
+
 .task-form-row {
   display: flex;
   gap: var(--space-2);
@@ -288,6 +361,33 @@ button {
   flex: 0 0 auto;
 }
 
+/* ── Custom context row ──────────────────────────────────────────────────── */
+
+.custom-context-row {
+  display: flex;
+  gap: var(--space-1);
+  align-items: center;
+}
+
+.custom-context-row input {
+  flex: 1;
+}
+
+/* ── Snoozed task card (App-level override) ──────────────────────────────── */
+
+.task-card--snoozed {
+  background: #add8e6;
+}
+
+/* ── Task action menu ────────────────────────────────────────────────────── */
+
+.task-action-menu {
+  position: relative;
+  display: inline-block;
+}
+
+/* ── Mode toggle (legacy, kept for safety) ───────────────────────────────── */
+
 .mode-toggle {
   display: inline-flex;
   border-radius: var(--radius-input);
@@ -298,7 +398,8 @@ button {
 
 .mode-button {
   padding: var(--space-1) var(--space-2);
-  font-size: 0.85rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   background: #f3f4f6;
   border: none;
   cursor: pointer;
@@ -320,40 +421,7 @@ button {
   font-weight: 500;
 }
 
-.mode-strip {
-  display: inline-flex;
-  gap: var(--space-1);
-  padding: var(--space-1);
-  border-radius: var(--radius-card);
-  background: #eef1f5;
-}
-
-.mode-radio {
-  position: absolute;
-  opacity: 0;
-  pointer-events: none;
-}
-
-.mode-pill {
-  padding: var(--space-2);
-  border-radius: 9px;
-  color: #5b6678;
-  font-size: 0.9rem;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
-}
-
-.mode-radio:checked + .mode-pill {
-  background: var(--bg);
-  color: #111827;
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
-}
-
-.mode-radio:focus-visible + .mode-pill {
-  outline: 2px solid #2563eb;
-  outline-offset: 2px;
-}
+/* ── Data / import-export controls ──────────────────────────────────────── */
 
 .data-controls {
   display: flex;
@@ -368,7 +436,8 @@ button {
   background: var(--bg);
   color: #374151;
   font: inherit;
-  font-size: 0.8rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   cursor: pointer;
   display: inline-flex;
   align-items: center;
@@ -388,7 +457,8 @@ button {
 }
 
 .import-status {
-  font-size: 0.85rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   margin: 0;
 }
 
@@ -400,14 +470,7 @@ button {
   color: #15803d;
 }
 
-.header-controls {
-  margin: 0 var(--space-2);
-  display: flex;
-  flex-direction: row-reverse;
-  align-items: center;
-  gap: var(--space-1);
-  flex-shrink: 0;
-}
+/* ── Responsive ──────────────────────────────────────────────────────────── */
 
 @media (max-width: 640px) {
   .app {
@@ -418,10 +481,11 @@ button {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-2);
+    margin-bottom: var(--space-2);
   }
 
-  .advanced-toggle {
-    margin: 0;
+  .app-main {
+    gap: var(--space-2);
   }
 
   .sort-controls {

@@ -16,7 +16,8 @@
 }
 
 .momentum-panel__help {
-  font-size: 0.9rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   opacity: 0.75;
 }
 
@@ -35,7 +36,8 @@
   background: var(--bg);
   color: #374151;
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
@@ -60,7 +62,8 @@
   background: var(--bg);
   color: #374151;
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   cursor: pointer;
   transition: background 0.15s ease;
 }
@@ -88,7 +91,8 @@
 
 .momentum-panel__error {
   color: #b00020;
-  font-size: 0.875rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   margin: var(--space-2) 0;
 }
 

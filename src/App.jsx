@@ -764,52 +764,54 @@ function App() {
           )}
         </div>
 
-        <div className="top-controls">
-          <div className="mode-controls">
-            {viewMode === "sorted" && (
-              <div className="sort-controls">
-                <label>
-                  Sort by
-                  <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
-                    <option value="load">Cognitive Load</option>
-                    <option value="priority">Priority</option>
-                  </select>
-                </label>
+        {(viewMode === "sorted" || (advancedFeaturesEnabled && momentumModeEnabled)) && (
+          <div className="top-controls">
+            <div className="mode-controls">
+              {viewMode === "sorted" && (
+                <div className="sort-controls">
+                  <label>
+                    Sort by
+                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                      <option value="load">Cognitive Load</option>
+                      <option value="priority">Priority</option>
+                    </select>
+                  </label>
 
-                <label>
-                  Direction
-                  <select
-                    value={sortDirection}
-                    onChange={(e) => setSortDirection(e.target.value)}
-                  >
-                    <option value="asc">Low to High</option>
-                    <option value="desc">High to Low</option>
-                  </select>
-                </label>
-              </div>
-            )}
+                  <label>
+                    Direction
+                    <select
+                      value={sortDirection}
+                      onChange={(e) => setSortDirection(e.target.value)}
+                    >
+                      <option value="asc">Low to High</option>
+                      <option value="desc">High to Low</option>
+                    </select>
+                  </label>
+                </div>
+              )}
 
-            {advancedFeaturesEnabled && momentumModeEnabled && (
-              <div className="momentum-controls">
-                <MomentumPanel
-                  momentumRunActive={momentumRunActive}
-                  momentumEnergy={momentumEnergy}
-                  momentumError={momentumError}
-                  momentumNeedsFallback={momentumNeedsFallback}
-                  allowCrossContextRunway={allowCrossContextRunway}
-                  onSelectEnergy={(energy) => {
-                    setMomentumEnergy(energy);
-                    setMomentumError("");
-                  }}
-                  onStartMomentumRun={handleStartMomentumRun}
-                  onPickKeystoneForMe={handlePickKeystoneForMe}
-                  onEnableCrossContextRunway={handleEnableCrossContextRunway}
-                  onEndMomentumRun={handleEndMomentumRun}
-                />
-              </div>
-            )}
+              {advancedFeaturesEnabled && momentumModeEnabled && (
+                <div className="momentum-controls">
+                  <MomentumPanel
+                    momentumRunActive={momentumRunActive}
+                    momentumEnergy={momentumEnergy}
+                    momentumError={momentumError}
+                    momentumNeedsFallback={momentumNeedsFallback}
+                    allowCrossContextRunway={allowCrossContextRunway}
+                    onSelectEnergy={(energy) => {
+                      setMomentumEnergy(energy);
+                      setMomentumError("");
+                    }}
+                    onStartMomentumRun={handleStartMomentumRun}
+                    onPickKeystoneForMe={handlePickKeystoneForMe}
+                    onEnableCrossContextRunway={handleEnableCrossContextRunway}
+                    onEndMomentumRun={handleEndMomentumRun}
+                  />
+                </div>
+              )}
+            </div>
           </div>
-        </div>
+        )}
 
         <section className="task-list-section">
           {focusModeEnabled && (

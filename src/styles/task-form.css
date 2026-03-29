@@ -17,7 +17,8 @@
 
 .task-form-trigger__placeholder {
   color: #6b7280;
-  font-size: 0.95rem;
+  font-size: var(--font-primary-size);
+  line-height: var(--font-primary-line);
 }
 
 .task-modal-backdrop {
@@ -89,6 +90,7 @@
   background: #f3f4f6;
   color: #6b7280;
   font-size: var(--font-primary-size);
+  line-height: var(--font-primary-line);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -127,12 +129,13 @@
     flex-direction: column;
     align-items: stretch;
     flex: 1;
-    gap: 0.35rem;
+    gap: var(--space-1);
   }
 }
 
 .segment-group__label {
   font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
@@ -158,15 +161,16 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.45rem 0.6rem;
+  padding: var(--space-1) var(--space-2);
   border: 1px solid #d1d5db;
   border-radius: var(--radius-button);
   background: #f9fafb;
-  font-size: 0.82rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   font-weight: 500;
   color: var(--text-h);
   cursor: pointer;
-  gap: 4px;
+  gap: var(--space-1);
 }
 
 .segment-selected:hover {
@@ -207,8 +211,8 @@
 
 .segment-picker {
   background: var(--bg);
-  border-radius: 16px 16px 0 0;
-  padding: var(--space-3) var(--space-3) 2.5rem;
+  border-radius: var(--radius-modal) var(--radius-modal) 0 0;
+  padding: var(--space-3) var(--space-3) var(--space-4);
   width: 100%;
   max-width: 400px;
   box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.15);
@@ -233,7 +237,8 @@
 }
 
 .segment-picker__title {
-  font-size: 0.9rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   font-weight: 600;
   color: #374151;
   text-transform: uppercase;
@@ -264,7 +269,7 @@
   height: 3rem;
   background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.95));
   pointer-events: none;
-  border-radius: 0 0 8px 8px;
+  border-radius: 0 0 var(--radius-input) var(--radius-input);
 }
 
 .segment-picker__option {
@@ -272,11 +277,12 @@
   align-items: center;
   justify-content: space-between;
   width: 100%;
-  padding: 0.65rem 0.85rem;
+  padding: var(--space-1) var(--space-2);
   border: 1px solid #e5e7eb;
   border-radius: var(--radius-input);
   background: var(--bg);
-  font-size: 0.9rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   color: #374151;
   cursor: pointer;
   text-align: left;
@@ -300,7 +306,8 @@
 }
 
 .segment-picker__check {
-  font-size: 0.85rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   opacity: 0.8;
 }
 
@@ -313,10 +320,11 @@
 .task-modal__custom-context input {
   flex: 1;
   height: 38px;
-  padding: 0 10px;
+  padding: 0 var(--space-2);
   border: 1px solid #cfcfd6;
   border-radius: var(--radius-button);
-  font-size: 0.9rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
 }
 
 .task-modal__custom-context button {
@@ -325,7 +333,8 @@
   border-radius: var(--radius-button);
   border: 1px solid #d1d5db;
   background: #f9fafb;
-  font-size: 0.85rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   cursor: pointer;
 }
 
@@ -342,7 +351,8 @@
   border: 1px solid #111827;
   background: #111827;
   color: #fff;
-  font-size: 0.95rem;
+  font-size: var(--font-primary-size);
+  line-height: var(--font-primary-line);
   font-weight: 600;
   cursor: pointer;
 }
@@ -367,11 +377,12 @@
 
 .task-modal__cancel {
   height: 2.75rem;
-  padding: 0 1.25rem;
+  padding: 0 var(--space-2);
   border-radius: var(--radius-input);
   border: 1px solid #d1d5db;
   background: var(--bg);
-  font-size: 0.95rem;
+  font-size: var(--font-primary-size);
+  line-height: var(--font-primary-line);
   cursor: pointer;
 }
 

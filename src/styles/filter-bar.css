@@ -1,5 +1,5 @@
 .filter-bar-wrapper {
-  margin-bottom: var(--space-2);
+  /* No margin-bottom — gap on .app-main owns the space between sections */
   border: 1px solid #e5e7eb;
   border-radius: var(--radius-card);
   overflow: hidden;
@@ -48,14 +48,15 @@
 .filter-bar__header-right {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: var(--space-2);
   min-width: 0;
 }
 
 .filter-bar__no-filters,
 .filter-bar__count,
 .filter-bar__reset-inline {
-  font-size: 0.8rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
 }
 
 .filter-bar__no-filters {
@@ -75,6 +76,7 @@
 
 .filter-bar__caret {
   font-size: var(--font-primary-size);
+  line-height: var(--font-primary-line);
   color: #6b7280;
   display: inline-block;
   transform: rotate(90deg);
@@ -165,14 +167,15 @@
 }
 
 .filter-bar__snooze-hint {
-  font-size: 0.78rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   color: #6b7280;
   margin: 0;
-  padding-left: 0.1rem;
+  padding-left: 0;
 }
 
 .filter-bar__toggles {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: var(--space-2);
 }
