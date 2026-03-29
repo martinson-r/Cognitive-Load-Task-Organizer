@@ -8,7 +8,7 @@
 
 .filter-bar-wrapper--active {
   border-color: #d9d9d9;
-  background-color: rgb(250, 248, 240);
+  background-color: #FAF8F0;
 }
 
 .filter-bar__header {
@@ -42,7 +42,7 @@
 .filter-bar__header--active .filter-bar__caret,
 .filter-bar__count,
 .filter-bar__reset-inline {
-  color: rgb(143, 0, 0);
+  color: #8F0000;
 }
 
 .filter-bar__header-right {
@@ -71,7 +71,7 @@
 }
 
 .filter-bar__reset-inline:hover {
-  color: rgb(100, 0, 0);
+  color: #640000;
 }
 
 .filter-bar__caret {

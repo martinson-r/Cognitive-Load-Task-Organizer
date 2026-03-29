@@ -1,14 +1,70 @@
 :root {
-  --priority-low: #64748b;
-  --priority-medium: #304c89;
-  --priority-high: #a21caf;
-  --load-low: #3b82f6;
-  --load-medium: #ff6700;
-  --load-high: #c2001d;
-  --action-edit: #32cd32;
-  --action-delete: #d21f3c;
-  --icon: #555;
-  --icon-hover: #222;
+  /* ── Text ────────────────────────────────────────────────────────────────
+   * Primary       #111827  — headings, task titles, strong labels
+   * Secondary     #4B5563  — body text, descriptions
+   * Tertiary      #858585  — muted/disabled text
+   * Highlight     #FFFFFF  — text on dark/filled surfaces
+   * Button Subtle #989898  — secondary button label
+   */
+  --text-primary: #111827;
+  --text-secondary: #4B5563;
+  --text-tertiary: #858585;
+  --text-highlight: #FFFFFF;
+  --text-button-subtle: #989898;
+
+  /* ── Surface ─────────────────────────────────────────────────────────────
+   * Base         #FFFFFF  — default page/card background
+   * Subtle       #FAFAFA  — slightly off-white panels
+   * Light        #F5F5F5  — hover states, alternate backgrounds
+   * Muted        #D1D5DB  — dividers, disabled fills
+   * Toggle On    #111827  — active toggle track (= --text-primary)
+   * Toggle Off   #D1D5DB  — inactive toggle track (= --surface-muted)
+   */
+  --surface-base: #FFFFFF;
+  --surface-subtle: #FAFAFA;
+  --surface-light: #F5F5F5;
+  --surface-muted: #D1D5DB;
+  --surface-toggle-on: #111827;
+  --surface-toggle-off: #D1D5DB;
+
+  /* ── Border ──────────────────────────────────────────────────────────────
+   * Default       #E5E7EB  — card borders, dividers
+   * Strong        #D1D5DB  — input borders, button borders
+   * Button Subtle #EAEAEA  — subtle button outline
+   */
+  --border-default: #E5E7EB;
+  --border-strong: #D1D5DB;
+  --border-button-subtle: #EAEAEA;
+
+  /* ── Priority ────────────────────────────────────────────────────────────
+   * Fixed: --priority-medium was #304c89, corrected to Figma value #3730A3
+   */
+  --priority-low: #64748B;
+  --priority-low-bg: #F1F5F9;
+  --priority-medium: #3730A3;
+  --priority-medium-bg: #EEF2FF;
+  --priority-high: #A21CAF;
+  --priority-high-bg: #FDF4FF;
+
+  /* ── Load ────────────────────────────────────────────────────────────────
+   */
+  --load-low: #3B82F6;
+  --load-low-bg: #DBEAFE;
+  --load-medium: #FF6700;
+  --load-medium-bg: #FFEDD5;
+  --load-high: #C2001D;
+  --load-high-bg: #FEE2E2;
+
+  /* ── Action ──────────────────────────────────────────────────────────────
+   */
+  --action-edit: #32CD32;
+  --action-delete: #D21F3C;
+
+  /* ── Icon ────────────────────────────────────────────────────────────────
+   */
+  --icon: #555555;
+  --icon-hover: #222222;
+  --icon-subtle: #858585;
 }
 
 input,
@@ -103,7 +159,7 @@ button {
   padding: var(--space-2);
   border: 1px solid #d9d9d9;
   border-radius: var(--radius-card);
-  background: #fafafa;
+  background: var(--surface-subtle);
 }
 
 /* ── Filters section ─────────────────────────────────────────────────────── */
@@ -139,7 +195,7 @@ button {
 
 .mode-radio:checked + .mode-pill {
   background: var(--bg);
-  color: #111827;
+  color: var(--text-primary);
   box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
 }
 
@@ -200,7 +256,7 @@ button {
   width: 3.25rem;
   height: 1.5rem;
   border-radius: var(--radius-pill);
-  background: #d1d5db;
+  background: var(--surface-toggle-off);
   transition: background 0.2s ease;
   flex-shrink: 0;
   overflow: hidden;
@@ -213,7 +269,7 @@ button {
   width: 1.25rem;
   height: 1.25rem;
   border-radius: 50%;
-  background: #fff;
+  background: var(--surface-base);
   transition: transform 0.2s ease;
   z-index: 2;
 }
@@ -222,9 +278,8 @@ button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  /* 0.625rem is intentional: this is the ON/OFF label inside the toggle
-     track thumb — no token exists at this size and it must stay small
-     to fit within the 1.5rem track height */
+  /* 0.625rem intentional: ON/OFF label inside the track must physically
+     fit within the 1.5rem track height. No token exists at this size. */
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -235,18 +290,18 @@ button {
 
 .toggle__state--off {
   right: var(--space-1);
-  color: #4b5563;
+  color: var(--text-secondary);
   opacity: 1;
 }
 
 .toggle__state--on {
   left: var(--space-1);
-  color: #fff;
+  color: var(--text-highlight);
   opacity: 0;
 }
 
 .toggle input:checked + .toggle__track {
-  background: #111827;
+  background: var(--surface-toggle-on);
 }
 
 .toggle input:checked + .toggle__track .toggle__thumb {
@@ -392,7 +447,7 @@ button {
   display: inline-flex;
   border-radius: var(--radius-input);
   overflow: hidden;
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-strong);
   margin-bottom: var(--space-2);
 }
 
@@ -408,16 +463,16 @@ button {
 }
 
 .mode-button + .mode-button {
-  border-left: 1px solid #d1d5db;
+  border-left: 1px solid var(--border-strong);
 }
 
 .mode-button:hover {
-  background: #e5e7eb;
+  background: var(--border-default);
 }
 
 .mode-button.active {
-  background: #111827;
-  color: #fff;
+  background: var(--text-primary);
+  color: var(--text-highlight);
   font-weight: 500;
 }
 
@@ -431,7 +486,7 @@ button {
 .data-btn {
   height: 32px;
   padding: 0 var(--space-2);
-  border: 1px solid #d1d5db;
+  border: 1px solid var(--border-strong);
   border-radius: var(--radius-button);
   background: var(--bg);
   color: #374151;

@@ -37,16 +37,16 @@ export const DEFAULT_CONTEXT_OPTIONS = [
 
 // ── Load pill colors ──
 export const LOAD_PILL_COLORS = {
-  low:    { bg: "#dbeafe", text: "#1e40af" }, // blue
-  medium: { bg: "#ffedd5", text: "#9a3412" }, // orange
-  high:   { bg: "#fee2e2", text: "#b91c1c" }, // red
+  low:    { bg: "#dbeafe", text: "#3B82F6" }, // blue
+  medium: { bg: "#ffedd5", text: "#FF6700" }, // orange
+  high:   { bg: "#fee2e2", text: "#C2001D" }, // red
 };
 
 // ── Priority pill colors ──
 export const PRIORITY_PILL_COLORS = {
-  low:    { bg: "#f1f5f9", text: "#475569" }, // slate
-  medium: { bg: "#eef2ff", text: "#3730a3" }, // indigo
-  high:   { bg: "#fdf4ff", text: "#86198f" }, // purple
+  low:    { bg: "#f1f5f9", text: "#64748B" }, // slate
+  medium: { bg: "#eef2ff", text: "#3730A3" }, // indigo
+  high:   { bg: "#fdf4ff", text: "#A21CAF" }, // purple
 };
 
 // ── Context colors — preset ──
