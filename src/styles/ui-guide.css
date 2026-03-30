@@ -1,3 +1,73 @@
+/* ── Layout ── */
+.ui-guide-grid {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.ui-guide-toc {
+  background: var(--surface-subtle);
+  padding: var(--space-2);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-default);
+  margin-bottom: var(--space-1);
+}
+
+.ui-guide-toc__label {
+  font-size: 0.75rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  color: var(--text-tertiary);
+  margin-bottom: var(--space-1);
+}
+
+.ui-guide-toc__links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.ui-guide-toc__link {
+  font-size: var(--font-chip-mobile-size);
+  color: var(--color-link);
+  text-decoration: none;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.ui-guide-toc__link:hover {
+  text-decoration: underline;
+}
+
+.ui-guide-content {
+  min-width: 0;
+}
+
+/* Desktop Sidebar Switch */
+@media (min-width: 860px) {
+  .ui-guide-grid {
+    display: grid;
+    grid-template-columns: 200px 1fr;
+    gap: var(--space-4);
+    align-items: start;
+  }
+
+  .ui-guide-toc {
+    position: sticky;
+    top: var(--space-2);
+    background: transparent;
+    padding: 0;
+    border: none;
+    margin-bottom: 0;
+  }
+
+  .ui-guide-toc__links {
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+}
+
+/* ── UI Guide Styling ── */
 .ui-guide-section {
   margin-bottom: var(--space-4);
   padding-bottom: var(--space-4);
@@ -11,7 +81,7 @@
 .ui-guide-section h2 {
   font-size: var(--font-title-sm-size);
   color: var(--text-h);
-  margin-bottom: var(--space-1);
+  margin-bottom: var(--space-2);
 }
 
 .ui-guide-desc {
@@ -47,6 +117,7 @@
 
 .type-specimen__meta {
   display: flex;
+  flex-wrap: wrap;
   gap: var(--space-2);
   align-items: center;
   margin-top: var(--space-1);
@@ -55,11 +126,22 @@
   color: var(--text-tertiary);
 }
 
-/* ── Token Grids (Colors, Shadows, Radii) ── */
+/* ── Token Grids ── */
 .token-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
   gap: var(--space-3);
+}
+
+@media (max-width: 600px) {
+  .token-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .type-specimen__demo {
+    white-space: normal;
+    word-break: break-word;
+  }
 }
 
 .token-card {
