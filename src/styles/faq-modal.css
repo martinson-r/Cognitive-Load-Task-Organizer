@@ -9,7 +9,7 @@
   font-size: var(--font-section-size);
   line-height: var(--font-section-line);
   font-weight: 600;
-  color: var(--text-h);
+  color: var(--text-primary);
 }
 
 .faq-modal__body {
@@ -52,21 +52,21 @@
 }
 
 .faq-item__q {
-  font-size: 0.9rem;
+  font-size: var(--font-chip-mobile-size);
   font-weight: 600;
-  color: var(--text-h);
+  color: var(--text-primary);
   margin: 0 0 var(--space-2);
 }
 
 .faq-item__a {
-  font-size: 0.875rem;
+  font-size: var(--font-chip-mobile-size);
   color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
 }
 
 .faq-item__a code {
-  font-size: 0.8rem;
+  font-size: var(--font-chip-mobile-size);
   background: var(--surface-light);
   padding: 1px 5px;
   border-radius: var(--radius-input);
@@ -74,7 +74,7 @@
 }
 
 .faq-item__a strong {
-  color: var(--text-h);
+  color: var(--text-primary);
 }
 
 .faq-item--warning .faq-item__q {
@@ -88,11 +88,11 @@
 .faq-links {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: var(--space-1);
 }
 
 .faq-link {
-  font-size: 0.875rem;
+  font-size: var(--font-chip-mobile-size);
   color: var(--color-link);
   text-decoration: none;
   display: inline-flex;
@@ -116,19 +116,19 @@
   height: 32px;
   border-radius: var(--radius-button);
   border: 1px solid var(--border-strong);
-  background: var(--bg);
+  background: var(--surface-base);
   color: var(--text-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   flex-shrink: 0;
-  font-size: 0.9rem;
+  font-size: var(--font-chip-mobile-size);
   font-weight: 700;
   transition: background 0.15s ease, color 0.15s ease;
 }
 
 .faq-trigger:hover {
   background: var(--surface-light);
-  color: var(--text-h);
+  color: var(--text-primary);
 }
