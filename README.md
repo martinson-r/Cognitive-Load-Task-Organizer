@@ -148,8 +148,10 @@ This project includes a living **UI Implementation Guide** that documents the ap
 
 While the guide is intentionally omitted from the main application navigation to maintain a focused user experience, it can be accessed directly:
 
-* **Live Documentation:** [View the UI Guide](https://cognitiveorganizer.netlify.app//ui-guide)
+* **Live Documentation:** [View the UI Guide](https://cognitiveorganizer.netlify.app/#/ui-guide)
 * **Local Development:** Navigate to `/ui-guide` while the dev server is running.
+
+**Note:** The deployed URL utilizes `/#/ui-guide`. `HashRouter` was a deliberate tradeoff for zero-config portability across static hosting environments (like Netlify/GitHub Pages) without requiring server-level redirect logic.
 
 ### Why a UI Guide?
 As a UX Engineer, I built this guide to serve as a pragmatic dictionary for developers. It ensures:
