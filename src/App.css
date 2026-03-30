@@ -580,3 +580,42 @@ button {
     align-items: flex-start;
   }
 }
+
+/* Critical adjustments for Dark Mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    /* ── Text ── */
+    --text-primary: #F9FAFB;
+    --text-secondary: #D1D5DB;
+    --text-tertiary: #9CA3AF;
+    --text-highlight: #FFFFFF;
+    
+    /* ── Surface ── */
+    --surface-base: #1F2937;     /* Main background */
+    --surface-subtle: #111827;   /* Inputs, slightly darker */
+    --surface-light: #374151;    /* Hover states, mode strip */
+    --surface-muted: #4B5563;
+    --surface-toggle-on: #60A5FA;
+    --surface-toggle-off: #4B5563;
+    
+    /* ── Border ── */
+    --border-default: #374151;
+    --border-strong: #4B5563;
+    --border-input: #4B5563;
+    
+    /* ── Shadows & Overlays ── */
+    --backdrop-overlay: rgba(0, 0, 0, 0.65);
+    --backdrop-overlay-dark: rgba(0, 0, 0, 0.75);
+    
+    /* ── Interactive & Focus ── */
+    --focus-ring: #60A5FA;
+    --focus-ring-subtle: rgba(96, 165, 250, 0.25);
+    --color-active-dark: #93C5FD;
+    
+    /* ── Filter Specific ── */
+    --surface-filter-active: rgba(55, 48, 163, 0.3);
+    --surface-filter-wrapper: #111827;
+    --color-filter-active: #FCA5A5;
+    --border-filter-active: rgba(252, 165, 165, 0.2);
+  }
+}

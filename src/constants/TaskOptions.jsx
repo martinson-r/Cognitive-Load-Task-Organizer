@@ -35,21 +35,25 @@ export const DEFAULT_CONTEXT_OPTIONS = [
   "general",
 ];
 
-// ── Load pill colors ──
+// ── Load pill colors (Now using CSS Tokens) ──
 export const LOAD_PILL_COLORS = {
-  low:    { bg: "#dbeafe", text: "#3B82F6" }, // blue
-  medium: { bg: "#ffedd5", text: "#FF6700" }, // orange
-  high:   { bg: "#fee2e2", text: "#C2001D" }, // red
+  low:    { bg: "var(--load-low-bg)", text: "var(--load-low)" },
+  medium: { bg: "var(--load-medium-bg)", text: "var(--load-medium)" },
+  high:   { bg: "var(--load-high-bg)", text: "var(--load-high)" },
 };
 
-// ── Priority pill colors ──
+// ── Priority pill colors (Now using CSS Tokens) ──
 export const PRIORITY_PILL_COLORS = {
-  low:    { bg: "#f1f5f9", text: "#64748B" }, // slate
-  medium: { bg: "#eef2ff", text: "#3730A3" }, // indigo
-  high:   { bg: "#fdf4ff", text: "#A21CAF" }, // purple
+  low:    { bg: "var(--priority-low-bg)", text: "var(--priority-low)" },
+  medium: { bg: "var(--priority-medium-bg)", text: "var(--priority-medium)" },
+  high:   { bg: "var(--priority-high-bg)", text: "var(--priority-high)" },
 };
 
 // ── Context colors — preset ──
+// Note: These are left as hexes. Because there are 20 different colors 
+// across the preset and custom pools, creating CSS variables for all of 
+// them is likely overkill for a demo app. They will remain light/bright 
+// in dark mode, which usually still looks fine as an accent!
 const CONTEXT_COLORS = {
   kitchen:  { bg: "#fef3c7", text: "#92400e" }, // amber
   bathroom: { bg: "#ccfbf1", text: "#0f766e" }, // teal

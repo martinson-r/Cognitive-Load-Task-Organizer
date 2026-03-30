@@ -474,6 +474,7 @@ function App() {
       const remainingTasks = normalizeTaskPositions(
         tasks.filter((task) => task.id !== id)
       );
+      if (id === keystoneTaskId) setKeystoneTaskId(null);
       await deleteTask(id);
       await Promise.all(remainingTasks.map((task) => saveTask(task)));
       setTasks(remainingTasks);
