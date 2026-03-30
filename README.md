@@ -150,7 +150,8 @@ While the guide is intentionally omitted from the main application navigation to
 
 * **Live Documentation:** [View the UI Guide](https://cognitiveorganizer.netlify.app/#/ui-guide)
 * **Local Development:** Navigate to `/ui-guide` while the dev server is running.
-* **Note:** Deployed url will be `url/#/ui-guide` - HashRouter was a tradeoff used for zero-config portability across static hosting environments without requiring server-level redirect logic.
+
+**Note:** The deployed URL utilizes `/#/ui-guide`. `HashRouter` was a deliberate tradeoff for zero-config portability across static hosting environments (like Netlify/GitHub Pages) without requiring server-level redirect logic.
 
 ### Why a UI Guide?
 As a UX Engineer, I built this guide to serve as a pragmatic dictionary for developers. It ensures:
