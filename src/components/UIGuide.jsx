@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import "../App.css";
 import "../styles/ui-guide.css";
 
@@ -89,7 +90,10 @@ function UIGuide() {
       <header className="app-header">
         <h1>UI Implementation Guide</h1>
         <div className="header-controls">
-          <a href="/" className="data-btn" style={{ textDecoration: 'none' }}>← Back to App</a>
+          {/* Change <a> to <Link to="/"> */}
+          <Link to="/" className="data-btn" style={{ textDecoration: 'none' }}>
+            ← Back to App
+          </Link>
         </div>
       </header>
 
