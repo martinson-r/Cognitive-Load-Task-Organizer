@@ -119,7 +119,7 @@ Then open:
 
 http://localhost:5173
 
-## 🎨 Design System & UI Guide
+## Design System & UI Guide
 
 This project includes a living **UI Implementation Guide** that documents the application's semantic tokens, typography scales, and accessible component patterns.
 
