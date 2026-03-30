@@ -141,7 +141,7 @@
   border: 1px solid var(--border-input);
   border-radius: var(--radius-input);
   background: transparent;
-  color: var(--text-h);
+  color: var(--text-primary);
   font: inherit;
   appearance: none;
   -webkit-appearance: none;

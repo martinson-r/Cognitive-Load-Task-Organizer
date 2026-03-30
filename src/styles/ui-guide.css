@@ -29,10 +29,16 @@
 
 .ui-guide-toc__link {
   font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   color: var(--color-link);
   text-decoration: none;
   font-weight: 500;
   white-space: nowrap;
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
 }
 
 .ui-guide-toc__link:hover {
@@ -80,7 +86,7 @@
 
 .ui-guide-section h2 {
   font-size: var(--font-title-sm-size);
-  color: var(--text-h);
+  color: var(--text-primary);
   margin-bottom: var(--space-2);
 }
 
@@ -108,7 +114,7 @@
 }
 
 .type-specimen__demo {
-  color: var(--text-h);
+  color: var(--text-primary);
   margin: 0;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -150,7 +156,7 @@
   border: 1px solid var(--border-default);
   border-radius: var(--radius-card);
   overflow: hidden;
-  background: var(--bg);
+  background: var(--surface-base);
 }
 
 .token-card__preview {
@@ -169,7 +175,7 @@
 .token-card__preview-box {
   width: 60px;
   height: 60px;
-  background: var(--bg);
+  background: var(--surface-base);
   border: 1px solid var(--border-default);
 }
 
@@ -182,7 +188,7 @@
 
 .token-card__name {
   font-family: var(--mono);
-  font-size: 0.8rem;
+  font-size: var(--font-chip-mobile-size);
   font-weight: 600;
   color: var(--priority-medium);
   background: var(--surface-filter-active);
@@ -196,4 +202,13 @@
   color: var(--text-secondary);
   line-height: 1.4;
   margin: 0;
+}
+.ui-guide-subheading {
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  color: var(--text-tertiary);
+  margin: var(--space-3) 0 var(--space-2);
 }
