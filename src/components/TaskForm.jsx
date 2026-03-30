@@ -1,6 +1,11 @@
 import { useState, useEffect, useRef } from "react";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 import "../styles/task-form.css";
 import { LOAD_PILL_COLORS, PRIORITY_PILL_COLORS, getContextColor } from "../constants/TaskOptions";
+
+// Assuming SegmentGroup and SegmentPicker have been correctly imported
+// from the updated SegmentGroup.jsx file depending on your folder setup.
+import { SegmentGroup } from "./SegmentGroup"; 
 
 const LOAD_SHORT = {
   low: "low load",
@@ -13,115 +18,6 @@ const PRIORITY_SHORT = {
   medium: "med priority",
   high: "high priority",
 };
-
-// Second-layer picker modal — opens on top of the task modal
-function SegmentPicker({ label, options, value, onChange, onClose, getOptionColor }) {
-  const [hasScrollableContent, setHasScrollableContent] = useState(false);
-  const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
-  const scrollRef = useRef(null);
-
-  useEffect(() => {
-    function handleKey(e) {
-      if (e.key === "Escape") onClose();
-    }
-    document.addEventListener("keydown", handleKey);
-    return () => document.removeEventListener("keydown", handleKey);
-  }, [onClose]);
-
-  useEffect(() => {
-    const el = scrollRef.current;
-    if (!el) return;
-    const check = () => {
-      setHasScrollableContent(el.scrollHeight > el.clientHeight);
-      setIsScrolledToBottom(el.scrollHeight - el.scrollTop <= el.clientHeight + 2);
-    };
-    check();
-    el.addEventListener("scroll", check);
-    return () => el.removeEventListener("scroll", check);
-  }, [options]);
-
-  return (
-    <div
-      className="segment-picker-backdrop"
-      onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
-    >
-      <div className="segment-picker" role="dialog" aria-label={`Choose ${label}`}>
-        <div className="segment-picker__header">
-          <span className="segment-picker__title">{label}</span>
-          <button
-            type="button"
-            className="task-modal__close"
-            onClick={onClose}
-            aria-label="Close"
-          >
-            ✕
-          </button>
-        </div>
-        <div className="segment-picker__scroll-wrap">
-          <div
-            className="segment-picker__options"
-            ref={scrollRef}
-          >
-            {options.map((opt) => {
-              const isSelected = value === opt.value;
-              const color = getOptionColor ? getOptionColor(opt.value) : null;
-              return (
-                <button
-                  key={opt.value}
-                  type="button"
-                  className={`segment-picker__option ${isSelected ? "segment-picker__option--selected" : ""}`}
-                  style={!isSelected && color ? { background: color.bg, color: color.text, borderColor: "transparent" } : undefined}
-                  onClick={() => { onChange(opt.value); onClose(); }}
-                >
-                  {opt.label}
-                  {isSelected && (
-                    <span className="segment-picker__check" aria-hidden="true">✓</span>
-                  )}
-                </button>
-              );
-            })}
-          </div>
-          {hasScrollableContent && !isScrolledToBottom && (
-            <div className="segment-picker__fade" aria-hidden="true" />
-          )}
-        </div>
-      </div>
-    </div>
-  );
-}
-
-// Stable segment button — never expands in place
-function SegmentGroup({ label, options, value, onChange, getOptionColor }) {
-  const [pickerOpen, setPickerOpen] = useState(false);
-  const selectedLabel = options.find((o) => o.value === value)?.label ?? value;
-  const color = getOptionColor ? getOptionColor(value) : null;
-
-  return (
-    <div className="segment-group">
-      <span className="segment-group__label">{label}</span>
-      <button
-        type="button"
-        className="segment-selected"
-        onClick={() => setPickerOpen(true)}
-        style={color ? { background: color.bg, color: color.text, borderColor: "transparent" } : undefined}
-      >
-        <span className="segment-selected__text">{selectedLabel}</span>
-        <span className="segment-caret" aria-hidden="true" style={color ? { color: color.text, opacity: 0.6 } : undefined}>›</span>
-      </button>
-
-      {pickerOpen && (
-        <SegmentPicker
-          label={label}
-          options={options}
-          value={value}
-          onChange={onChange}
-          onClose={() => setPickerOpen(false)}
-          getOptionColor={getOptionColor}
-        />
-      )}
-    </div>
-  );
-}
 
 function TaskForm({
   input,
@@ -141,7 +37,10 @@ function TaskForm({
   onSubmit,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const modalRef = useRef(null);
   const inputRef = useRef(null);
+  
+  useFocusTrap(modalRef, isOpen);
 
   useEffect(() => {
     if (isOpen) setTimeout(() => inputRef.current?.focus(), 50);
@@ -190,7 +89,13 @@ function TaskForm({
           className="task-modal-backdrop"
           onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
         >
-          <div className="task-modal" role="dialog" aria-label="Add task">
+          <div 
+            className="task-modal" 
+            role="dialog" 
+            aria-modal="true"
+            aria-label="Add task"
+            ref={modalRef}
+          >
             <div className="task-modal__header">
               <input
                 ref={inputRef}

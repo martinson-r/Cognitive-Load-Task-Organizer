@@ -1,7 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 import "../styles/settings-modal.css";
 
 function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }) {
+  const modalRef = useRef(null);
+  useFocusTrap(modalRef);
+
   useEffect(() => {
     function handleKey(e) {
       if (e.key === "Escape") onClose();
@@ -15,7 +19,13 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }) {
       className="task-modal-backdrop"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="task-modal settings-modal" role="dialog" aria-label="Settings">
+      <div 
+        className="task-modal settings-modal" 
+        role="dialog" 
+        aria-modal="true"
+        aria-label="Settings"
+        ref={modalRef}
+      >
         <div className="task-modal__header">
           <span className="settings-modal__title">Settings</span>
           <button
@@ -23,6 +33,7 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }) {
             className="task-modal__close"
             onClick={onClose}
             aria-label="Close settings"
+            autoFocus
           >
             ✕
           </button>

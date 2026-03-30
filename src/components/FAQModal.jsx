@@ -1,7 +1,11 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 import "../styles/faq-modal.css";
 
 function FAQModal({ onClose }) {
+  const modalRef = useRef(null);
+  useFocusTrap(modalRef);
+
   useEffect(() => {
     function handleKey(e) {
       if (e.key === "Escape") onClose();
@@ -15,7 +19,13 @@ function FAQModal({ onClose }) {
       className="task-modal-backdrop"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="task-modal faq-modal" role="dialog" aria-label="FAQ">
+      <div 
+        className="task-modal faq-modal" 
+        role="dialog" 
+        aria-modal="true"
+        aria-label="FAQ"
+        ref={modalRef}
+      >
         <div className="task-modal__header">
           <span className="faq-modal__title">FAQ</span>
           <button
@@ -23,13 +33,14 @@ function FAQModal({ onClose }) {
             className="task-modal__close"
             onClick={onClose}
             aria-label="Close FAQ"
+            autoFocus
           >
             ✕
           </button>
         </div>
 
         <div className="faq-modal__body">
-
+          {/* ... keeping all your existing FAQ content unchanged ... */}
           <section className="faq-section">
             <h2 className="faq-section__title">About this app</h2>
 
