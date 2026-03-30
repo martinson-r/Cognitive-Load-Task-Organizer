@@ -31,13 +31,14 @@
    * Default       #E5E7EB  — card borders, dividers
    * Strong        #D1D5DB  — input borders, button borders
    * Button Subtle #EAEAEA  — subtle button outline
+   * Input         #CFCFD6  — inputs, panel/filter borders
    */
   --border-default: #E5E7EB;
   --border-strong: #D1D5DB;
   --border-button-subtle: #EAEAEA;
+  --border-input: #CFCFD6;
 
   /* ── Priority ────────────────────────────────────────────────────────────
-   * Fixed: --priority-medium was #304c89, corrected to Figma value #3730A3
    */
   --priority-low: #64748B;
   --priority-low-bg: #F1F5F9;
@@ -67,19 +68,14 @@
   --icon-subtle: #858585;
 
   /* ── Interactive states ───────────────────────────────────────────────────
-   * Toggle Hover  #1F2937  — dark filled button hover (slightly lighter than toggle-on)
+   * Toggle Hover  #1F2937  — dark filled button hover
    */
   --surface-toggle-hover: #1F2937;
+  --focus-ring: var(--color-link);
+  --focus-ring-subtle: rgba(37, 99, 235, 0.15);
+  --color-active-dark: #1D4ED8;
 
   /* ── Semantic colors ─────────────────────────────────────────────────────
-   * Danger        #B91C1C  — destructive actions, error messages
-   * Danger Bg     #FEF2F2  — danger hover/fill background
-   * Danger Border #FECACA  — danger button borders (consolidates fca5a5/f87171/fecaca)
-   * Warning       #92400E  — FAQ warning text (consolidates 92400e/78350f)
-   * Link          #2563EB  — hyperlink text color
-   * Link Hover    #1D4ED8  — hyperlink hover
-   * Success       #15803D  — success/import feedback
-   * Keystone      #FFC353  — keystone task highlight background
    */
   --color-danger: #B91C1C;
   --color-danger-bg: #FEF2F2;
@@ -90,10 +86,24 @@
   --color-success: #15803D;
   --color-keystone: #FFC353;
 
-  /* ── Input border ────────────────────────────────────────────────────────
-   * Consolidates cfcfd6 (input) and d9d9d9 (panel/filter borders)
-   */
-  --border-input: #CFCFD6;
+  /* ── Task specific states ──────────────────────────────────────────────── */
+  --surface-snoozed: #EFF6FF;
+  --border-snoozed: #BFDBFE;
+
+  /* ── Filter states ─────────────────────────────────────────────────────── */
+  --surface-filter-active: #EEF2FF;
+  --surface-filter-wrapper: #FAF8F0;
+  --color-filter-active: #8F0000;
+  --color-filter-active-hover: #640000;
+  --border-filter-active: rgba(143, 0, 0, 0.2);
+
+  /* ── Shadows & Overlays ────────────────────────────────────────────────── */
+  --shadow-sm: 0 1px 2px rgba(16, 24, 40, 0.08);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-modal-mobile: 0 -4px 24px rgba(0, 0, 0, 0.12);
+  --shadow-modal-desktop: 0 8px 32px rgba(0, 0, 0, 0.18);
+  --backdrop-overlay: rgba(0, 0, 0, 0.35);
+  --backdrop-overlay-dark: rgba(0, 0, 0, 0.45);
 }
 
 input,
@@ -147,11 +157,6 @@ button {
   margin-bottom: var(--space-3);
 }
 
-/*
- * index.css sets h1 { margin: var(--space-4) 0 } globally.
- * Inside a flex container those margins don't collapse — they balloon the
- * header. Zero them out in this context.
- */
 .app-header h1 {
   margin: 0;
 }
@@ -165,17 +170,8 @@ button {
   margin: 0 var(--space-2);
 }
 
-.advanced-toggle {
-  /* No vertical margin — flex gap on header-controls handles spacing */
-}
-
 /* ── Main content column ─────────────────────────────────────────────────── */
 
-/*
- * Single source of truth for vertical rhythm between major sections.
- * Direct children separated by --space-3. Individual sections must NOT
- * add their own margin-bottom — the gap owns it.
- */
 .app-main {
   display: flex;
   flex-direction: column;
@@ -191,10 +187,6 @@ button {
   background: var(--surface-subtle);
 }
 
-/* ── Filters section ─────────────────────────────────────────────────────── */
-
-/* .filters is a bare wrapper — no margin, gap on app-main handles it */
-
 /* ── Mode strip (Custom / Sorted / Momentum) ─────────────────────────────── */
 
 .mode-strip {
@@ -202,7 +194,7 @@ button {
   gap: var(--space-1);
   padding: var(--space-1);
   border-radius: var(--radius-card);
-  background: #eef1f5;
+  background: var(--surface-light);
 }
 
 .mode-radio {
@@ -225,19 +217,15 @@ button {
 .mode-radio:checked + .mode-pill {
   background: var(--bg);
   color: var(--text-primary);
-  box-shadow: 0 1px 2px rgba(16, 24, 40, 0.08);
+  box-shadow: var(--shadow-sm);
 }
 
 .mode-radio:focus-visible + .mode-pill {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
-/* ── Top controls (sort / momentum — only rendered when visible) ──────────── */
-
-.top-controls {
-  /* No margin — gap on app-main owns the spacing */
-}
+/* ── Top controls ─────────────────────────────────────────────────────────── */
 
 .sort-controls {
   display: flex;
@@ -307,8 +295,6 @@ button {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  /* 0.625rem intentional: ON/OFF label inside the track must physically
-     fit within the 1.5rem track height. No token exists at this size. */
   font-size: 0.625rem;
   font-weight: 700;
   letter-spacing: 0.03em;
@@ -346,7 +332,7 @@ button {
 }
 
 .toggle input:focus-visible + .toggle__track {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--focus-ring);
   outline-offset: 2px;
 }
 
@@ -401,7 +387,7 @@ button {
 }
 
 .empty-state__link:hover {
-  color: #1e3a8a;
+  color: var(--color-active-dark);
 }
 
 /* ── Focus mode ──────────────────────────────────────────────────────────── */
@@ -418,7 +404,7 @@ button {
 .info-banner {
   padding: var(--space-2);
   border-radius: var(--radius-input);
-  background: #ececec;
+  background: var(--surface-light);
   border: 1px solid var(--icon);
   margin-bottom: var(--space-2);
 }
@@ -455,12 +441,6 @@ button {
 
 .custom-context-row input {
   flex: 1;
-}
-
-/* ── Snoozed task card (App-level override) ──────────────────────────────── */
-
-.task-card--snoozed {
-  background: #add8e6;
 }
 
 /* ── Task action menu ────────────────────────────────────────────────────── */

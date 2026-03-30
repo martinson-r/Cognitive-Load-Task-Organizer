@@ -8,7 +8,7 @@
 
 .filter-bar-wrapper--active {
   border-color: var(--border-input);
-  background-color: #FAF8F0;
+  background-color: var(--surface-filter-wrapper);
 }
 
 .filter-bar__header {
@@ -26,7 +26,7 @@
 }
 
 .filter-bar__header:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--focus-ring);
   outline-offset: -2px;
 }
 
@@ -42,7 +42,7 @@
 .filter-bar__header--active .filter-bar__caret,
 .filter-bar__count,
 .filter-bar__reset-inline {
-  color: #8F0000;
+  color: var(--color-filter-active);
 }
 
 .filter-bar__header-right {
@@ -71,7 +71,7 @@
 }
 
 .filter-bar__reset-inline:hover {
-  color: #640000;
+  color: var(--color-filter-active-hover);
 }
 
 .filter-bar__caret {
@@ -104,7 +104,7 @@
 }
 
 .filter-bar-wrapper--active .filter-bar__inner {
-  border-top-color: rgba(143, 0, 0, 0.2);
+  border-top-color: var(--border-filter-active);
 }
 
 .filter-bar__selects {
@@ -132,7 +132,7 @@
 
 .filter-select-wrap--active {
   border-color: var(--priority-medium);
-  background-color: #eef2ff;
+  background-color: var(--surface-filter-active);
 }
 
 .filter-select {
@@ -156,14 +156,15 @@
 
 .filter-select-wrap--active .filter-select {
   border-color: transparent;
-  color: #1e3a8a;
+  color: var(--color-active-dark);
   font-weight: 500;
+  /* The %231e3a8a here maps to var(--color-active-dark) hex */
   background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%231e3a8a' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>");
 }
 
 .filter-select:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(48, 76, 137, 0.2);
+  box-shadow: 0 0 0 2px var(--focus-ring-subtle);
 }
 
 .filter-bar__snooze-hint {

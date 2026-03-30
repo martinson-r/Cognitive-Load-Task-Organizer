@@ -212,8 +212,8 @@
 }
 
 .task-card--snoozed {
-  background: #eff6ff;
-  border-color: #bfdbfe;
+  background: var(--surface-snoozed);
+  border-color: var(--border-snoozed);
 }
 
 .task-snooze-info {
@@ -255,7 +255,7 @@
   border: 1px solid var(--border-default);
   border-radius: var(--radius-input);
   background: var(--bg);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  box-shadow: var(--shadow-md);
 }
 
 .task-submenu button {
