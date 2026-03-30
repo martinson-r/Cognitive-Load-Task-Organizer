@@ -9,11 +9,14 @@ This app optimizes for *ability to act*.
 
 ## Live Demo
 **[Cognitive Load Task Organizer](https://cognitiveorganizer.netlify.app/)**
+
 No signup required. Data is stored locally in your browser.
 
 ## Case Study
 **[View Case Study](https://hanasays.myportfolio.com/cognitive-load-task-organizer)**
 
+## Status
+Core feature set is stable. Currently migrating to TypeScript and Zustand for state management - replacing prop-drilled App-level state with domain-specific stores (tasks, filters, momentum, UI).
 
 ## What This Project Demonstrates
 
@@ -24,7 +27,7 @@ No signup required. Data is stored locally in your browser.
 - Iterative design process from concept → prototype → implementation  
 
 
-## Tasks are categorized into:
+### Tasks are categorized into:
 
 Low Load — routine tasks ("Reply to email")  
 Medium Load — moderate effort ("Sort clean laundry")  
@@ -58,28 +61,6 @@ Core functionality and persistence are implemented.
 Ongoing work includes UI/UX refinement and accessibility improvements.
 
 
-## Design Mockup
-
-Figma Make was used during early exploration to test layout and interaction ideas.
-
-**[View Figma mockup](https://www.figma.com/make/95fSiDjTXaqdFkuYqutgt8/Refine-Productivity-App-UI?t=0pci9ZAYvc3utPrX-1)**
-
-This mockup represents a **design direction**, not the shipped implementation.  
-The live app reflects actual engineering decisions and constraints.
-
-### Initial UI direction (Figma mockup)
-
-#### Mobile UI
-![Screenshot of planned demo app mobile UI.](https://i.imgur.com/oLMjmCP.png)
-
-#### Desktop UI
-![Screenshot of planned demo app desktop UI.](https://i.imgur.com/qxJwxs9.jpeg)
-
-### Initial implementation (source for mockup)
-
-![Screenshot of rough demo app UI.](https://i.imgur.com/10CwdLz.png)
-
-
 ## AI-Assisted Workflow
 
 AI tools were used selectively for:
@@ -89,10 +70,6 @@ AI tools were used selectively for:
 - accelerating boilerplate code  
 
 All architecture, state management, IndexedDB integration, and feature logic were implemented and reviewed manually.
-
-The Figma prototype should not be considered the source of truth for implementation:
-- it represents visual exploration  
-- the codebase reflects real application behavior and constraints  
 
 
 ## Tech Stack
@@ -117,7 +94,7 @@ This allows the app to scale beyond a trivial demo while remaining fully offline
 
 ## Why No TypeScript?
 
-I use TypeScript professionally (UW), but for this project I intentionally skipped it to move faster and validate the product idea. If I scaled it, I’d absolutely add TypeScript.
+I use TypeScript professionally (UW), but for this project I intentionally skipped it to move faster and validate the product idea. Now that the core features are finished, I am migrating to TypeScript and Zustand for state management.
 
 
 ## Security Considerations
