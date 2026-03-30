@@ -1,10 +1,14 @@
 import { useState, useEffect, useRef } from "react";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 
 // Second-layer picker sheet — opens on top of whatever triggered it
 export function SegmentPicker({ label, options, value, onChange, onClose, getOptionColor }) {
   const [hasScrollableContent, setHasScrollableContent] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
+  
+  const modalRef = useRef(null);
   const scrollRef = useRef(null);
+  useFocusTrap(modalRef);
 
   useEffect(() => {
     function handleKey(e) {
@@ -31,7 +35,13 @@ export function SegmentPicker({ label, options, value, onChange, onClose, getOpt
       className="segment-picker-backdrop"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div className="segment-picker" role="dialog" aria-label={`Choose ${label}`}>
+      <div 
+        className="segment-picker" 
+        role="dialog" 
+        aria-modal="true"
+        aria-label={`Choose ${label}`}
+        ref={modalRef}
+      >
         <div className="segment-picker__header">
           <span className="segment-picker__title">{label}</span>
           <button
@@ -39,6 +49,7 @@ export function SegmentPicker({ label, options, value, onChange, onClose, getOpt
             className="task-modal__close"
             onClick={onClose}
             aria-label="Close"
+            autoFocus
           >
             ✕
           </button>

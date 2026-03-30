@@ -474,7 +474,6 @@ function App() {
       const remainingTasks = normalizeTaskPositions(
         tasks.filter((task) => task.id !== id)
       );
-      if (id === keystoneTaskId) setKeystoneTaskId(null);
       await deleteTask(id);
       await Promise.all(remainingTasks.map((task) => saveTask(task)));
       setTasks(remainingTasks);
@@ -723,45 +722,40 @@ function App() {
           />
         </section>
 
-        <div className="mode-strip" role="radiogroup" aria-label="View mode">
-          <input
-            type="radio"
-            id="mode-custom"
-            name="view-mode"
-            checked={viewMode === "custom" && !momentumModeEnabled}
-            onChange={() => {
+        <div className="mode-strip" role="group" aria-label="View modes">
+          <button
+            type="button"
+            className="mode-pill"
+            aria-pressed={viewMode === "custom" && !momentumModeEnabled}
+            onClick={() => {
               setMomentumModeEnabled(false);
               setViewMode("custom");
             }}
-            className="mode-radio"
-          />
-          <label htmlFor="mode-custom" className="mode-pill">Custom</label>
+          >
+            Custom
+          </button>
 
-          <input
-            type="radio"
-            id="mode-sorted"
-            name="view-mode"
-            checked={viewMode === "sorted" && !momentumModeEnabled}
-            onChange={() => {
+          <button
+            type="button"
+            className="mode-pill"
+            aria-pressed={viewMode === "sorted" && !momentumModeEnabled}
+            onClick={() => {
               setMomentumModeEnabled(false);
               setViewMode("sorted");
             }}
-            className="mode-radio"
-          />
-          <label htmlFor="mode-sorted" className="mode-pill">Sorted</label>
+          >
+            Sorted
+          </button>
 
           {advancedFeaturesEnabled && (
-            <>
-              <input
-                type="radio"
-                id="mode-momentum"
-                name="view-mode"
-                checked={momentumModeEnabled}
-                onChange={() => setMomentumModeEnabled(true)}
-                className="mode-radio"
-              />
-              <label htmlFor="mode-momentum" className="mode-pill">Momentum</label>
-            </>
+            <button
+              type="button"
+              className="mode-pill"
+              aria-pressed={momentumModeEnabled}
+              onClick={() => setMomentumModeEnabled(true)}
+            >
+              Momentum
+            </button>
           )}
         </div>
 

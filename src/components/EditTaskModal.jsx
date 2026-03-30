@@ -1,4 +1,5 @@
 import { useEffect, useRef } from "react";
+import { useFocusTrap } from "../hooks/useFocusTrap";
 import "../styles/task-form.css";
 import { LOAD_PILL_COLORS, PRIORITY_PILL_COLORS, getContextColor } from "../constants/TaskOptions";
 import { SegmentGroup } from "./SegmentGroup";
@@ -29,7 +30,9 @@ function EditTaskModal({
   onSave,
   onCancel,
 }) {
+  const modalRef = useRef(null);
   const inputRef = useRef(null);
+  useFocusTrap(modalRef);
 
   useEffect(() => {
     setTimeout(() => inputRef.current?.focus(), 50);
@@ -52,7 +55,13 @@ function EditTaskModal({
       className="task-modal-backdrop"
       onClick={(e) => { if (e.target === e.currentTarget) onCancel(); }}
     >
-      <div className="task-modal" role="dialog" aria-label="Edit task">
+      <div 
+        className="task-modal" 
+        role="dialog" 
+        aria-modal="true"
+        aria-label="Edit task"
+        ref={modalRef}
+      >
         <div className="task-modal__header">
           <input
             ref={inputRef}
