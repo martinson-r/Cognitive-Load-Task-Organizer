@@ -141,3 +141,18 @@ npm run dev`
 Then open:
 
 http://localhost:5173
+
+## 🎨 Design System & UI Guide
+
+This project includes a living **UI Implementation Guide** that documents the application's semantic tokens, typography scales, and accessible component patterns.
+
+While the guide is intentionally omitted from the main application navigation to maintain a focused user experience, it can be accessed directly:
+
+* **Live Documentation:** [View the UI Guide](https://cognitiveorganizer.netlify.app//ui-guide)
+* **Local Development:** Navigate to `/ui-guide` while the dev server is running.
+
+### Why a UI Guide?
+As a UX Engineer, I built this guide to serve as a pragmatic dictionary for developers. It ensures:
+* **Single Source of Truth:** All styles are driven by CSS variables defined in `App.css`, preventing "magic numbers" in the codebase.
+* **Theme Scalability:** By using semantic tokens instead of hardcoded hex values, the app supports native Dark Mode with zero component-level overrides.
+* **Spatial Consistency:** Layouts follow a strict 8px-based spacing scale to ensure visual rhythm and predictability.

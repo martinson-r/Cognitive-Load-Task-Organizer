@@ -1,0 +1,117 @@
+.ui-guide-section {
+  margin-bottom: var(--space-4);
+  padding-bottom: var(--space-4);
+  border-bottom: 1px solid var(--border-default);
+}
+
+.ui-guide-section:last-of-type {
+  border-bottom: none;
+}
+
+.ui-guide-section h2 {
+  font-size: var(--font-title-sm-size);
+  color: var(--text-h);
+  margin-bottom: var(--space-1);
+}
+
+.ui-guide-desc {
+  color: var(--text-secondary);
+  margin-bottom: var(--space-3);
+  max-width: 600px;
+}
+
+/* ── Typography Specimens ── */
+.type-specimen-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.type-specimen {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding: var(--space-2);
+  background: var(--surface-subtle);
+  border-radius: var(--radius-card);
+  border: 1px solid var(--border-default);
+}
+
+.type-specimen__demo {
+  color: var(--text-h);
+  margin: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.type-specimen__meta {
+  display: flex;
+  gap: var(--space-2);
+  align-items: center;
+  margin-top: var(--space-1);
+  font-family: var(--mono);
+  font-size: 0.75rem;
+  color: var(--text-tertiary);
+}
+
+/* ── Token Grids (Colors, Shadows, Radii) ── */
+.token-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+  gap: var(--space-3);
+}
+
+.token-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
+  overflow: hidden;
+  background: var(--bg);
+}
+
+.token-card__preview {
+  height: 80px;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-bottom: 1px solid var(--border-default);
+}
+
+.token-card__preview--shadow {
+  background: var(--surface-base);
+}
+
+.token-card__preview-box {
+  width: 60px;
+  height: 60px;
+  background: var(--bg);
+  border: 1px solid var(--border-default);
+}
+
+.token-card__details {
+  padding: var(--space-2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+}
+
+.token-card__name {
+  font-family: var(--mono);
+  font-size: 0.8rem;
+  font-weight: 600;
+  color: var(--priority-medium);
+  background: var(--surface-filter-active);
+  padding: 2px 6px;
+  border-radius: 4px;
+  align-self: flex-start;
+}
+
+.token-card__usage {
+  font-size: var(--font-chip-mobile-size);
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin: 0;
+}
