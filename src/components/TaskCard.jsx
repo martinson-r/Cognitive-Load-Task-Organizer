@@ -120,10 +120,10 @@ function TaskCard({
 
         <div className="task-actions">
           <button className="move-button" onClick={() => onMoveTaskUp(task.id)} aria-label="Move task up">
-            <ArrowUpIcon className="icon" />
+            <ArrowUpIcon className="icon-subtle" />
           </button>
           <button className="move-button" onClick={() => onMoveTaskDown(task.id)} aria-label="Move task down">
-            <ArrowDownIcon className="icon" />
+            <ArrowDownIcon className="icon-subtle" />
           </button>
 
           {isSnoozed && (
@@ -165,10 +165,10 @@ function TaskCard({
           )}
 
           <button className="edit-button icon-button" onClick={() => onStartEdit(task)} aria-label="Edit task">
-            <PencilIcon className="icon" />
+            <PencilIcon className="icon-subtle" />
           </button>
           <button className="delete-button icon-button" onClick={() => onDeleteTask(task.id)} aria-label="Delete task">
-            <TrashIcon className="icon" />
+            <TrashIcon className="icon-subtle" />
           </button>
         </div>
       </li>

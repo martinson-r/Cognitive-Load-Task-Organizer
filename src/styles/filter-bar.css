@@ -1,70 +1,69 @@
-/* ── Wrapper ── */
 .filter-bar-wrapper {
-  margin-bottom: 1rem;
-  border: 1px solid #e5e7eb;
-  border-radius: 10px;
+  /* No margin-bottom — gap on .app-main owns the space between sections */
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-card);
   overflow: hidden;
   transition: border-color 0.15s ease;
 }
 
 .filter-bar-wrapper--active {
-  border-color: #d9d9d9;
-  background-color: rgb(250, 248, 240);
+  border-color: var(--border-input);
+  background-color: var(--surface-filter-wrapper);
 }
 
-/* ── Header bar ── */
 .filter-bar__header {
   width: 100%;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 0.6rem 0.85rem;
+  padding: var(--space-1) var(--space-2);
   background: transparent;
   border: none;
   cursor: pointer;
   font: inherit;
   text-align: left;
-  gap: 0.5rem;
+  gap: var(--space-1);
 }
 
 .filter-bar__header:focus-visible {
-  outline: 2px solid #2563eb;
+  outline: 2px solid var(--focus-ring);
   outline-offset: -2px;
 }
 
 .filter-bar__header-label {
-  font-size: 0.875rem;
+  font-size: var(--font-section-size);
+  line-height: var(--font-section-line);
   font-weight: 600;
-  color: #374151;
+  color: var(--text-secondary);
   flex-shrink: 0;
 }
 
-.filter-bar__header--active .filter-bar__header-label {
-  color: rgb(143, 0, 0);
+.filter-bar__header--active .filter-bar__header-label,
+.filter-bar__header--active .filter-bar__caret,
+.filter-bar__count,
+.filter-bar__reset-inline {
+  color: var(--color-filter-active);
 }
 
 .filter-bar__header-right {
   display: flex;
   align-items: center;
-  gap: 0.6rem;
+  gap: var(--space-2);
   min-width: 0;
 }
 
-.filter-bar__no-filters {
-  font-size: 0.8rem;
-  color: #9ca3af;
+.filter-bar__no-filters,
+.filter-bar__count,
+.filter-bar__reset-inline {
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
 }
 
-.filter-bar__count {
-  font-size: 0.8rem;
-  font-weight: 600;
-  color: rgb(143, 0, 0);
-  white-space: nowrap;
+.filter-bar__no-filters {
+  color: var(--text-tertiary);
 }
 
 .filter-bar__reset-inline {
-  font-size: 0.8rem;
-  color: rgb(143, 0, 0);
   text-decoration: underline;
   text-underline-offset: 2px;
   cursor: pointer;
@@ -72,13 +71,13 @@
 }
 
 .filter-bar__reset-inline:hover {
-  color: rgb(100, 0, 0);
+  color: var(--color-filter-active-hover);
 }
 
-/* ── Caret ── */
 .filter-bar__caret {
-  font-size: 1rem;
-  color: #6b7280;
+  font-size: var(--font-primary-size);
+  line-height: var(--font-primary-line);
+  color: var(--text-tertiary);
   display: inline-block;
   transform: rotate(90deg);
   transition: transform 0.2s ease;
@@ -86,15 +85,10 @@
   line-height: 1;
 }
 
-.filter-bar__header--active .filter-bar__caret {
-  color: rgb(143, 0, 0);
-}
-
 .filter-bar__caret--open {
   transform: rotate(270deg);
 }
 
-/* ── Collapsible content ── */
 .filter-bar__content {
   max-height: 0;
   overflow: hidden;
@@ -104,21 +98,20 @@
 .filter-bar__inner {
   display: flex;
   flex-direction: column;
-  gap: 0.75rem;
-  padding: 0 0.85rem 0.85rem;
-  border-top: 1px solid #e5e7eb;
+  gap: var(--space-2);
+  padding: 0 var(--space-2) var(--space-2);
+  border-top: 1px solid var(--border-default);
 }
 
 .filter-bar-wrapper--active .filter-bar__inner {
-  border-top-color: rgba(143, 0, 0, 0.2);
+  border-top-color: var(--border-filter-active);
 }
 
-/* ── Filter selects row ── */
 .filter-bar__selects {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-1);
   flex-wrap: wrap;
-  padding-top: 0.75rem;
+  padding-top: var(--space-2);
 }
 
 @media (max-width: 640px) {
@@ -131,33 +124,30 @@
   }
 }
 
-/* ── Filter select wrapper ── */
 .filter-select-wrap {
-  border-radius: 8px;
+  border-radius: var(--radius-input);
   border: 2px solid transparent;
   transition: border-color 0.15s ease;
 }
 
 .filter-select-wrap--active {
-  border-color: #304C89;
-  background-color: #eef2ff;
-  border-radius: 8px;
+  border-color: var(--priority-medium);
+  background-color: var(--surface-filter-active);
 }
 
-/* ── Filter selects ── */
 .filter-select {
   height: 44px;
-  padding: 0 2.25rem 0 14px;
-  border: 1px solid #cfcfd6;
-  border-radius: 8px;
+  padding: 0 2.25rem 0 var(--space-2);
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-input);
   background: transparent;
-  color: #1f2430;
+  color: var(--text-h);
   font: inherit;
   appearance: none;
   -webkit-appearance: none;
   background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%236b7280' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>");
   background-repeat: no-repeat;
-  background-position: right 0.75rem center;
+  background-position: right var(--space-2) center;
   background-size: 0.9rem;
   cursor: pointer;
   width: 100%;
@@ -166,27 +156,27 @@
 
 .filter-select-wrap--active .filter-select {
   border-color: transparent;
-  color: #1e3a8a;
+  color: var(--color-active-dark);
   font-weight: 500;
+  /* The %231e3a8a here maps to var(--color-active-dark) hex */
   background-image: url("data:image/svg+xml;utf8,<svg fill='none' stroke='%231e3a8a' stroke-width='2' viewBox='0 0 24 24' xmlns='http://www.w3.org/2000/svg'><polyline points='6 9 12 15 18 9'/></svg>");
 }
 
 .filter-select:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(48, 76, 137, 0.2);
+  box-shadow: 0 0 0 2px var(--focus-ring-subtle);
 }
 
-/* ── Snoozed tasks hint ── */
 .filter-bar__snooze-hint {
-  font-size: 0.78rem;
-  color: #6b7280;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
+  color: var(--text-tertiary);
   margin: 0;
-  padding-left: 0.1rem;
+  padding-left: 0;
 }
 
-/* ── Toggles inside filter bar ── */
 .filter-bar__toggles {
   display: flex;
   flex-direction: column;
-  gap: 0.6rem;
+  gap: var(--space-2);
 }

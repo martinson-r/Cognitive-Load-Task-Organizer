@@ -40,7 +40,7 @@ function FilterBar({
     } else {
       el.style.maxHeight = '0px';
     }
-  }, [filtersExpanded, advancedFeaturesEnabled, showCompleted]);
+  }, [filtersExpanded, advancedFeaturesEnabled, showCompleted, snoozedCount]);
 
   return (
     <div className={`filter-bar-wrapper${hasActiveFilters ? ' filter-bar-wrapper--active' : ''}`}>
@@ -132,11 +132,9 @@ function FilterBar({
               </select>
             </div>
           </div>
-
-          {/* Advanced toggles */}
-          {advancedFeaturesEnabled && (
-            <div className="filter-bar__toggles">
-              <label className="toggle toggle--sm">
+          <div className="filter-bar__toggles">
+            {/* Advanced toggles */}
+            {advancedFeaturesEnabled && (<label className="toggle">
                 <span className="toggle__label">View Snoozed Tasks</span>
                 <input
                   type="checkbox"
@@ -149,7 +147,7 @@ function FilterBar({
                   <span className="toggle__state toggle__state--on">ON</span>
                   <span className="toggle__thumb" />
                 </span>
-              </label>
+              </label>)}
 
               {snoozedCount > 0 && (
                 <p className="filter-bar__snooze-hint">
@@ -157,7 +155,7 @@ function FilterBar({
                 </p>
               )}
 
-              <label className="toggle toggle--sm">
+              {advancedFeaturesEnabled && (<label className="toggle">
                 <span className="toggle__label">Focus Mode (show only 7 tasks)</span>
                 <input
                   type="checkbox"
@@ -171,12 +169,11 @@ function FilterBar({
                   <span className="toggle__thumb" />
                 </span>
               </label>
-            </div>
+
           )}
 
           {/* Show completed toggle — always visible */}
-          <div className="filter-bar__toggles">
-            <label className="toggle toggle--sm">
+            <label className="toggle">
               <span className="toggle__label">Show completed tasks</span>
               <input
                 type="checkbox"
@@ -191,10 +188,9 @@ function FilterBar({
               </span>
             </label>
           </div>
-
+        </div>
         </div>
       </div>
-    </div>
   );
 }
 

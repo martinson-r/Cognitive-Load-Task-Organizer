@@ -6,9 +6,10 @@
 }
 
 .faq-modal__title {
-  font-size: 1rem;
+  font-size: var(--font-section-size);
+  line-height: var(--font-section-line);
   font-weight: 600;
-  color: #111827;
+  color: var(--text-h);
 }
 
 .faq-modal__body {
@@ -16,13 +17,12 @@
   display: flex;
   flex-direction: column;
   gap: 0;
-  padding-right: 0.25rem; /* breathing room from scrollbar */
+  padding-right: var(--space-1);
 }
 
-/* ── Sections ── */
 .faq-section {
-  padding: 1.1rem 0;
-  border-bottom: 1px solid #e5e7eb;
+  padding: var(--space-3) 0;
+  border-bottom: 1px solid var(--border-default);
 }
 
 .faq-section:first-child {
@@ -35,17 +35,16 @@
 }
 
 .faq-section__title {
-  font-size: 0.75rem;
+  font-size: var(--font-chip-mobile-size);
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: #6b7280;
-  margin: 0 0 0.85rem;
+  color: var(--text-tertiary);
+  margin: 0 0 var(--space-2);
 }
 
-/* ── Items ── */
 .faq-item {
-  margin-bottom: 1rem;
+  margin-bottom: var(--space-2);
 }
 
 .faq-item:last-child {
@@ -55,39 +54,37 @@
 .faq-item__q {
   font-size: 0.9rem;
   font-weight: 600;
-  color: #111827;
-  margin: 0 0 0.3rem;
+  color: var(--text-h);
+  margin: 0 0 var(--space-2);
 }
 
 .faq-item__a {
   font-size: 0.875rem;
-  color: #4b5563;
+  color: var(--text-secondary);
   line-height: 1.6;
   margin: 0;
 }
 
 .faq-item__a code {
   font-size: 0.8rem;
-  background: #f3f4f6;
+  background: var(--surface-light);
   padding: 1px 5px;
-  border-radius: 4px;
-  color: #374151;
+  border-radius: var(--radius-input);
+  color: var(--text-secondary);
 }
 
 .faq-item__a strong {
-  color: #111827;
+  color: var(--text-h);
 }
 
-/* ── Warning item ── */
 .faq-item--warning .faq-item__q {
-  color: #92400e;
+  color: var(--color-warning);
 }
 
 .faq-item--warning .faq-item__a {
-  color: #78350f;
+  color: var(--color-warning);
 }
 
-/* ── Links section ── */
 .faq-links {
   display: flex;
   flex-direction: column;
@@ -96,32 +93,31 @@
 
 .faq-link {
   font-size: 0.875rem;
-  color: #2563eb;
+  color: var(--color-link);
   text-decoration: none;
   display: inline-flex;
   align-items: center;
-  gap: 0.3rem;
+  gap: var(--space-1);
 }
 
 .faq-link:hover {
   text-decoration: underline;
-  color: #1d4ed8;
+  color: var(--color-link-hover);
 }
 
 .faq-link::after {
   content: "↗";
-  font-size: 0.75rem;
+  font-size: var(--font-chip-mobile-size);
   opacity: 0.6;
 }
 
-/* ── Help trigger button in header ── */
 .faq-trigger {
   width: 32px;
   height: 32px;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-  color: #6b7280;
+  border-radius: var(--radius-button);
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--text-tertiary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -133,6 +129,6 @@
 }
 
 .faq-trigger:hover {
-  background: #f3f4f6;
-  color: #111827;
+  background: var(--surface-light);
+  color: var(--text-h);
 }

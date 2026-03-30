@@ -1,111 +1,108 @@
 .momentum-panel {
-  margin: 1rem 0;
-  padding: 1rem;
-  border: 1px solid #d9d9d9;
-  border-radius: 0.75rem;
-  background: #fafafa;
+  margin: var(--space-2) 0;
+  padding: var(--space-2);
+  border: 1px solid var(--border-input);
+  border-radius: var(--radius-card);
+  background: var(--surface-subtle);
 }
 
 .momentum-panel__title {
   font-weight: 600;
-  margin-bottom: 0.5rem;
+  margin-bottom: var(--space-1);
 }
 
 .momentum-panel__section {
-  margin-bottom: 0.75rem;
+  margin-bottom: var(--space-2);
 }
 
 .momentum-panel__help {
-  font-size: 0.9rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   opacity: 0.75;
 }
 
-/* ── Energy option pills ── */
 .momentum-energy-options {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-1);
   flex-wrap: wrap;
-  margin-top: 0.4rem;
+  margin-top: var(--space-1);
 }
 
 .momentum-energy-btn {
   height: 34px;
-  padding: 0 1rem;
-  border: 1px solid #d1d5db;
-  border-radius: 999px;
-  background: #fff;
-  color: #374151;
+  padding: 0 var(--space-2);
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  color: var(--text-secondary);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   cursor: pointer;
   transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .momentum-energy-btn:hover {
-  background: #f3f4f6;
-  border-color: #9ca3af;
+  background: var(--surface-light);
+  border-color: var(--text-tertiary);
 }
 
 .momentum-energy-btn.is-selected {
-  background: #111827;
-  color: #fff;
-  border-color: #111827;
+  background: var(--surface-toggle-on);
+  color: var(--text-highlight);
+  border-color: var(--surface-toggle-on);
   font-weight: 600;
 }
 
-/* ── Shared action button base ── */
 .momentum-btn {
   height: 36px;
-  padding: 0 1rem;
-  border-radius: 6px;
-  border: 1px solid #d1d5db;
-  background: #fff;
-  color: #374151;
+  padding: 0 var(--space-2);
+  border-radius: var(--radius-button);
+  border: 1px solid var(--border-strong);
+  background: var(--bg);
+  color: var(--text-secondary);
   font: inherit;
-  font-size: 0.875rem;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
   cursor: pointer;
   transition: background 0.15s ease;
 }
 
 .momentum-btn:hover {
-  background: #f3f4f6;
+  background: var(--surface-light);
 }
 
-/* Primary variant */
 .momentum-btn--primary {
-  background: #111827;
-  color: #fff;
-  border-color: #111827;
+  background: var(--surface-toggle-on);
+  color: var(--text-highlight);
+  border-color: var(--surface-toggle-on);
 }
 
 .momentum-btn--primary:hover {
-  background: #1f2937;
+  background: var(--surface-toggle-hover);
 }
 
-/* ── Action row ── */
 .momentum-panel__actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-1);
   flex-wrap: wrap;
-  margin-top: 0.5rem;
+  margin-top: var(--space-1);
 }
 
-/* ── Error ── */
 .momentum-panel__error {
-  color: #b00020;
-  font-size: 0.875rem;
-  margin: 0.5rem 0 0.25rem;
+  color: var(--color-danger);
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
+  margin: var(--space-2) 0;
 }
 
-/* ── Fallback / cross-context ── */
 .momentum-panel__fallback {
-  margin: 0.5rem 0;
+  margin: var(--space-1) 0;
   display: flex;
   flex-direction: column;
-  gap: 0.4rem;
+  gap: var(--space-1);
 }
 
-/* ── Active run footer ── */
 .momentum-panel__run-footer {
-  margin-top: 0.75rem;
+  margin-top: var(--space-2);
 }
