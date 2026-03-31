@@ -44,7 +44,7 @@
 
 .momentum-energy-btn:hover {
   background: var(--surface-light);
-  border-color: var(--text-tertiary);
+  border-color: var(--text-secondary);
 }
 
 .momentum-energy-btn.is-selected {

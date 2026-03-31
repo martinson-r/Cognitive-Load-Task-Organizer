@@ -48,7 +48,7 @@
 
 .task-item--done .task-title {
   text-decoration: line-through;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 .task-item--done {
@@ -207,7 +207,7 @@
 .task-snooze-info {
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   white-space: nowrap;
 }
 
@@ -262,7 +262,7 @@
 }
 
 .task-card--keystone {
-  outline: 2px solid var(--text-tertiary);
+  outline: 2px solid var(--border-default);
   outline-offset: 2px;
   background: var(--color-keystone);
 }

@@ -12,11 +12,11 @@
 }
 
 .task-form-trigger:hover {
-  border-color: var(--text-tertiary);
+  border-color: var(--text-border-default);
 }
 
 .task-form-trigger__placeholder {
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-size: var(--font-primary-size);
   line-height: var(--font-primary-line);
 }
@@ -88,7 +88,7 @@
   border-radius: 50%;
   border: none;
   background: var(--surface-light);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   font-size: var(--font-primary-size);
   line-height: var(--font-primary-line);
   display: flex;
@@ -139,7 +139,7 @@
   font-weight: 600;
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   white-space: nowrap;
   flex-shrink: 0;
   width: 7rem;
@@ -174,7 +174,7 @@
 }
 
 .segment-selected:hover {
-  border-color: var(--text-tertiary);
+  border-color: var(--border-default);
   background: var(--surface-light);
 }
 
@@ -187,7 +187,7 @@
 
 .segment-caret {
   font-size: var(--font-primary-size);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   flex-shrink: 0;
   transform: rotate(90deg);
   display: inline-block;
