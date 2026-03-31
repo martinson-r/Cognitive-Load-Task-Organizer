@@ -13,7 +13,7 @@ This app optimizes for *ability to act*.
 No signup required. Data is stored locally in your browser.
 
 ## Case Study
-**[View Case Study](https://hanasays.myportfolio.com/cognitive-load-task-organizer)**
+**Case Study:** [Adobe Portfolio](https://hanasays.myportfolio.com/cognitive-load-task-organizer) · [GitHub](./CASE_STUDY.md)
 
 ## Status
 Core feature set is stable. Currently migrating to TypeScript and Zustand for state management - replacing prop-drilled App-level state with domain-specific stores (tasks, filters, momentum, UI).
