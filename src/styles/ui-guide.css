@@ -17,7 +17,7 @@
   font-size: 0.75rem;
   font-weight: bold;
   text-transform: uppercase;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin-bottom: var(--space-1);
 }
 
@@ -129,7 +129,7 @@
   margin-top: var(--space-1);
   font-family: var(--mono);
   font-size: 0.75rem;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
 }
 
 /* ── Token Grids ── */
@@ -209,6 +209,6 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin: var(--space-3) 0 var(--space-2);
 }

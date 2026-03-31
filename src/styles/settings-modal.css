@@ -30,7 +30,7 @@
   font-weight: 700;
   text-transform: uppercase;
   letter-spacing: 0.06em;
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin: 0;
 }
 
@@ -40,7 +40,7 @@
 
 .settings-modal__section-desc {
   font-size: var(--font-chip-mobile-size);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   margin: 0;
   line-height: 1.5;
 }
@@ -86,7 +86,7 @@
   border-radius: var(--radius-button);
   border: 1px solid var(--border-strong);
   background: var(--surface-base);
-  color: var(--text-tertiary);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
