@@ -92,9 +92,9 @@ IndexedDB was chosen because it provides:
 This allows the app to scale beyond a trivial demo while remaining fully offline-capable.
 
 
-## Why No TypeScript?
+## Why Start Without TypeScript?
 
-I use TypeScript professionally (UW), but for this project I intentionally skipped it to move faster and validate the product idea. Now that the core features are finished, I am migrating to TypeScript and Zustand for state management.
+I intentionally skipped it to move faster and validate the product idea. Now that the core features are finished, I have migrated TypeScript and Zustand for state management.
 
 
 ## Security Considerations
@@ -118,6 +118,22 @@ npm run dev`
 Then open:
 
 http://localhost:5173
+
+
+## Testing
+
+Unit tests cover the core Momentum Mode algorithm and task view utilities,
+the logic most likely to fail silently under edge cases.
+
+```bash
+npm test        # run tests in watch mode
+npm run test:ui # visual test runner
+```
+
+Test files live in `src/utils/`. Current coverage:
+- `momentum.test.ts` — `pickKeystoneForMe`, `getRunwayNeedsFallback`, 
+  `hasCrossContextLowerLoadOptions`, `getMomentumTasks`
+
 
 ## Design System & UI Guide
 
