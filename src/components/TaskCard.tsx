@@ -7,8 +7,18 @@ import {
   getContextColor,
 } from "../constants/TaskOptions";
 import EditTaskModal from "./EditTaskModal";
+import { Task } from "../types";
+import { useTaskStore } from "../store/useTaskStore";
+import { useUIStore } from "../store/useUIStore";
+import { useMomentumStore } from "../store/useMomentumStore";
 
-function Pill({ label, bg, text }) {
+interface PillProps {
+  label: string;
+  bg: string;
+  text: string;
+}
+
+function Pill({ label, bg, text }: PillProps) {
   return (
     <span className="task-pill" style={{ background: bg, color: text }}>
       {label}
@@ -16,50 +26,32 @@ function Pill({ label, bg, text }) {
   );
 }
 
-function TaskCard({
-  task,
-  editingTaskId,
-  editTitle,
-  setEditTitle,
-  editLoad,
-  setEditLoad,
-  editPriority,
-  setEditPriority,
-  editContext,
-  setEditContext,
-  contextOptions,
-  onStartEdit,
-  onCancelEdit,
-  onSaveEdit,
-  onDeleteTask,
-  onToggleTask,
-  onMoveTaskUp,
-  onMoveTaskDown,
-  advancedFeaturesEnabled,
-  onSnooze,
-  onUnsnooze,
-  loadLabels,
-  priorityLabels,
-  momentumModeEnabled,
-  momentumRunActive,
-  isKeystone,
-  onSetKeystone,
-}) {
-  const isEditing = editingTaskId === task.id;
+interface TaskCardProps {
+  task: Task;
+  contextOptions: string[];
+  visibleTasks: Task[];
+  isKeystone: boolean;
+}
+
+function TaskCard({ task, contextOptions, visibleTasks, isKeystone }: TaskCardProps) {
+  const { toggleTask, deleteTask, snooze, unsnooze, moveTaskUp, moveTaskDown } = useTaskStore();
+  const { advancedFeaturesEnabled, editDraft, startEdit } = useUIStore();
+  const { momentumModeEnabled, momentumRunActive, setKeystone } = useMomentumStore();
+
+  const isEditing = editDraft?.taskId === task.id;
   const priorityValue = task.priority ?? "medium";
   const contextValue = task.context ?? "general";
-  // Snoozed state only applies visually/functionally in Advanced Mode
-  const isSnoozed = advancedFeaturesEnabled && task.snoozedUntil && task.snoozedUntil > Date.now();
+  const isSnoozed = advancedFeaturesEnabled && !!task.snoozedUntil && task.snoozedUntil > Date.now();
   const [showSnoozeMenu, setShowSnoozeMenu] = useState(false);
-  const snoozeMenuRef = useRef(null);
+  const snoozeMenuRef = useRef<HTMLDivElement>(null);
 
   const loadColors = LOAD_PILL_COLORS[task.load] ?? LOAD_PILL_COLORS.medium;
   const priorityColors = PRIORITY_PILL_COLORS[priorityValue] ?? PRIORITY_PILL_COLORS.medium;
   const contextColors = getContextColor(contextValue);
 
   useEffect(() => {
-    function handleClickOutside(event) {
-      if (snoozeMenuRef.current && !snoozeMenuRef.current.contains(event.target)) {
+    function handleClickOutside(event: MouseEvent) {
+      if (snoozeMenuRef.current && !snoozeMenuRef.current.contains(event.target as Node)) {
         setShowSnoozeMenu(false);
       }
     }
@@ -67,7 +59,7 @@ function TaskCard({
     return () => document.removeEventListener("mousedown", handleClickOutside);
   }, [showSnoozeMenu]);
 
-  function formatSnoozeRemaining(snoozedUntil) {
+  function formatSnoozeRemaining(snoozedUntil: number): string {
     const diffMs = snoozedUntil - Date.now();
     if (diffMs <= 0) return "Ready now";
     const totalHours = Math.ceil(diffMs / (1000 * 60 * 60));
@@ -94,42 +86,27 @@ function TaskCard({
               type="checkbox"
               className="task-checkbox"
               checked={task.done}
-              onChange={() => onToggleTask(task.id)}
+              onChange={() => toggleTask(task.id)}
             />
             <span className="task-title">{task.title}</span>
           </label>
-
           <div className="task-meta">
-            <Pill
-              label={LOAD_PILL_LABELS[task.load] ?? task.load}
-              bg={loadColors.bg}
-              text={loadColors.text}
-            />
-            <Pill
-              label={PRIORITY_PILL_LABELS[priorityValue] ?? priorityValue}
-              bg={priorityColors.bg}
-              text={priorityColors.text}
-            />
-            <Pill
-              label={contextValue}
-              bg={contextColors.bg}
-              text={contextColors.text}
-            />
+            <Pill label={LOAD_PILL_LABELS[task.load] ?? task.load} bg={loadColors.bg} text={loadColors.text} />
+            <Pill label={PRIORITY_PILL_LABELS[priorityValue] ?? priorityValue} bg={priorityColors.bg} text={priorityColors.text} />
+            <Pill label={contextValue} bg={contextColors.bg} text={contextColors.text} />
           </div>
         </div>
 
         <div className="task-actions">
-          <button className="move-button" onClick={() => onMoveTaskUp(task.id)} aria-label="Move task up">
+          <button className="move-button" onClick={() => moveTaskUp(task.id, visibleTasks)} aria-label="Move task up">
             <ArrowUpIcon className="icon-subtle" />
           </button>
-          <button className="move-button" onClick={() => onMoveTaskDown(task.id)} aria-label="Move task down">
+          <button className="move-button" onClick={() => moveTaskDown(task.id, visibleTasks)} aria-label="Move task down">
             <ArrowDownIcon className="icon-subtle" />
           </button>
 
-          {isSnoozed && (
-            <span className="task-snooze-info">
-              Snoozed · {formatSnoozeRemaining(task.snoozedUntil)}
-            </span>
+          {isSnoozed && task.snoozedUntil && (
+            <span className="task-snooze-info">Snoozed · {formatSnoozeRemaining(task.snoozedUntil)}</span>
           )}
 
           {advancedFeaturesEnabled && !isSnoozed && !task.done && (
@@ -139,17 +116,16 @@ function TaskCard({
               </button>
               {showSnoozeMenu && (
                 <div className="task-submenu">
-                  <button type="button" onClick={() => { onSnooze(task.id, 24); setShowSnoozeMenu(false); }}>Snooze 24h</button>
-                  <button type="button" onClick={() => { onSnooze(task.id, 48); setShowSnoozeMenu(false); }}>Snooze 48h</button>
-                  <button type="button" onClick={() => { onSnooze(task.id, 72); setShowSnoozeMenu(false); }}>Snooze 72h</button>
+                  <button type="button" onClick={() => { snooze(task.id, 24); setShowSnoozeMenu(false); }}>Snooze 24h</button>
+                  <button type="button" onClick={() => { snooze(task.id, 48); setShowSnoozeMenu(false); }}>Snooze 48h</button>
+                  <button type="button" onClick={() => { snooze(task.id, 72); setShowSnoozeMenu(false); }}>Snooze 72h</button>
                 </div>
               )}
             </div>
           )}
 
-          {/* Un-snooze only available in Advanced Mode */}
           {advancedFeaturesEnabled && isSnoozed && (
-            <button type="button" className="task-action-button" onClick={() => onUnsnooze(task.id)}>
+            <button type="button" className="task-action-button" onClick={() => unsnooze(task.id)}>
               Un-snooze
             </button>
           )}
@@ -158,37 +134,22 @@ function TaskCard({
             isKeystone ? (
               <span className="keystone-badge">Keystone</span>
             ) : (
-              <button type="button" className="task-action-button" onClick={() => onSetKeystone(task.id)}>
+              <button type="button" className="task-action-button" onClick={() => setKeystone(task.id)}>
                 Set Keystone
               </button>
             )
           )}
 
-          <button className="edit-button icon-button" onClick={() => onStartEdit(task)} aria-label="Edit task">
+          <button className="edit-button icon-button" onClick={() => startEdit(task)} aria-label="Edit task">
             <PencilIcon className="icon-subtle" />
           </button>
-          <button className="delete-button icon-button" onClick={() => onDeleteTask(task.id)} aria-label="Delete task">
+          <button className="delete-button icon-button" onClick={() => deleteTask(task.id)} aria-label="Delete task">
             <TrashIcon className="icon-subtle" />
           </button>
         </div>
       </li>
 
-      {isEditing && (
-        <EditTaskModal
-          task={task}
-          editTitle={editTitle}
-          setEditTitle={setEditTitle}
-          editLoad={editLoad}
-          setEditLoad={setEditLoad}
-          editPriority={editPriority}
-          setEditPriority={setEditPriority}
-          editContext={editContext}
-          setEditContext={setEditContext}
-          contextOptions={contextOptions}
-          onSave={() => onSaveEdit(task.id)}
-          onCancel={onCancelEdit}
-        />
-      )}
+      {isEditing && <EditTaskModal contextOptions={contextOptions} />}
     </>
   );
 }

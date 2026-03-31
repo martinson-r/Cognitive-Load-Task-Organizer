@@ -1,13 +1,20 @@
 import { useEffect, useRef } from "react";
-import { useFocusTrap } from "../hooks/useFocusTrap";
+import { useFocusTrap } from "../hooks/useFocusTrap.ts";
 import "../styles/settings-modal.css";
 
-function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }) {
-  const modalRef = useRef(null);
+interface SettingsModalProps {
+  onClose: () => void;
+  onExport: () => Promise<void>;
+  onImportFile: (e: React.ChangeEvent<HTMLInputElement>) => Promise<void>;
+  onClearAllTasks: () => Promise<void>;
+}
+
+function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: SettingsModalProps) {
+  const modalRef = useRef<HTMLDivElement>(null);
   useFocusTrap(modalRef);
 
   useEffect(() => {
-    function handleKey(e) {
+    function handleKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
     }
     document.addEventListener("keydown", handleKey);
@@ -19,22 +26,16 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }) {
       className="task-modal-backdrop"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div 
-        className="task-modal settings-modal" 
-        role="dialog" 
+      <div
+        className="task-modal settings-modal"
+        role="dialog"
         aria-modal="true"
         aria-label="Settings"
         ref={modalRef}
       >
         <div className="task-modal__header">
           <span className="settings-modal__title">Settings</span>
-          <button
-            type="button"
-            className="task-modal__close"
-            onClick={onClose}
-            aria-label="Close settings"
-            autoFocus
-          >
+          <button type="button" className="task-modal__close" onClick={onClose} aria-label="Close settings" autoFocus>
             ✕
           </button>
         </div>
@@ -45,38 +46,20 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }) {
             Export your tasks and settings to a JSON file, or import a previously exported file.
           </p>
           <div className="settings-modal__row">
-            <button
-              type="button"
-              className="settings-btn"
-              onClick={onExport}
-            >
+            <button type="button" className="settings-btn" onClick={onExport}>
               Export tasks
             </button>
-
             <label className="settings-btn">
               Import tasks
-              <input
-                type="file"
-                accept=".json,application/json"
-                onChange={onImportFile}
-                style={{ display: "none" }}
-              />
+              <input type="file" accept=".json,application/json" onChange={onImportFile} style={{ display: "none" }} />
             </label>
           </div>
         </section>
 
         <section className="settings-modal__section settings-modal__section--danger">
-          <h2 className="settings-modal__section-title settings-modal__section-title--danger">
-            Danger Zone
-          </h2>
-          <p className="settings-modal__section-desc">
-            Permanently delete all tasks. This cannot be undone.
-          </p>
-          <button
-            type="button"
-            className="settings-btn settings-btn--danger"
-            onClick={onClearAllTasks}
-          >
+          <h2 className="settings-modal__section-title settings-modal__section-title--danger">Danger Zone</h2>
+          <p className="settings-modal__section-desc">Permanently delete all tasks. This cannot be undone.</p>
+          <button type="button" className="settings-btn settings-btn--danger" onClick={onClearAllTasks}>
             Clear all tasks
           </button>
         </section>
