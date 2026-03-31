@@ -5,6 +5,7 @@ import { DEFAULT_CONTEXT_OPTIONS } from "./constants/TaskOptions";
 import { getMomentumTasks, getRunwayNeedsFallback } from "./utils/momentum";
 import { getVisibleTasks } from "./utils/taskView";
 import { exportTasks, importTasks } from "./utils/importExport";
+import { SortField, SortDirection } from "./types";
 
 import { useTaskStore } from "./store/useTaskStore";
 import { useFilterStore } from "./store/useFilterStore";
@@ -26,7 +27,7 @@ function App() {
     showCompleted, showSnoozedTasks, filtersExpanded,
     viewMode, sortBy, sortDirection, focusModeEnabled,
     loadFilterSettings, setViewMode, setSortBy, setSortDirection, resetFilters,
-    setShowSnoozedTasks, toggleFiltersExpanded,
+    setShowSnoozedTasks,
   } = useFilterStore();
   const {
     advancedFeaturesEnabled, settingsOpen, faqOpen,
@@ -37,9 +38,8 @@ function App() {
   } = useUIStore();
   const {
     momentumModeEnabled, momentumRunActive, momentumEnergy,
-    keystoneTaskId, momentumError, allowCrossContextRunway,
-    loadMomentumSettings, setMomentumModeEnabled,
-    startRun, endRun, enableCrossContextRunway, pickKeystone, clearKeystoneIfMissing,
+    keystoneTaskId, allowCrossContextRunway,
+    loadMomentumSettings, setMomentumModeEnabled, clearKeystoneIfMissing,
   } = useMomentumStore();
 
   // ── Bootstrap ──────────────────────────────────────────────────────────────
@@ -129,7 +129,7 @@ function App() {
     }
   }
 
-  async function handleImportFile(e) {
+  async function handleImportFile(e: React.ChangeEvent<HTMLInputElement>) {
     const file = e.target.files?.[0];
     if (!file) return;
     e.target.value = "";
@@ -292,14 +292,14 @@ function App() {
                 <div className="sort-controls">
                   <label>
                     Sort by
-                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value)}>
+                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortField)}>
                       <option value="load">Cognitive Load</option>
                       <option value="priority">Priority</option>
                     </select>
                   </label>
                   <label>
                     Direction
-                    <select value={sortDirection} onChange={(e) => setSortDirection(e.target.value)}>
+                    <select value={sortDirection} onChange={(e) => setSortDirection(e.target.value as SortDirection)}>
                       <option value="asc">Low to High</option>
                       <option value="desc">High to Low</option>
                     </select>
@@ -331,10 +331,10 @@ function App() {
           {showEmptyState && (
             <div className="empty-state">
               {noTasksAtAll && (
-                <p>No tasks in list, <button type="button" className="empty-state__link" onClick={() => document.querySelector('.task-form-trigger')?.click()}>add a task</button>.</p>
+                <p>No tasks in list, <button type="button" className="empty-state__link" onClick={() => (document.querySelector('.task-form-trigger') as HTMLElement)?.click()}>add a task</button>.</p>
               )}
               {allDone && (
-                <p>All done for today! ...or not quite? <button type="button" className="empty-state__link" onClick={() => document.querySelector('.task-form-trigger')?.click()}>Add a new task.</button></p>
+                <p>All done for today! ...or not quite? <button type="button" className="empty-state__link" onClick={() => (document.querySelector('.task-form-trigger') as HTMLElement)?.click()}>Add a new task.</button></p>
               )}
               {!noTasksAtAll && !allDone && (
                 <>

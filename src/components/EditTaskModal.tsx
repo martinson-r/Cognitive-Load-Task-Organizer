@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useFocusTrap } from "../hooks/useFocusTrap";
+import { useFocusTrap } from "../hooks/useFocusTrap.ts";
 import "../styles/task-form.css";
 import { LOAD_PILL_COLORS, PRIORITY_PILL_COLORS, getContextColor, LOAD_OPTIONS, PRIORITY_OPTIONS } from "../constants/TaskOptions";
 import { SegmentGroup } from "./SegmentGroup";

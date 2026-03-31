@@ -4,7 +4,14 @@ import "../styles/ui-guide.css";
 
 // ── Helper Components ──────────────────────────────────────────────────────
 
-function ColorToken({ varName, hex, usage, border = false }) {
+interface ColorTokenProps {
+  varName?: string;
+  hex?: string;
+  usage: string;
+  border?: boolean;
+}
+
+function ColorToken({ varName, hex, usage, border = false }: ColorTokenProps) {
   const background = varName ? `var(${varName})` : hex;
   const label = varName ? varName : hex;
 
@@ -25,7 +32,15 @@ function ColorToken({ varName, hex, usage, border = false }) {
   );
 }
 
-function TypeToken({ name, sizeVar, lineVar, weight = "400", usage }) {
+interface TypeTokenProps {
+  name: string;
+  sizeVar: string;
+  lineVar: string;
+  weight?: string;
+  usage: string;
+}
+
+function TypeToken({ name, sizeVar, lineVar, weight = "400", usage }: TypeTokenProps) {
   return (
     <div className="type-specimen">
       <p
@@ -44,7 +59,12 @@ function TypeToken({ name, sizeVar, lineVar, weight = "400", usage }) {
   );
 }
 
-function SpaceToken({ varName, usage }) {
+interface SpaceTokenProps {
+  varName: string;
+  usage: string;
+}
+
+function SpaceToken({ varName, usage }: SpaceTokenProps) {
   return (
     <div className="token-card">
       <div className="token-card__preview" style={{ background: "var(--surface-base)" }}>
@@ -63,7 +83,12 @@ function SpaceToken({ varName, usage }) {
   );
 }
 
-function RadiusToken({ varName, usage }) {
+interface RadiusTokenProps {
+  varName: string;
+  usage: string;
+}
+
+function RadiusToken({ varName, usage }: RadiusTokenProps) {
   return (
     <div className="token-card">
       <div className="token-card__preview" style={{ background: "var(--surface-base)" }}>
@@ -83,7 +108,13 @@ function RadiusToken({ varName, usage }) {
   );
 }
 
-function ShadowToken({ varName, usage, borderRadius = "var(--radius-card)" }) {
+interface ShadowTokenProps {
+  varName: string;
+  usage: string;
+  borderRadius?: string;
+}
+
+function ShadowToken({ varName, usage, borderRadius = "var(--radius-card)" }: ShadowTokenProps) {
   return (
     <div className="token-card">
       <div className="token-card__preview token-card__preview--shadow">
@@ -102,8 +133,13 @@ function ShadowToken({ varName, usage, borderRadius = "var(--radius-card)" }) {
 
 // ── Main Guide ─────────────────────────────────────────────────────────────
 
+interface Section {
+  id: string;
+  label: string;
+}
+
 function UIGuide() {
-  const sections = [
+  const sections: Section[] = [
     { id: "typography",      label: "Typography" },
     { id: "spacing",         label: "Spacing" },
     { id: "radius",          label: "Radius" },
@@ -120,7 +156,7 @@ function UIGuide() {
     { id: "elevation",       label: "Elevation" },
   ];
 
-  const scrollToSection = (id) => {
+  const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) element.scrollIntoView({ behavior: "smooth" });
   };
@@ -137,7 +173,6 @@ function UIGuide() {
       </header>
 
       <main className="ui-guide-grid">
-        {/* Table of Contents */}
         <nav className="ui-guide-toc">
           <p className="ui-guide-toc__label">Contents</p>
           <div className="ui-guide-toc__links">
@@ -160,41 +195,41 @@ function UIGuide() {
             </p>
           </div>
 
-          {/* ── Typography ── */}
           <section id="typography" className="ui-guide-section">
             <h2>Typography</h2>
             <div className="type-specimen-list">
               <TypeToken name="Title Large" sizeVar="--font-title-lg-size" lineVar="--font-title-lg-line" weight="500" usage="App header H1." />
               <TypeToken name="Title Small" sizeVar="--font-title-sm-size" lineVar="--font-title-sm-line" weight="500" usage="Section headers, modal titles." />
-              <TypeToken name="Primary Body" sizeVar="--font-primary-size" lineVar="--font-primary-line" usage="Standard inputs, task titles, toggle labels." />
-              <TypeToken name="Chip / Label" sizeVar="--font-chip-mobile-size" lineVar="--font-chip-mobile-line" usage="Tags, pills, meta info, button labels, small UI text." />
+              <TypeToken name="Body" sizeVar="--font-body-size" lineVar="--font-body-line" usage="Task titles, descriptions, general UI copy." />
+              <TypeToken name="Small" sizeVar="--font-small-size" lineVar="--font-small-line" usage="Meta labels, pill text, filter selects." />
+              <TypeToken name="Micro" sizeVar="--font-micro-size" lineVar="--font-micro-line" usage="Timestamps, helper annotations." />
             </div>
           </section>
 
-          {/* ── Spacing ── */}
           <section id="spacing" className="ui-guide-section">
             <h2>Spacing</h2>
+            <p className="ui-guide-desc">All spacing values are multiples of a 4px base. Use these tokens for padding, margin, and gap — never hardcoded px values.</p>
             <div className="token-grid">
-              <SpaceToken varName="--space-1" usage="8px — Tight gaps, icon padding." />
-              <SpaceToken varName="--space-2" usage="16px — Standard padding, form gaps." />
-              <SpaceToken varName="--space-3" usage="24px — Section gaps (app-main gap)." />
-              <SpaceToken varName="--space-4" usage="32px — Page padding, large blocks." />
+              <SpaceToken varName="--space-1" usage="4px — tight internal padding." />
+              <SpaceToken varName="--space-2" usage="8px — compact gap, small padding." />
+              <SpaceToken varName="--space-3" usage="12px — standard inner padding." />
+              <SpaceToken varName="--space-4" usage="16px — default component gap." />
+              <SpaceToken varName="--space-5" usage="20px — section padding." />
+              <SpaceToken varName="--space-6" usage="24px — modal padding, large gaps." />
+              <SpaceToken varName="--space-8" usage="32px — section breaks." />
             </div>
           </section>
 
-          {/* ── Radius ── */}
           <section id="radius" className="ui-guide-section">
             <h2>Border Radius</h2>
             <div className="token-grid">
-              <RadiusToken varName="--radius-button" usage="6px — Buttons, small controls." />
-              <RadiusToken varName="--radius-input" usage="8px — Inputs, select wrappers, cards." />
-              <RadiusToken varName="--radius-card" usage="8px — Task cards, panels." />
-              <RadiusToken varName="--radius-modal" usage="16px — Modals, bottom sheets." />
-              <RadiusToken varName="--radius-pill" usage="999px — Pills, toggles, badges." />
+              <RadiusToken varName="--radius-sm" usage="Buttons, pills, small interactive elements." />
+              <RadiusToken varName="--radius-md" usage="Inputs, selects, filter chips." />
+              <RadiusToken varName="--radius-card" usage="Task cards, panels." />
+              <RadiusToken varName="--radius-modal" usage="Modals and bottom sheets." />
             </div>
           </section>
 
-          {/* ── Surfaces ── */}
           <section id="surfaces" className="ui-guide-section">
             <h2>Surfaces</h2>
             <p className="ui-guide-desc">Background layers in order of visual depth. Use these instead of hardcoded whites and near-whites.</p>
@@ -208,7 +243,6 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── Borders ── */}
           <section id="borders" className="ui-guide-section">
             <h2>Borders</h2>
             <div className="token-grid">
@@ -219,7 +253,6 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── Text ── */}
           <section id="text-tokens" className="ui-guide-section">
             <h2>Text</h2>
             <div className="token-grid">
@@ -231,7 +264,6 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── Icons ── */}
           <section id="icon-tokens" className="ui-guide-section">
             <h2>Icons</h2>
             <p className="ui-guide-desc">Move-button arrows use <code>--icon</code>. Edit and delete icons use <code>--icon-subtle</code> to read lighter against the bare (no border box) background.</p>
@@ -242,7 +274,6 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── Load ── */}
           <section id="load-tokens" className="ui-guide-section">
             <h2>Cognitive Load</h2>
             <p className="ui-guide-desc">Semantic tokens mapped to task effort levels. Always use the paired bg + text tokens together.</p>
@@ -256,7 +287,6 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── Priority ── */}
           <section id="priority-tokens" className="ui-guide-section">
             <h2>Priority</h2>
             <p className="ui-guide-desc">Semantic tokens mapped to task urgency levels. Always use the paired bg + text tokens together.</p>
@@ -270,10 +300,9 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── Context ── */}
           <section id="context-colors" className="ui-guide-section">
             <h2>Context Chips</h2>
-            <p className="ui-guide-desc">Preset context colors are defined in <code>TaskOptions.jsx</code>, not as CSS tokens, because they are data-driven. Custom contexts are assigned from a deterministic hash pool.</p>
+            <p className="ui-guide-desc">Preset context colors are defined in <code>TaskOptions.ts</code>, not as CSS tokens, because they are data-driven. Custom contexts are assigned from a deterministic hash pool.</p>
             <div className="token-grid">
               <ColorToken hex="#fef3c7" usage="Kitchen" border />
               <ColorToken hex="#ccfbf1" usage="Bathroom" border />
@@ -288,7 +317,6 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── Actions ── */}
           <section id="action-tokens" className="ui-guide-section">
             <h2>Actions</h2>
             <p className="ui-guide-desc">Used exclusively for edit and delete icon hover states.</p>
@@ -298,7 +326,6 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── System States ── */}
           <section id="system-states" className="ui-guide-section">
             <h2>System States</h2>
             <div className="token-grid">
@@ -312,7 +339,6 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── Feature Tokens ── */}
           <section id="feature-tokens" className="ui-guide-section">
             <h2>Feature Tokens</h2>
             <p className="ui-guide-desc">Tokens tied to specific product features. Isolating them means global palette changes don't accidentally affect feature states.</p>
@@ -337,7 +363,6 @@ function UIGuide() {
             </div>
           </section>
 
-          {/* ── Elevation ── */}
           <section id="elevation" className="ui-guide-section">
             <h2>Shadows & Overlays</h2>
             <div className="token-grid">

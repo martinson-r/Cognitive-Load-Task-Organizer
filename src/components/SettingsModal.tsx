@@ -1,5 +1,5 @@
 import { useEffect, useRef } from "react";
-import { useFocusTrap } from "../hooks/useFocusTrap";
+import { useFocusTrap } from "../hooks/useFocusTrap.ts";
 import "../styles/settings-modal.css";
 
 interface SettingsModalProps {

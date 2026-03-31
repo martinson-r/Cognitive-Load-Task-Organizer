@@ -1,5 +1,5 @@
 import { useState, useEffect, useRef } from "react";
-import { useFocusTrap } from "../hooks/useFocusTrap";
+import { useFocusTrap } from "../hooks/useFocusTrap.ts";
 import { ColorPair } from "../constants/TaskOptions";
 
 interface SelectOption {
