@@ -92,9 +92,9 @@ IndexedDB was chosen because it provides:
 This allows the app to scale beyond a trivial demo while remaining fully offline-capable.
 
 
-## Why No TypeScript?
+## Why Start Without TypeScript?
 
-I use TypeScript professionally (UW), but for this project I intentionally skipped it to move faster and validate the product idea. Now that the core features are finished, I am migrating to TypeScript and Zustand for state management.
+I intentionally skipped it to move faster and validate the product idea. Now that the core features are finished, I have migrated TypeScript and Zustand for state management.
 
 
 ## Security Considerations
