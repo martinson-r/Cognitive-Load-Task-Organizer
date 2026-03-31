@@ -252,11 +252,21 @@ The architecture refactor was executed in dependency order to keep the app runni
 
 ### What About Testing?
 
-The utility functions — particularly the Momentum Mode algorithm — are the highest-priority testing target.
+The utility functions — particularly the Momentum Mode algorithm — were the highest-priority testing target.
 
-`getMomentumTasks` has enough interacting variables (energy level, keystone load, context boundaries, fallback paths) that manual testing cannot reliably cover the edge cases. Unit tests for the pure logic in `momentum.ts` and `taskView.ts` are the planned next step.
+`getMomentumTasks` has enough interacting variables (energy level, keystone load, context boundaries, fallback paths) that manual testing cannot reliably cover the edge cases. Unit tests cover the core Momentum Mode algorithm and task view utilities because they are the logic most likely to fail silently under edge cases.
 
-Testing was deprioritized during initial development in favor of speed, and during the refactor in favor of keeping scope contained. The architecture now makes it straightforward — all store actions and utility functions are isolated and side-effect-free, so the testing surface is clean.
+Testing was deprioritized during initial development in favor of speed, and during the refactor in favor of keeping scope contained. The architecture now makes it straightforward. All store actions and utility functions are isolated and side-effect-free, so the testing surface is clean.
+
+#### Running the Unit Tests
+```bash
+npm test        # run tests in watch mode
+npm run test:ui # visual test runner
+```
+
+Test files live in `src/utils/`. Current coverage:
+- `momentum.test.ts` — `pickKeystoneForMe`, `getRunwayNeedsFallback`, 
+  `hasCrossContextLowerLoadOptions`, `getMomentumTasks`
 
 ---
 
