@@ -1,17 +1,38 @@
 import { useState, useEffect, useRef } from "react";
 import { useFocusTrap } from "../hooks/useFocusTrap";
+import { ColorPair } from "../constants/TaskOptions";
 
-// Second-layer picker sheet — opens on top of whatever triggered it
-export function SegmentPicker({ label, options, value, onChange, onClose, getOptionColor }) {
+interface SelectOption {
+  value: string;
+  label: string;
+}
+
+interface SegmentPickerProps {
+  label: string;
+  options: SelectOption[];
+  value: string;
+  onChange: (value: string) => void;
+  onClose: () => void;
+  getOptionColor?: (value: string) => ColorPair | null;
+}
+
+interface SegmentGroupProps {
+  label: string;
+  options: SelectOption[];
+  value: string;
+  onChange: (value: string) => void;
+  getOptionColor?: (value: string) => ColorPair | null;
+}
+
+export function SegmentPicker({ label, options, value, onChange, onClose, getOptionColor }: SegmentPickerProps) {
   const [hasScrollableContent, setHasScrollableContent] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
-  
-  const modalRef = useRef(null);
-  const scrollRef = useRef(null);
+  const modalRef = useRef<HTMLDivElement>(null);
+  const scrollRef = useRef<HTMLDivElement>(null);
   useFocusTrap(modalRef);
 
   useEffect(() => {
-    function handleKey(e) {
+    function handleKey(e: KeyboardEvent) {
       if (e.key === "Escape") onClose();
     }
     document.addEventListener("keydown", handleKey);
@@ -35,24 +56,10 @@ export function SegmentPicker({ label, options, value, onChange, onClose, getOpt
       className="segment-picker-backdrop"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
     >
-      <div 
-        className="segment-picker" 
-        role="dialog" 
-        aria-modal="true"
-        aria-label={`Choose ${label}`}
-        ref={modalRef}
-      >
+      <div className="segment-picker" role="dialog" aria-modal="true" aria-label={`Choose ${label}`} ref={modalRef}>
         <div className="segment-picker__header">
           <span className="segment-picker__title">{label}</span>
-          <button
-            type="button"
-            className="task-modal__close"
-            onClick={onClose}
-            aria-label="Close"
-            autoFocus
-          >
-            ✕
-          </button>
+          <button type="button" className="task-modal__close" onClick={onClose} aria-label="Close" autoFocus>✕</button>
         </div>
         <div className="segment-picker__scroll-wrap">
           <div className="segment-picker__options" ref={scrollRef}>
@@ -68,9 +75,7 @@ export function SegmentPicker({ label, options, value, onChange, onClose, getOpt
                   onClick={() => { onChange(opt.value); onClose(); }}
                 >
                   {opt.label}
-                  {isSelected && (
-                    <span className="segment-picker__check" aria-hidden="true">✓</span>
-                  )}
+                  {isSelected && <span className="segment-picker__check" aria-hidden="true">✓</span>}
                 </button>
               );
             })}
@@ -84,8 +89,7 @@ export function SegmentPicker({ label, options, value, onChange, onClose, getOpt
   );
 }
 
-// Stable segment button — never expands in place, always opens a picker sheet
-export function SegmentGroup({ label, options, value, onChange, getOptionColor }) {
+export function SegmentGroup({ label, options, value, onChange, getOptionColor }: SegmentGroupProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const selectedLabel = options.find((o) => o.value === value)?.label ?? value;
   const color = getOptionColor ? getOptionColor(value) : null;
@@ -100,13 +104,8 @@ export function SegmentGroup({ label, options, value, onChange, getOptionColor }
         style={color ? { background: color.bg, color: color.text, borderColor: "transparent" } : undefined}
       >
         <span className="segment-selected__text">{selectedLabel}</span>
-        <span
-          className="segment-caret"
-          aria-hidden="true"
-          style={color ? { color: color.text, opacity: 0.6 } : undefined}
-        >›</span>
+        <span className="segment-caret" aria-hidden="true" style={color ? { color: color.text, opacity: 0.6 } : undefined}>›</span>
       </button>
-
       {pickerOpen && (
         <SegmentPicker
           label={label}
