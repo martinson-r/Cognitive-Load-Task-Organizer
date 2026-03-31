@@ -119,6 +119,22 @@ Then open:
 
 http://localhost:5173
 
+
+## Testing
+
+Unit tests cover the core Momentum Mode algorithm and task view utilities,
+the logic most likely to fail silently under edge cases.
+
+```bash
+npm test        # run tests in watch mode
+npm run test:ui # visual test runner
+```
+
+Test files live in `src/utils/`. Current coverage:
+- `momentum.test.ts` — `pickKeystoneForMe`, `getRunwayNeedsFallback`, 
+  `hasCrossContextLowerLoadOptions`, `getMomentumTasks`
+
+
 ## Design System & UI Guide
 
 This project includes a living **UI Implementation Guide** that documents the application's semantic tokens, typography scales, and accessible component patterns.
