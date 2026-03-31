@@ -267,6 +267,7 @@ npm run test:ui # visual test runner
 Test files live in `src/utils/`. Current coverage:
 - `momentum.test.ts` — `pickKeystoneForMe`, `getRunwayNeedsFallback`, 
   `hasCrossContextLowerLoadOptions`, `getMomentumTasks`
+- `taskView.test.ts` — `getVisibleTasks`, `normalizeTaskPositions`
 
 ---
 
