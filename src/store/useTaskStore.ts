@@ -44,10 +44,15 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   settingsLoaded: false,
 
   loadTasks: async () => {
-    const [storedTasks, storedCustomContexts] = await Promise.all([
-      getAllTasks(),
-      getCustomContexts(),
-    ]);
+    let storedTasks, storedCustomContexts;
+        try {
+        [storedTasks, storedCustomContexts] = await Promise.all([
+            getAllTasks(),
+            getCustomContexts(),
+        ]);
+        } catch (err) {
+        throw new Error(`Storage unavailable: ${err instanceof Error ? err.message : err}`);
+    }
 
     const normalizedTasks = storedTasks
       .map((task, index) => ({
