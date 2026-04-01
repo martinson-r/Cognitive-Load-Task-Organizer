@@ -3,8 +3,8 @@ import { createRoot } from 'react-dom/client'
 // Use HashRouter to avoid server-side 404s on refresh
 import { HashRouter, Routes, Route } from 'react-router-dom'
 import './index.css'
-import App from './App.jsx'
-import UIGuide from './components/UIGuide.jsx'
+import App from './App'
+import UIGuide from './components/UIGuide'
 import ErrorBoundary from "./components/ErrorBoundary";
 
 
