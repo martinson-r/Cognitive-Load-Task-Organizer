@@ -2,8 +2,7 @@ import { useEffect } from "react";
 import "./App.css";
 
 import { DEFAULT_CONTEXT_OPTIONS } from "./constants/TaskOptions";
-import { getMomentumTasks, getRunwayNeedsFallback } from "./utils/momentum";
-import { getVisibleTasks } from "./utils/taskView";
+import { useDisplayedTasks } from "./hooks/useDisplayedTasks";
 import { exportTasks, importTasks } from "./utils/importExport";
 import { isSortDirection, isSortField } from "./types";
 
@@ -66,59 +65,13 @@ function App() {
     ])
   );
 
-  const visibleTasks = getVisibleTasks({
-    tasks,
-    advancedFeaturesEnabled,
-    showSnoozedTasks,
-    showCompleted,
-    filterLoad,
-    filterPriority,
-    filterContext,
-    viewMode,
-    sortBy,
-    sortDirection,
-  });
-
-  const activeTasks =
-    momentumModeEnabled && momentumRunActive
-      ? getMomentumTasks({
-          tasks: visibleTasks,
-          keystoneTaskId,
-          energy: momentumEnergy,
-          allowCrossContextRunway,
-        })
-      : visibleTasks;
-
-  const displayedTasks =
-    focusModeEnabled || (momentumModeEnabled && momentumRunActive)
-      ? activeTasks.slice(0, 7)
-      : activeTasks;
-
-  const totalVisibleCount = activeTasks.length;
-  const displayedCount = displayedTasks.length;
-
-  const momentumNeedsFallback =
-    momentumModeEnabled &&
-    keystoneTaskId &&
-    getRunwayNeedsFallback(visibleTasks, keystoneTaskId);
-
-  // ── Empty state ────────────────────────────────────────────────────────────
-  const now = Date.now();
-  const hasActiveFilters =
-    filterLoad !== "all" || filterPriority !== "all" || filterContext !== "all";
-  const activeFilterCount =
-    (filterLoad !== "all" ? 1 : 0) +
-    (filterPriority !== "all" ? 1 : 0) +
-    (filterContext !== "all" ? 1 : 0);
-
-  const nonDoneTasks = tasks.filter((t) => !t.done);
-  const snoozedNonDoneTasks = advancedFeaturesEnabled
-    ? nonDoneTasks.filter((t) => t.snoozedUntil && t.snoozedUntil > now)
-    : [];
-  const snoozedCount = snoozedNonDoneTasks.length;
-  const showEmptyState = displayedTasks.length === 0;
-  const allDone = nonDoneTasks.length === 0 && tasks.length > 0;
-  const noTasksAtAll = tasks.length === 0;
+  // ── State data ─────────────────────────────────────────────────
+    const {
+      visibleTasks, displayedTasks,
+      totalVisibleCount, displayedCount, momentumNeedsFallback,
+      showEmptyState, noTasksAtAll, allDone,
+      hasActiveFilters, activeFilterCount, snoozedCount,
+    } = useDisplayedTasks();
 
   // ── Import/export handlers ─────────────────────────────────────────────────
   async function handleExport() {
