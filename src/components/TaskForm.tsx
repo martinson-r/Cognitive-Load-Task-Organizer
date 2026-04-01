@@ -58,6 +58,7 @@ function TaskForm({ contextOptions }: TaskFormProps) {
     setLoad("medium");
     setPriority("medium");
     setContext("general");
+    closeTaskForm();
   }
 
   function handleContextChange(value: string) {
