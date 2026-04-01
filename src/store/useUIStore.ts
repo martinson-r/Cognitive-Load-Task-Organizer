@@ -17,7 +17,7 @@ interface UIStore {
   importError: string | null;
   importSuccess: string | null;
   editDraft: EditDraft | null;
-  taskFormOpen: boolean;  // false
+  taskFormOpen: boolean;  
 
   loadUISettings: () => Promise<void>;
   setAdvancedFeaturesEnabled: (value: boolean) => void;

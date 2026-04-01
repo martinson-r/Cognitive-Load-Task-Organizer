@@ -6,7 +6,7 @@ import { getVisibleTasks } from "../utils/taskView";
 import { getMomentumTasks, getRunwayNeedsFallback } from "../utils/momentum";
 
 export function useDisplayedTasks() {
-  const { tasks, customContexts } = useTaskStore();
+  const { tasks } = useTaskStore();
   const {
     filterLoad, filterPriority, filterContext,
     showCompleted, showSnoozedTasks,
