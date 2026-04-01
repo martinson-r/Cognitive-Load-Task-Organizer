@@ -2,10 +2,9 @@ import { useEffect } from "react";
 import "./App.css";
 
 import { DEFAULT_CONTEXT_OPTIONS } from "./constants/TaskOptions";
-import { getMomentumTasks, getRunwayNeedsFallback } from "./utils/momentum";
-import { getVisibleTasks } from "./utils/taskView";
+import { useDisplayedTasks } from "./hooks/useDisplayedTasks";
 import { exportTasks, importTasks } from "./utils/importExport";
-import { SortField, SortDirection } from "./types";
+import { isSortDirection, isSortField } from "./types";
 
 import { useTaskStore } from "./store/useTaskStore";
 import { useFilterStore } from "./store/useFilterStore";
@@ -25,7 +24,7 @@ function App() {
   const {
     filterLoad, filterPriority, filterContext,
     showCompleted, showSnoozedTasks, filtersExpanded,
-    viewMode, sortBy, sortDirection, focusModeEnabled,
+    viewMode, sortBy, sortDirection, focusModeEnabled, 
     loadFilterSettings, setViewMode, setSortBy, setSortDirection, resetFilters,
     setShowSnoozedTasks,
   } = useFilterStore();
@@ -34,7 +33,7 @@ function App() {
     importError, importSuccess, editDraft,
     loadUISettings, setAdvancedFeaturesEnabled,
     openSettings, closeSettings, openFAQ, closeFAQ,
-    setImportError, setImportSuccess,
+    setImportError, setImportSuccess, openTaskForm,
   } = useUIStore();
   const {
     momentumModeEnabled, momentumRunActive, momentumEnergy,
@@ -66,59 +65,13 @@ function App() {
     ])
   );
 
-  const visibleTasks = getVisibleTasks({
-    tasks,
-    advancedFeaturesEnabled,
-    showSnoozedTasks,
-    showCompleted,
-    filterLoad,
-    filterPriority,
-    filterContext,
-    viewMode,
-    sortBy,
-    sortDirection,
-  });
-
-  const activeTasks =
-    momentumModeEnabled && momentumRunActive
-      ? getMomentumTasks({
-          tasks: visibleTasks,
-          keystoneTaskId,
-          energy: momentumEnergy,
-          allowCrossContextRunway,
-        })
-      : visibleTasks;
-
-  const displayedTasks =
-    focusModeEnabled || (momentumModeEnabled && momentumRunActive)
-      ? activeTasks.slice(0, 7)
-      : activeTasks;
-
-  const totalVisibleCount = activeTasks.length;
-  const displayedCount = displayedTasks.length;
-
-  const momentumNeedsFallback =
-    momentumModeEnabled &&
-    keystoneTaskId &&
-    getRunwayNeedsFallback(visibleTasks, keystoneTaskId);
-
-  // ── Empty state ────────────────────────────────────────────────────────────
-  const now = Date.now();
-  const hasActiveFilters =
-    filterLoad !== "all" || filterPriority !== "all" || filterContext !== "all";
-  const activeFilterCount =
-    (filterLoad !== "all" ? 1 : 0) +
-    (filterPriority !== "all" ? 1 : 0) +
-    (filterContext !== "all" ? 1 : 0);
-
-  const nonDoneTasks = tasks.filter((t) => !t.done);
-  const snoozedNonDoneTasks = advancedFeaturesEnabled
-    ? nonDoneTasks.filter((t) => t.snoozedUntil && t.snoozedUntil > now)
-    : [];
-  const snoozedCount = snoozedNonDoneTasks.length;
-  const showEmptyState = displayedTasks.length === 0;
-  const allDone = nonDoneTasks.length === 0 && tasks.length > 0;
-  const noTasksAtAll = tasks.length === 0;
+  // ── State data ─────────────────────────────────────────────────
+    const {
+      visibleTasks, displayedTasks,
+      totalVisibleCount, displayedCount, momentumNeedsFallback,
+      showEmptyState, noTasksAtAll, allDone,
+      hasActiveFilters, activeFilterCount, snoozedCount,
+    } = useDisplayedTasks();
 
   // ── Import/export handlers ─────────────────────────────────────────────────
   async function handleExport() {
@@ -292,14 +245,14 @@ function App() {
                 <div className="sort-controls">
                   <label>
                     Sort by
-                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortField)}>
+                    <select value={sortBy} onChange={(e) => { const v = e.target.value; if (isSortField(v)) setSortBy(v); }}>
                       <option value="load">Cognitive Load</option>
                       <option value="priority">Priority</option>
                     </select>
                   </label>
                   <label>
                     Direction
-                    <select value={sortDirection} onChange={(e) => setSortDirection(e.target.value as SortDirection)}>
+                    <select value={sortDirection} onChange={(e) => { const v = e.target.value; if (isSortDirection(v)) setSortDirection(v); }}>
                       <option value="asc">Low to High</option>
                       <option value="desc">High to Low</option>
                     </select>
@@ -331,10 +284,10 @@ function App() {
           {showEmptyState && (
             <div className="empty-state">
               {noTasksAtAll && (
-                <p>No tasks in list, <button type="button" className="empty-state__link" onClick={() => (document.querySelector('.task-form-trigger') as HTMLElement)?.click()}>add a task</button>.</p>
+                <p>No tasks in list, <button type="button" className="empty-state__link" onClick={() => openTaskForm()}>add a task</button>.</p>
               )}
               {allDone && (
-                <p>All done for today! ...or not quite? <button type="button" className="empty-state__link" onClick={() => (document.querySelector('.task-form-trigger') as HTMLElement)?.click()}>Add a new task.</button></p>
+                <p>All done for today! ...or not quite? <button type="button" className="empty-state__link" onClick={() => openTaskForm()}>Add a new task.</button></p>
               )}
               {!noTasksAtAll && !allDone && (
                 <>

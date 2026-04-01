@@ -7,6 +7,7 @@ import {
 } from "../constants/TaskOptions";
 import { SegmentGroup } from "./SegmentGroup";
 import { useTaskStore } from "../store/useTaskStore";
+import { useUIStore } from "../store/useUIStore";
 import { LoadLevel, PriorityLevel } from "../types";
 
 interface TaskFormProps {
@@ -15,8 +16,8 @@ interface TaskFormProps {
 
 function TaskForm({ contextOptions }: TaskFormProps) {
   const { addTask, addCustomContext } = useTaskStore();
+  const { taskFormOpen, openTaskForm, closeTaskForm } = useUIStore();
 
-  const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");
   const [load, setLoad] = useState<LoadLevel>("medium");
   const [priority, setPriority] = useState<PriorityLevel>("medium");
@@ -27,22 +28,22 @@ function TaskForm({ contextOptions }: TaskFormProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  useFocusTrap(modalRef, isOpen);
+  useFocusTrap(modalRef, taskFormOpen);
 
   useEffect(() => {
-    if (isOpen) setTimeout(() => inputRef.current?.focus(), 50);
-  }, [isOpen]);
+    if (taskFormOpen) setTimeout(() => inputRef.current?.focus(), 50);
+  }, [taskFormOpen]);
 
   useEffect(() => {
     function handleKey(e: KeyboardEvent) {
       if (e.key === "Escape") handleClose();
     }
-    if (isOpen) document.addEventListener("keydown", handleKey);
+    if (taskFormOpen) document.addEventListener("keydown", handleKey);
     return () => document.removeEventListener("keydown", handleKey);
-  }, [isOpen]);
+  }, [taskFormOpen]);
 
   function handleClose() {
-    setIsOpen(false);
+    closeTaskForm();
     if (showCustomContextInput) {
       setShowCustomContextInput(false);
       setNewContextInput("");
@@ -57,7 +58,6 @@ function TaskForm({ contextOptions }: TaskFormProps) {
     setLoad("medium");
     setPriority("medium");
     setContext("general");
-    setIsOpen(false);
   }
 
   function handleContextChange(value: string) {
@@ -89,13 +89,13 @@ function TaskForm({ contextOptions }: TaskFormProps) {
       <button
         type="button"
         className="task-form-trigger"
-        onClick={() => setIsOpen(true)}
+        onClick={openTaskForm}
         aria-label="Add a task"
       >
         <span className="task-form-trigger__placeholder">Add a task</span>
       </button>
 
-      {isOpen && (
+      {taskFormOpen && (
         <div
           className="task-modal-backdrop"
           onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}

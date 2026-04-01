@@ -27,3 +27,15 @@ export interface EditDraft {
   priority: PriorityLevel;
   context: string;
 }
+
+// Type guards
+const SORT_FIELDS = ['load', 'priority'] as const;
+const SORT_DIRECTIONS = ['asc', 'desc'] as const;
+
+export function isSortField(v: string): v is SortField {
+  return (SORT_FIELDS as readonly string[]).includes(v);
+}
+
+export function isSortDirection(v: string): v is SortDirection {
+  return (SORT_DIRECTIONS as readonly string[]).includes(v);
+}
