@@ -138,7 +138,7 @@ function App() {
             onClick={openFAQ}
             aria-label="Open FAQ"
           >
-            ?
+            FAQ
           </button>
 
           <button
@@ -233,7 +233,7 @@ function App() {
               aria-pressed={momentumModeEnabled}
               onClick={() => setMomentumModeEnabled(true)}
             >
-              Momentum
+              Get Going
             </button>
           )}
         </div>

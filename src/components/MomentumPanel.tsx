@@ -18,10 +18,10 @@ function MomentumPanel({ visibleTasks, momentumNeedsFallback }: MomentumPanelPro
     <div className="momentum-panel">
       {!momentumRunActive ? (
         <>
-          <p className="momentum-panel__title">Momentum Mode</p>
+          <p className="momentum-panel__title">Get Going</p>
           <div className="momentum-panel__section">
-            <p>Choose your Keystone task</p>
-            <p className="momentum-panel__help">Click a task card to select it.</p>
+            <p>Warm up and ease into your most important task.</p>
+            <p className="momentum-panel__help">Click 'Most Important' on a task card to select it.</p>
           </div>
           <div className="momentum-panel__section">
             <p>How tired are you today?</p>
@@ -41,7 +41,7 @@ function MomentumPanel({ visibleTasks, momentumNeedsFallback }: MomentumPanelPro
           {momentumError && <p className="momentum-panel__error">{momentumError}</p>}
           <div className="momentum-panel__actions">
             <button type="button" className="momentum-btn momentum-btn--primary" onClick={startRun}>
-              Start Momentum Run
+              Start Now
             </button>
             <button type="button" className="momentum-btn" onClick={() => pickKeystone(visibleTasks)}>
               I&apos;m too tired, pick for me
@@ -50,7 +50,7 @@ function MomentumPanel({ visibleTasks, momentumNeedsFallback }: MomentumPanelPro
         </>
       ) : (
         <>
-          <p className="momentum-panel__title">Momentum Run active</p>
+          <p className="momentum-panel__title">Get Going in progress</p>
           <p>Energy: <strong>{momentumEnergy}</strong></p>
           {momentumNeedsFallback && !allowCrossContextRunway && !momentumError && (
             <div className="momentum-panel__fallback">
