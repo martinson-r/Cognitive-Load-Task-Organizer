@@ -5,7 +5,7 @@ import { DEFAULT_CONTEXT_OPTIONS } from "./constants/TaskOptions";
 import { getMomentumTasks, getRunwayNeedsFallback } from "./utils/momentum";
 import { getVisibleTasks } from "./utils/taskView";
 import { exportTasks, importTasks } from "./utils/importExport";
-import { SortField, SortDirection } from "./types";
+import { isSortDirection, isSortField } from "./types";
 
 import { useTaskStore } from "./store/useTaskStore";
 import { useFilterStore } from "./store/useFilterStore";
@@ -25,7 +25,7 @@ function App() {
   const {
     filterLoad, filterPriority, filterContext,
     showCompleted, showSnoozedTasks, filtersExpanded,
-    viewMode, sortBy, sortDirection, focusModeEnabled,
+    viewMode, sortBy, sortDirection, focusModeEnabled, 
     loadFilterSettings, setViewMode, setSortBy, setSortDirection, resetFilters,
     setShowSnoozedTasks,
   } = useFilterStore();
@@ -34,7 +34,7 @@ function App() {
     importError, importSuccess, editDraft,
     loadUISettings, setAdvancedFeaturesEnabled,
     openSettings, closeSettings, openFAQ, closeFAQ,
-    setImportError, setImportSuccess,
+    setImportError, setImportSuccess, openTaskForm,
   } = useUIStore();
   const {
     momentumModeEnabled, momentumRunActive, momentumEnergy,
@@ -292,14 +292,14 @@ function App() {
                 <div className="sort-controls">
                   <label>
                     Sort by
-                    <select value={sortBy} onChange={(e) => setSortBy(e.target.value as SortField)}>
+                    <select value={sortBy} onChange={(e) => { const v = e.target.value; if (isSortField(v)) setSortBy(v); }}>
                       <option value="load">Cognitive Load</option>
                       <option value="priority">Priority</option>
                     </select>
                   </label>
                   <label>
                     Direction
-                    <select value={sortDirection} onChange={(e) => setSortDirection(e.target.value as SortDirection)}>
+                    <select value={sortDirection} onChange={(e) => { const v = e.target.value; if (isSortDirection(v)) setSortDirection(v); }}>
                       <option value="asc">Low to High</option>
                       <option value="desc">High to Low</option>
                     </select>
@@ -331,10 +331,10 @@ function App() {
           {showEmptyState && (
             <div className="empty-state">
               {noTasksAtAll && (
-                <p>No tasks in list, <button type="button" className="empty-state__link" onClick={() => (document.querySelector('.task-form-trigger') as HTMLElement)?.click()}>add a task</button>.</p>
+                <p>No tasks in list, <button type="button" className="empty-state__link" onClick={() => openTaskForm()}>add a task</button>.</p>
               )}
               {allDone && (
-                <p>All done for today! ...or not quite? <button type="button" className="empty-state__link" onClick={() => (document.querySelector('.task-form-trigger') as HTMLElement)?.click()}>Add a new task.</button></p>
+                <p>All done for today! ...or not quite? <button type="button" className="empty-state__link" onClick={() => openTaskForm()}>Add a new task.</button></p>
               )}
               {!noTasksAtAll && !allDone && (
                 <>

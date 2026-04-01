@@ -7,6 +7,7 @@ import {
 } from "../constants/TaskOptions";
 import { SegmentGroup } from "./SegmentGroup";
 import { useTaskStore } from "../store/useTaskStore";
+import { useUIStore } from "../store/useUIStore";
 import { LoadLevel, PriorityLevel } from "../types";
 
 interface TaskFormProps {
@@ -15,6 +16,7 @@ interface TaskFormProps {
 
 function TaskForm({ contextOptions }: TaskFormProps) {
   const { addTask, addCustomContext } = useTaskStore();
+  const { taskFormOpen, openTaskForm, closeTaskForm } = useUIStore();
 
   const [isOpen, setIsOpen] = useState(false);
   const [input, setInput] = useState("");

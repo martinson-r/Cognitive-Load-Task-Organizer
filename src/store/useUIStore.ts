@@ -17,6 +17,7 @@ interface UIStore {
   importError: string | null;
   importSuccess: string | null;
   editDraft: EditDraft | null;
+  taskFormOpen: boolean;  // false
 
   loadUISettings: () => Promise<void>;
   setAdvancedFeaturesEnabled: (value: boolean) => void;
@@ -30,6 +31,9 @@ interface UIStore {
   startEdit: (task: Task) => void;
   updateEditDraft: (changes: Partial<Omit<EditDraft, 'taskId'>>) => void;
   cancelEdit: () => void;
+  openTaskForm: () => void;
+  closeTaskForm: () => void;
+
 }
 
 export const useUIStore = create<UIStore>((set, get) => ({
@@ -39,6 +43,7 @@ export const useUIStore = create<UIStore>((set, get) => ({
   importError: null,
   importSuccess: null,
   editDraft: null,
+  taskFormOpen: false,
 
   loadUISettings: async () => {
     const advancedFeaturesEnabled = await getSetting<boolean>(
@@ -85,4 +90,6 @@ export const useUIStore = create<UIStore>((set, get) => ({
   },
 
   cancelEdit: () => set({ editDraft: null }),
+  openTaskForm: () => set({ taskFormOpen: true }),
+  closeTaskForm: () => set({ taskFormOpen: false }),
 }));
