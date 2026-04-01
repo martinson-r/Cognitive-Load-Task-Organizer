@@ -69,7 +69,7 @@ AI tools were used selectively for:
 - brainstorming layout variations  
 - accelerating boilerplate code  
 
-All architecture, state management, IndexedDB integration, and feature logic were implimented and/or reviewed manually.
+All architecture, state management, IndexedDB integration, and feature logic were implemented and/or reviewed manually.
 
 
 ## Tech Stack
