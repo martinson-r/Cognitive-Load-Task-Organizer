@@ -132,10 +132,10 @@ function TaskCard({ task, contextOptions, visibleTasks, isKeystone }: TaskCardPr
 
           {advancedFeaturesEnabled && momentumModeEnabled && !momentumRunActive && (
             isKeystone ? (
-              <span className="keystone-badge">Keystone</span>
+              <span className="keystone-badge">Most Important</span>
             ) : (
               <button type="button" className="task-action-button" onClick={() => setKeystone(task.id)}>
-                Set Keystone
+                Pick as Most Important
               </button>
             )
           )}

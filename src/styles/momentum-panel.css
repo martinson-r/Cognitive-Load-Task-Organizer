@@ -106,3 +106,14 @@
 .momentum-panel__run-footer {
   margin-top: var(--space-2);
 }
+
+/* Styles for very small screens */
+@media (max-width: 320px) {
+  .momentum-energy-options {
+    flex-direction: column;
+  }
+
+  .task-action-button {
+    width: 100%;
+  }
+}

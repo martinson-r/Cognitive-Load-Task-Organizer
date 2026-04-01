@@ -47,32 +47,30 @@ function FAQModal({ onClose }: FAQModalProps) {
           <section className="faq-section">
             <h2 className="faq-section__title">About this app</h2>
             <div className="faq-item">
-              <p className="faq-item__q">What is the Cognitive Load Task Organizer?</p>
+              <p className="faq-item__q">What is Cognitive Organizer?</p>
               <p className="faq-item__a">
                 Most task managers ask you to sort by priority. This one asks a different question:
-                <em> what do you actually have the mental energy to do right now?</em> Tasks are
-                categorized by cognitive load — the mental effort they require — so you can pick
-                something that matches how you're feeling, not just what's theoretically most important.
-                It's designed to be useful for anyone dealing with fatigue, ADHD, executive dysfunction,
-                or just a rough day.
+                <em> what do you actually have the energy to do right now?</em> Tasks are
+                organized by how much mental effort they take — so you can pick something that fits
+                how you're feeling, not just what's technically most urgent. It works well for
+                anyone dealing with fatigue, ADHD, brain fog, or just a rough day.
               </p>
             </div>
             <div className="faq-item">
-              <p className="faq-item__q">What do the load levels mean?</p>
+              <p className="faq-item__q">What do Low, Medium, and High mean?</p>
               <p className="faq-item__a">
-                <strong>Low load</strong> — routine, low-effort tasks. "Reply to that email." "Put laundry in the dryer."<br />
-                <strong>Medium load</strong> — moderate effort, some focus required. "Sort through the mail." "Write a shopping list."<br />
-                <strong>High load</strong> — deep focus, significant mental energy. "Write the report." "Do taxes."
+                <strong>Low</strong> — routine, easy tasks. "Reply to that email." "Put laundry in the dryer."<br />
+                <strong>Medium</strong> — moderate effort, some focus required. "Sort through the mail." "Write a shopping list."<br />
+                <strong>High</strong> — deep focus, significant mental energy. "Write the report." "Do taxes."
               </p>
             </div>
             <div className="faq-item">
-              <p className="faq-item__q">What is Momentum Mode?</p>
+              <p className="faq-item__q">What is Get Going?</p>
               <p className="faq-item__a">
-                Momentum Mode is an experimental feature (enable it under Advanced Features) that helps
-                you build a working rhythm when starting feels hard. You pick a Keystone task — something
-                meaningful you want to anchor your session around — and tell the app how much energy you
-                have. It then sequences your tasks to warm you up gradually rather than throwing you
-                straight into the deep end.
+                Get Going is an optional feature (turn it on under Advanced Features) that helps
+                when starting feels hard. You pick your Most Important task for the session, tell
+                the app how much energy you have, and it lines up easier tasks first to help you
+                build momentum before tackling the big one.
               </p>
             </div>
           </section>
