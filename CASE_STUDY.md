@@ -1,6 +1,6 @@
 # Cognitive Organizer — Case Study
 
-**React + IndexedDB · Local-first · [Live Demo](https://cognitiveorganizer.netlify.app/) · [Figma](https://figma.com) · [GitHub](https://github.com/martinson-r/Cognitive-Load-Task-Organizer)**
+**React + IndexedDB · Local-first · [Live Demo](https://cognitiveorganizer.netlify.app/) · [Figma](https://www.figma.com/design/UmugTdxLqNtJUwveYDH4pk/Cognitive-Organizer?node-id=0-1&t=LvWPsDvCwwSiZ7jz-1) · [GitHub](https://github.com/martinson-r/Cognitive-Load-Task-Organizer)**
 
 > Screenshots and design process visuals are available in the 
 > [full case study on Adobe Portfolio](https://hanasays.myportfolio.com/cognitive-load-task-organizer).
@@ -38,7 +38,7 @@ A task system designed to reduce cognitive overload through constrained workflow
 
 Designed an offline-first task manager to reduce decision friction and support task initiation under low mental energy. Built as a local-first React app using IndexedDB.
 
-**Links:** [Live Demo](https://cognitiveorganizer.netlify.app/) · [Live Figma](https://figma.com) · [GitHub Repo](https://github.com/martinson-r/Cognitive-Load-Task-Organizer) · [UI Implementation Guide](https://cognitiveorganizer.netlify.app/#/ui-guide)
+**Links:** [Live Demo](https://cognitiveorganizer.netlify.app/) · [Live Figma](https://www.figma.com/design/UmugTdxLqNtJUwveYDH4pk/Cognitive-Organizer?node-id=0-1&t=LvWPsDvCwwSiZ7jz-1) · [GitHub Repo](https://github.com/martinson-r/Cognitive-Load-Task-Organizer) · [UI Implementation Guide](https://cognitiveorganizer.netlify.app/#/ui-guide)
 
 ---
 
@@ -68,7 +68,7 @@ A lightweight task management app designed around cognitive load theory, allowin
 - Offline-first task storage using IndexedDB
 - Full CRUD task lifecycle (create, edit, complete, delete)
 - Cognitive load categorization (Low / Medium / High effort)
-- Clean, minimal UI focused on usability — [Live Figma](https://figma.com)
+- Clean, minimal UI focused on usability — [Live Figma](https://www.figma.com/design/UmugTdxLqNtJUwveYDH4pk/Cognitive-Organizer?node-id=0-1&t=LvWPsDvCwwSiZ7jz-1)
 - Deployed to Netlify with continuous deployment from GitHub — [Live demo](https://cognitiveorganizer.netlify.app/)
 - Designed and implemented end-to-end, from concept to production — [GitHub repo](https://github.com/martinson-r/Cognitive-Load-Task-Organizer)
 
@@ -94,7 +94,7 @@ The generated design surfaced useful patterns, but required significant refineme
 
 **Issues identified:** Visual hierarchy, contrast/accessibility, and cognitive load. These problems made the interface harder to scan and increased decision friction, particularly for users managing multiple tasks.
 
-[Live Link to Figma Make Prototype](https://figma.com)
+[Live Link to Figma Make Prototype](https://www.figma.com/design/UmugTdxLqNtJUwveYDH4pk/Cognitive-Organizer?node-id=0-1&t=LvWPsDvCwwSiZ7jz-1)
 
 ---
 
@@ -114,7 +114,7 @@ Rather than attempting to fix everything at once, I focused on a key issue: cogn
 
 I redesigned the task creation flow to make effort (cognitive load), priority, and context more explicit and easier to select, while reducing the number of competing elements on screen. The goal was to improve scannability and reduce the amount of information users need to process at once.
 
-[Live Figma Link](https://figma.com)
+[Live Figma Link](https://www.figma.com/design/UmugTdxLqNtJUwveYDH4pk/Cognitive-Organizer?node-id=0-1&t=LvWPsDvCwwSiZ7jz-1)
 
 ---
 
@@ -192,7 +192,7 @@ Feature states were treated as first-class tokens — snoozed tasks, active filt
 - Single-variable control over global spacing, color, and radius changes
 - Accessible to engineers and non-engineers alike
 
-[Live demo](https://cognitiveorganizer.netlify.app/) · [Live Figma](https://figma.com)
+[Live demo](https://cognitiveorganizer.netlify.app/) · [Live Figma](https://www.figma.com/design/UmugTdxLqNtJUwveYDH4pk/Cognitive-Organizer?node-id=0-1&t=LvWPsDvCwwSiZ7jz-1)
 
 ---
 
