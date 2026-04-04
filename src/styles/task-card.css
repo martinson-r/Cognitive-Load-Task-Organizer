@@ -290,10 +290,26 @@
   }
 
   .task-content {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-1);
-  min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+    min-width: 0;
+  }
 }
 
+/* ── Completed task pagination ────────────────────────────────────────────── */
+
+.completed-tasks-count {
+  margin: var(--space-1) 0 0;
+  font-size: var(--font-chip-mobile-size);
+  line-height: var(--font-chip-mobile-line);
+  color: var(--text-secondary);
+  text-align: center;
+}
+
+.completed-sentinel {
+  height: 1px;
+  margin: 0;
+  padding: 0;
+  border: none;
 }
