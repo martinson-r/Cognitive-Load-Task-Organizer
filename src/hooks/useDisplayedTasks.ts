@@ -1,9 +1,32 @@
+import { useState, useEffect, useCallback } from "react";
 import { useTaskStore } from "../store/useTaskStore";
 import { useFilterStore } from "../store/useFilterStore";
 import { useUIStore } from "../store/useUIStore";
 import { useMomentumStore } from "../store/useMomentumStore";
 import { getVisibleTasks } from "../utils/taskView";
 import { getMomentumTasks, getRunwayNeedsFallback } from "../utils/momentum";
+import { Task } from "../types";
+
+export const COMPLETED_PAGE_SIZE = 10;
+
+// ── Pure helpers (exported for testing) ──────────────────────────────────────
+
+export function splitTasks(visibleTasks: Task[], showCompleted: boolean) {
+  return {
+    activeVisibleTasks: visibleTasks.filter((t) => !t.done),
+    allCompletedTasks: showCompleted ? visibleTasks.filter((t) => t.done) : [],
+  };
+}
+
+export function paginateCompleted(allCompletedTasks: Task[], limit: number) {
+  const displayedCompletedTasks = allCompletedTasks.slice(0, limit);
+  return {
+    displayedCompletedTasks,
+    completedTotal: allCompletedTasks.length,
+    displayedCompletedCount: displayedCompletedTasks.length,
+    hasMoreCompleted: displayedCompletedTasks.length < allCompletedTasks.length,
+  };
+}
 
 export function useDisplayedTasks() {
   const { tasks } = useTaskStore();
@@ -18,6 +41,7 @@ export function useDisplayedTasks() {
     keystoneTaskId, allowCrossContextRunway,
   } = useMomentumStore();
 
+  // ── All tasks passing filter/sort/snooze rules ────────────────────────────
   const visibleTasks = getVisibleTasks({
     tasks,
     advancedFeaturesEnabled,
@@ -31,28 +55,55 @@ export function useDisplayedTasks() {
     sortDirection,
   });
 
+  
+
+  // ── Split active from completed ───────────────────────────────────────────
+  const { activeVisibleTasks, allCompletedTasks } = splitTasks(visibleTasks, showCompleted);
+
+  // ── Momentum / focus mode (active tasks only) ─────────────────────────────
   const activeTasks =
     momentumModeEnabled && momentumRunActive
       ? getMomentumTasks({
-          tasks: visibleTasks,
+          tasks: activeVisibleTasks,
           keystoneTaskId,
           energy: momentumEnergy,
           allowCrossContextRunway,
         })
-      : visibleTasks;
+      : activeVisibleTasks;
 
-  const displayedTasks =
+  const displayedActiveTasks =
     focusModeEnabled || (momentumModeEnabled && momentumRunActive)
       ? activeTasks.slice(0, 7)
       : activeTasks;
 
+  // ── Completed task pagination ─────────────────────────────────────────────
+  const [completedTaskLimit, setCompletedTaskLimit] = useState(COMPLETED_PAGE_SIZE);
+
+  // Reset the limit whenever the toggle goes off so the next open starts fresh.
+  useEffect(() => {
+    if (!showCompleted) {
+      setCompletedTaskLimit(COMPLETED_PAGE_SIZE);
+    }
+  }, [showCompleted]);
+
+  const loadMoreCompleted = useCallback(() => {
+    setCompletedTaskLimit((prev) => prev + COMPLETED_PAGE_SIZE);
+  }, []);
+
+  const { displayedCompletedTasks, completedTotal, displayedCompletedCount, hasMoreCompleted } =
+    paginateCompleted(allCompletedTasks, completedTaskLimit);
+
+  // ── Final displayed list ──────────────────────────────────────────────────
+  const displayedTasks = [...displayedActiveTasks, ...displayedCompletedTasks];
+
+  // ── Counts (focus-mode counts active tasks only — completed are separate) ─
   const totalVisibleCount = activeTasks.length;
-  const displayedCount = displayedTasks.length;
+  const displayedCount = displayedActiveTasks.length;
 
   const momentumNeedsFallback =
     momentumModeEnabled &&
     keystoneTaskId &&
-    getRunwayNeedsFallback(visibleTasks, keystoneTaskId);
+    getRunwayNeedsFallback(activeVisibleTasks, keystoneTaskId);
 
   const now = Date.now();
   const hasActiveFilters =
@@ -84,5 +135,10 @@ export function useDisplayedTasks() {
     hasActiveFilters,
     activeFilterCount,
     snoozedCount,
+    // ── Completed pagination ────────────────────────────────────────────────
+    completedTotal,
+    displayedCompletedCount,
+    hasMoreCompleted,
+    loadMoreCompleted,
   };
 }
