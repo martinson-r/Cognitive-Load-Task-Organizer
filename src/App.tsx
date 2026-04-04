@@ -80,12 +80,9 @@ function App() {
     const sentinel = completedSentinelRef.current;
     if (!sentinel || !hasMoreCompleted) return;
 
-    const observer = new IntersectionObserver(
-      (entries) => {
+    const observer = new IntersectionObserver((entries) => {
         if (entries[0].isIntersecting) loadMoreCompleted();
-      },
-      { rootMargin: "200px" }
-    );
+      });
 
     observer.observe(sentinel);
     return () => observer.disconnect();
@@ -298,6 +295,11 @@ function App() {
                 : `Showing ${displayedCount} of ${totalVisibleCount} tasks`}
             </div>
           )}
+          {showCompleted && displayedCompletedCount < completedTotal && (
+            <p className="completed-tasks-count">
+              Showing {displayedCompletedCount} of {completedTotal} completed tasks
+            </p>
+          )}
 
           {showEmptyState && (
             <div className="empty-state">
@@ -351,11 +353,7 @@ function App() {
             ))}
           </ul>
 
-          {showCompleted && displayedCompletedCount < completedTotal && (
-            <p className="completed-tasks-count">
-              Showing {displayedCompletedCount} of {completedTotal} completed tasks
-            </p>
-          )}
+          
 
           {showCompleted && hasMoreCompleted && (
             <div ref={completedSentinelRef} className="completed-sentinel" aria-hidden="true" />

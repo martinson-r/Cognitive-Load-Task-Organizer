@@ -5,8 +5,28 @@ import { useUIStore } from "../store/useUIStore";
 import { useMomentumStore } from "../store/useMomentumStore";
 import { getVisibleTasks } from "../utils/taskView";
 import { getMomentumTasks, getRunwayNeedsFallback } from "../utils/momentum";
+import { Task } from "../types";
 
-const COMPLETED_PAGE_SIZE = 20;
+export const COMPLETED_PAGE_SIZE = 10;
+
+// ── Pure helpers (exported for testing) ──────────────────────────────────────
+
+export function splitTasks(visibleTasks: Task[], showCompleted: boolean) {
+  return {
+    activeVisibleTasks: visibleTasks.filter((t) => !t.done),
+    allCompletedTasks: showCompleted ? visibleTasks.filter((t) => t.done) : [],
+  };
+}
+
+export function paginateCompleted(allCompletedTasks: Task[], limit: number) {
+  const displayedCompletedTasks = allCompletedTasks.slice(0, limit);
+  return {
+    displayedCompletedTasks,
+    completedTotal: allCompletedTasks.length,
+    displayedCompletedCount: displayedCompletedTasks.length,
+    hasMoreCompleted: displayedCompletedTasks.length < allCompletedTasks.length,
+  };
+}
 
 export function useDisplayedTasks() {
   const { tasks } = useTaskStore();
@@ -35,11 +55,10 @@ export function useDisplayedTasks() {
     sortDirection,
   });
 
+  
+
   // ── Split active from completed ───────────────────────────────────────────
-  // Momentum mode and focus mode apply only to active (non-done) tasks.
-  // Completed tasks are handled separately with pagination below.
-  const activeVisibleTasks = visibleTasks.filter((t) => !t.done);
-  const allCompletedTasks = showCompleted ? visibleTasks.filter((t) => t.done) : [];
+  const { activeVisibleTasks, allCompletedTasks } = splitTasks(visibleTasks, showCompleted);
 
   // ── Momentum / focus mode (active tasks only) ─────────────────────────────
   const activeTasks =
@@ -71,7 +90,8 @@ export function useDisplayedTasks() {
     setCompletedTaskLimit((prev) => prev + COMPLETED_PAGE_SIZE);
   }, []);
 
-  const displayedCompletedTasks = allCompletedTasks.slice(0, completedTaskLimit);
+  const { displayedCompletedTasks, completedTotal, displayedCompletedCount, hasMoreCompleted } =
+    paginateCompleted(allCompletedTasks, completedTaskLimit);
 
   // ── Final displayed list ──────────────────────────────────────────────────
   const displayedTasks = [...displayedActiveTasks, ...displayedCompletedTasks];
@@ -116,9 +136,9 @@ export function useDisplayedTasks() {
     activeFilterCount,
     snoozedCount,
     // ── Completed pagination ────────────────────────────────────────────────
-    completedTotal: allCompletedTasks.length,
-    displayedCompletedCount: displayedCompletedTasks.length,
-    hasMoreCompleted: displayedCompletedTasks.length < allCompletedTasks.length,
+    completedTotal,
+    displayedCompletedCount,
+    hasMoreCompleted,
     loadMoreCompleted,
   };
 }
