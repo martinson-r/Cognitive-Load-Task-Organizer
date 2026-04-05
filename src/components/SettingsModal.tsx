@@ -4,7 +4,6 @@ import { PencilIcon, EyeDropperIcon, TrashIcon, ArrowLeftIcon } from "@heroicons
 import { useFocusTrap } from "../hooks/useFocusTrap.ts";
 import { useTheme, THEMES, THEME_LABELS } from "../context/ThemeContext";
 import { useTaskStore } from "../store/useTaskStore";
-import { useUIStore } from "../store/useUIStore";
 import { ColorPair, DEFAULT_CONTEXT_OPTIONS, getContextColor } from "../constants/TaskOptions";
 import "../styles/settings-modal.css";
 
@@ -250,11 +249,11 @@ interface SettingsModalProps {
 function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: SettingsModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
   const { theme, setTheme } = useTheme();
-  const { openTaskForm } = useUIStore();
+  
   const {
     customContexts, hiddenDefaultContexts, contextColorOverrides, customColorPalette,
     setContextColorOverride, addToPalette,
-    deleteContext, renameContext,
+    deleteContext, renameContext, addCustomContext, removeFromPalette,
   } = useTaskStore();
 
   useFocusTrap(modalRef);
@@ -265,6 +264,11 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: Set
   const [deletingContext, setDeletingContext] = useState<string | null>(null);
   // null = no picker; string = palette picker for that context; PickerMode = react-colorful
   const [palettePickerForContext, setPalettePickerForContext] = useState<string | null>(null);
+  const [addingNewContext, setAddingNewContext] = useState(false);
+  const [newContextInput, setNewContextInput] = useState('');
+  const [newContextColor, setNewContextColor] = useState<ColorPair | null>(null);
+  const [confirmingRemovePaletteIndex, setConfirmingRemovePaletteIndex] = useState<number | null>(null);
+  const newContextInputRef = useRef<HTMLInputElement>(null);
   const [pickerMode, setPickerMode] = useState<PickerMode | null>(null);
 
   useEffect(() => {
@@ -286,12 +290,10 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: Set
     if (pickerMode.type === 'context') {
       await setContextColorOverride(pickerMode.contextName, colorPair);
     } else {
-      // Palette mode: save to palette. If we got here from the palette picker, also assign.
+      // Palette mode: save to palette.
       await addToPalette(colorPair);
-      if (palettePickerForContext) {
-        await setContextColorOverride(palettePickerForContext, colorPair);
-        setPalettePickerForContext(null);
-      }
+      // If we came here from the new context eyedropper, also set the pending color
+      setNewContextColor(colorPair);
     }
     setPickerMode(null);
   }
@@ -302,15 +304,35 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: Set
 
   async function handlePaletteSelectColor(colorPair: ColorPair) {
     if (!palettePickerForContext) return;
-    await setContextColorOverride(palettePickerForContext, colorPair);
+    if (palettePickerForContext === '__new_context__') {
+      setNewContextColor(colorPair);
+    } else {
+      await setContextColorOverride(palettePickerForContext, colorPair);
+    }
     setPalettePickerForContext(null);
   }
 
   function handlePaletteCreateNew() {
-    // Transition from palette picker to react-colorful, keeping context target
     const contextName = palettePickerForContext!;
     setPalettePickerForContext(null);
-    setPickerMode({ type: 'context', contextName, step: 'bg', draftBg: contextColorOverrides[contextName]?.bg ?? '#f3f4f6' });
+    if (contextName === '__new_context__') {
+      // Creating color for the not-yet-saved context — use palette mode so it gets saved to palette
+      setPickerMode({ type: 'palette', step: 'bg', draftBg: newContextColor?.bg ?? '#f3f4f6' });
+    } else {
+      setPickerMode({ type: 'context', contextName, step: 'bg', draftBg: contextColorOverrides[contextName]?.bg ?? '#f3f4f6' });
+    }
+  }
+
+  async function handleAddNewContext() {
+    const trimmed = newContextInput.trim().toLowerCase();
+    if (!trimmed) return;
+    await addCustomContext(trimmed);
+    if (newContextColor) {
+      await setContextColorOverride(trimmed, newContextColor);
+    }
+    setNewContextInput('');
+    setNewContextColor(null);
+    setAddingNewContext(false);
   }
 
   // ── Sub-views (replace modal content) ─────────────────────────────────────
@@ -400,39 +422,81 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: Set
 
                 {customColorPalette.length > 0 && (
                   <div className="settings-accordion__palette">
-                    <p className="settings-accordion__palette-label">Saved colors</p>
+                    <p className="settings-accordion__palette-label">Saved colors — tap to delete</p>
                     <div className="settings-accordion__palette-swatches">
                       {customColorPalette.map((pair, i) => (
-                        <div
-                          key={i}
-                          className="palette-swatch"
-                          style={{ background: pair.bg, color: pair.text }}
-                          aria-label={`Color pair ${i + 1}`}
-                          title={`${pair.bg} / ${pair.text}`}
-                        >
-                          Aa
-                        </div>
+                        confirmingRemovePaletteIndex === i ? (
+                          <div key={i} className="palette-swatch palette-swatch--confirming" style={{ background: pair.bg, color: pair.text }}>
+                            <span className="palette-swatch__confirm-label">Remove?</span>
+                            <button type="button" className="palette-swatch__confirm-btn" onClick={async () => { await removeFromPalette(i); setConfirmingRemovePaletteIndex(null); }} aria-label="Confirm remove">✓</button>
+                            <button type="button" className="palette-swatch__confirm-btn" onClick={() => setConfirmingRemovePaletteIndex(null)} aria-label="Cancel">✕</button>
+                          </div>
+                        ) : (
+                          <div
+                            key={i}
+                            className="palette-swatch"
+                            style={{ background: pair.bg, color: pair.text }}
+                            onClick={() => setConfirmingRemovePaletteIndex(i)}
+                            role="button"
+                            tabIndex={0}
+                            onKeyDown={(e) => { if (e.key === 'Enter' || e.key === ' ') setConfirmingRemovePaletteIndex(i); }}
+                            aria-label={`Delete color pair ${i + 1}`}
+                            title={`${pair.bg} / ${pair.text}`}
+                          >
+                            Aa
+                            <span className="palette-swatch__remove-badge" aria-hidden="true">−</span>
+                          </div>
+                        )
                       ))}
                     </div>
                   </div>
                 )}
 
-                <div className="settings-accordion__footer-links">
-                  <button
-                    type="button"
-                    className="settings-accordion__footer-link"
-                    onClick={() => { onClose(); openTaskForm(); }}
-                  >
-                    Add New Context
-                  </button>
-                  <button
-                    type="button"
-                    className="settings-accordion__footer-link"
-                    onClick={() => setPickerMode({ type: 'palette', step: 'bg', draftBg: '#f3f4f6' })}
-                  >
-                    Add Color Combination
-                  </button>
-                </div>
+                {addingNewContext ? (
+                  <div className="context-row__new-context">
+                    <input
+                      ref={newContextInputRef}
+                      className="context-row__rename-input"
+                      value={newContextInput}
+                      onChange={(e) => setNewContextInput(e.target.value)}
+                      placeholder="New context name..."
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleAddNewContext();
+                        if (e.key === "Escape") { setAddingNewContext(false); setNewContextInput(''); setNewContextColor(null); }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="context-row__action"
+                      onClick={() => setPalettePickerForContext('__new_context__')}
+                      aria-label="Pick color"
+                      title="Pick color"
+                      style={newContextColor ? { background: newContextColor.bg, color: newContextColor.text, borderColor: 'transparent' } : undefined}
+                    >
+                      <EyeDropperIcon className="context-row__icon" />
+                    </button>
+                    <button type="button" className="context-row__action context-row__action--confirm" onClick={handleAddNewContext} aria-label="Save">✓</button>
+                    <button type="button" className="context-row__action" onClick={() => { setAddingNewContext(false); setNewContextInput(''); setNewContextColor(null); }} aria-label="Cancel">✕</button>
+                  </div>
+                ) : (
+                  <div className="settings-accordion__footer-links">
+                    <button
+                      type="button"
+                      className="settings-accordion__footer-link"
+                      onClick={() => { setAddingNewContext(true); setDeletingContext(null); setRenamingContext(null); }}
+                    >
+                      Add New Context
+                    </button>
+                    <button
+                      type="button"
+                      className="settings-accordion__footer-link"
+                      onClick={() => setPickerMode({ type: 'palette', step: 'bg', draftBg: '#f3f4f6' })}
+                    >
+                      Add Color Combination
+                    </button>
+                  </div>
+                )}
               </div>
             )}
           </div>

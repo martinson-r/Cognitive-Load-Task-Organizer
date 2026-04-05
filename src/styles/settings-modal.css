@@ -477,6 +477,77 @@
   border-color: var(--border-strong);
 }
 
+
+/* ── Palette swatch delete badge & confirmation ───────────────────────────── */
+
+.palette-swatch {
+  position: relative;
+  cursor: pointer;
+}
+
+.palette-swatch__remove-badge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  background: var(--surface-base);
+  color: var(--text-secondary);
+  border: 1px solid var(--border-default);
+  font-size: 0.7rem;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+  pointer-events: none;
+}
+
+.palette-swatch--confirming {
+  width: auto;
+  min-width: 52px;
+  height: auto;
+  min-height: 52px;
+  padding: var(--space-1);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-radius: var(--radius-input);
+  cursor: default;
+}
+
+.palette-swatch__confirm-label {
+  font-size: 0.65rem;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.palette-swatch__confirm-btn {
+  background: none;
+  border: none;
+  padding: 0 2px;
+  font: inherit;
+  font-size: var(--font-chip-mobile-size);
+  font-weight: 700;
+  cursor: pointer;
+  color: inherit;
+  opacity: 0.85;
+}
+
+.palette-swatch__confirm-btn:hover {
+  opacity: 1;
+}
+
+/* ── New context input row ────────────────────────────────────────────────── */
+
+.context-row__new-context {
+  display: flex;
+  align-items: center;
+  gap: var(--space-1);
+}
+
 /* ── Segment picker footer ────────────────────────────────────────────────── */
 
 .segment-picker__footer {
