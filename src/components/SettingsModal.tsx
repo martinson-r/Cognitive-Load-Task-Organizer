@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import { HexColorPicker } from "react-colorful";
-import { PencilIcon, EyeDropperIcon, TrashIcon, ArrowLeftIcon } from "@heroicons/react/24/outline";
+import { PencilIcon, EyeDropperIcon, TrashIcon, ArrowLeftIcon, PlusCircleIcon } from "@heroicons/react/24/outline";
 import { useFocusTrap } from "../hooks/useFocusTrap.ts";
 import { useTheme, THEMES, THEME_LABELS } from "../context/ThemeContext";
 import { useTaskStore } from "../store/useTaskStore";
@@ -397,6 +397,52 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: Set
 
             {manageContextsOpen && (
               <div className="settings-accordion__content">
+                {addingNewContext ? (
+                  <div className="context-row__new-context">
+                    <input
+                      ref={newContextInputRef}
+                      className="context-row__rename-input"
+                      value={newContextInput}
+                      onChange={(e) => setNewContextInput(e.target.value)}
+                      placeholder="New context name..."
+                      autoFocus
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") handleAddNewContext();
+                        if (e.key === "Escape") { setAddingNewContext(false); setNewContextInput(''); setNewContextColor(null); }
+                      }}
+                    />
+                    <button
+                      type="button"
+                      className="context-row__action"
+                      onClick={() => setPalettePickerForContext('__new_context__')}
+                      aria-label="Pick color"
+                      title="Pick color"
+                      style={newContextColor ? { background: newContextColor.bg, color: newContextColor.text, borderColor: 'transparent' } : undefined}
+                    >
+                      <EyeDropperIcon className="context-row__icon" />
+                    </button>
+                    <button type="button" className="context-row__action context-row__action--confirm" onClick={handleAddNewContext} aria-label="Save">✓</button>
+                    <button type="button" className="context-row__action" onClick={() => { setAddingNewContext(false); setNewContextInput(''); setNewContextColor(null); }} aria-label="Cancel">✕</button>
+                  </div>
+                ) : (
+                  <div className="settings-accordion__footer-links">
+                    <button
+                      type="button"
+                      className="settings-accordion__footer-link"
+                      onClick={() => { setAddingNewContext(true); setDeletingContext(null); setRenamingContext(null); }}
+                    >
+                      <PlusCircleIcon className="context-row__icon" /> Add New Context
+                    </button>
+                    <button
+                      type="button"
+                      className="settings-accordion__footer-link"
+                      onClick={() => setPickerMode({ type: 'palette', step: 'bg', draftBg: '#f3f4f6' })}
+                    >
+                      <PlusCircleIcon className="context-row__icon" /> Add Color Combination
+                    </button>
+                  </div>
+                )}
+                
                 {allManageableContexts.map((name) => {
                   const currentColor = contextColorOverrides[name] ?? getContextColor(name);
                   const isGeneral = name === 'general';
@@ -452,51 +498,7 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: Set
                   </div>
                 )}
 
-                {addingNewContext ? (
-                  <div className="context-row__new-context">
-                    <input
-                      ref={newContextInputRef}
-                      className="context-row__rename-input"
-                      value={newContextInput}
-                      onChange={(e) => setNewContextInput(e.target.value)}
-                      placeholder="New context name..."
-                      autoFocus
-                      onKeyDown={(e) => {
-                        if (e.key === "Enter") handleAddNewContext();
-                        if (e.key === "Escape") { setAddingNewContext(false); setNewContextInput(''); setNewContextColor(null); }
-                      }}
-                    />
-                    <button
-                      type="button"
-                      className="context-row__action"
-                      onClick={() => setPalettePickerForContext('__new_context__')}
-                      aria-label="Pick color"
-                      title="Pick color"
-                      style={newContextColor ? { background: newContextColor.bg, color: newContextColor.text, borderColor: 'transparent' } : undefined}
-                    >
-                      <EyeDropperIcon className="context-row__icon" />
-                    </button>
-                    <button type="button" className="context-row__action context-row__action--confirm" onClick={handleAddNewContext} aria-label="Save">✓</button>
-                    <button type="button" className="context-row__action" onClick={() => { setAddingNewContext(false); setNewContextInput(''); setNewContextColor(null); }} aria-label="Cancel">✕</button>
-                  </div>
-                ) : (
-                  <div className="settings-accordion__footer-links">
-                    <button
-                      type="button"
-                      className="settings-accordion__footer-link"
-                      onClick={() => { setAddingNewContext(true); setDeletingContext(null); setRenamingContext(null); }}
-                    >
-                      Add New Context
-                    </button>
-                    <button
-                      type="button"
-                      className="settings-accordion__footer-link"
-                      onClick={() => setPickerMode({ type: 'palette', step: 'bg', draftBg: '#f3f4f6' })}
-                    >
-                      Add Color Combination
-                    </button>
-                  </div>
-                )}
+                
               </div>
             )}
           </div>
