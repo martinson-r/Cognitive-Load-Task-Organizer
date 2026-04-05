@@ -243,7 +243,7 @@ export function SegmentPicker({
                 className="segment-picker__footer-action"
                 onClick={() => { quickAddProps.onManage?.(); onClose(); }}
               >
-                {quickAddProps.manageLabel ?? "Manage and Delete"}
+                {`↗ ${quickAddProps.manageLabel ?? "Manage and Delete"}`}
               </button>
             )}
           </div>

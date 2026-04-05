@@ -427,19 +427,19 @@
 
 .settings-accordion__footer-link {
   background: none;
-  border: none;
-  padding: var(--space-1) 0;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-button);
+  padding: var(--space-1) var(--space-2);
   font: inherit;
   font-size: var(--font-chip-mobile-size);
-  color: var(--color-link);
+  color: var(--text-secondary);
   cursor: pointer;
   text-align: left;
-  text-decoration: underline;
-  text-underline-offset: 2px;
+  transition: background 0.15s ease;
 }
 
 .settings-accordion__footer-link:hover {
-  color: var(--color-link-hover);
+  background: var(--surface-light);
 }
 
 /* ── Palette picker swatches ──────────────────────────────────────────────── */
