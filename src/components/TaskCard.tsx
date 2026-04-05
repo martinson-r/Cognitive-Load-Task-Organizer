@@ -34,7 +34,7 @@ interface TaskCardProps {
 }
 
 function TaskCard({ task, contextOptions, visibleTasks, isKeystone }: TaskCardProps) {
-  const { toggleTask, deleteTask, snooze, unsnooze, moveTaskUp, moveTaskDown } = useTaskStore();
+  const { toggleTask, deleteTask, snooze, unsnooze, moveTaskUp, moveTaskDown, contextColorOverrides } = useTaskStore();
   const { advancedFeaturesEnabled, editDraft, startEdit } = useUIStore();
   const { momentumModeEnabled, momentumRunActive, setKeystone } = useMomentumStore();
 
@@ -47,7 +47,7 @@ function TaskCard({ task, contextOptions, visibleTasks, isKeystone }: TaskCardPr
 
   const loadColors = LOAD_PILL_COLORS[task.load] ?? LOAD_PILL_COLORS.medium;
   const priorityColors = PRIORITY_PILL_COLORS[priorityValue] ?? PRIORITY_PILL_COLORS.medium;
-  const contextColors = getContextColor(contextValue);
+  const contextColors = getContextColor(contextValue, contextColorOverrides);
 
   useEffect(() => {
     function handleClickOutside(event: MouseEvent) {

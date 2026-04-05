@@ -13,7 +13,7 @@ interface EditTaskModalProps {
 
 function EditTaskModal({ contextOptions }: EditTaskModalProps) {
   const { editDraft, updateEditDraft, cancelEdit } = useUIStore();
-  const { saveEdit } = useTaskStore();
+  const { saveEdit, contextColorOverrides } = useTaskStore();
 
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -84,7 +84,7 @@ function EditTaskModal({ contextOptions }: EditTaskModalProps) {
             options={contextEditOptions}
             value={editDraft.context}
             onChange={(val) => updateEditDraft({ context: val })}
-            getOptionColor={(val) => getContextColor(val)}
+            getOptionColor={(val) => getContextColor(val, contextColorOverrides)}
           />
         </div>
 

@@ -7,6 +7,11 @@ interface SelectOption {
   label: string;
 }
 
+interface FooterItem {
+  label: string;
+  onClick: () => void;
+}
+
 interface SegmentPickerProps {
   label: string;
   options: SelectOption[];
@@ -14,6 +19,7 @@ interface SegmentPickerProps {
   onChange: (value: string) => void;
   onClose: () => void;
   getOptionColor?: (value: string) => ColorPair | null;
+  footerItems?: FooterItem[];
 }
 
 interface SegmentGroupProps {
@@ -22,9 +28,10 @@ interface SegmentGroupProps {
   value: string;
   onChange: (value: string) => void;
   getOptionColor?: (value: string) => ColorPair | null;
+  footerItems?: FooterItem[];
 }
 
-export function SegmentPicker({ label, options, value, onChange, onClose, getOptionColor }: SegmentPickerProps) {
+export function SegmentPicker({ label, options, value, onChange, onClose, getOptionColor, footerItems }: SegmentPickerProps) {
   const [hasScrollableContent, setHasScrollableContent] = useState(false);
   const [isScrolledToBottom, setIsScrolledToBottom] = useState(false);
   const modalRef = useRef<HTMLDivElement>(null);
@@ -84,12 +91,27 @@ export function SegmentPicker({ label, options, value, onChange, onClose, getOpt
             <div className="segment-picker__fade" aria-hidden="true" />
           )}
         </div>
+
+        {footerItems && footerItems.length > 0 && (
+          <div className="segment-picker__footer">
+            {footerItems.map((item) => (
+              <button
+                key={item.label}
+                type="button"
+                className="segment-picker__footer-action"
+                onClick={() => { item.onClick(); onClose(); }}
+              >
+                {item.label}
+              </button>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );
 }
 
-export function SegmentGroup({ label, options, value, onChange, getOptionColor }: SegmentGroupProps) {
+export function SegmentGroup({ label, options, value, onChange, getOptionColor, footerItems }: SegmentGroupProps) {
   const [pickerOpen, setPickerOpen] = useState(false);
   const selectedLabel = options.find((o) => o.value === value)?.label ?? value;
   const color = getOptionColor ? getOptionColor(value) : null;
@@ -114,6 +136,7 @@ export function SegmentGroup({ label, options, value, onChange, getOptionColor }
           onChange={onChange}
           onClose={() => setPickerOpen(false)}
           getOptionColor={getOptionColor}
+          footerItems={footerItems}
         />
       )}
     </div>

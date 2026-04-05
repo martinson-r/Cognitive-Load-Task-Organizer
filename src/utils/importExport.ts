@@ -1,5 +1,6 @@
-import { getAllTasks, saveTask, deleteTask, getSetting, saveSetting, saveCustomContexts } from '../data/db';
+import { getAllTasks, saveTask, deleteTask, getSetting, saveSetting, saveCustomContexts, saveContextColorOverrides, saveCustomColorPalette } from '../data/db';
 import { Task } from '../types';
+import { ColorPair } from '../constants/TaskOptions';
 
 const SETTING_KEYS = [
   'advancedFeaturesEnabled',
@@ -18,6 +19,8 @@ const SETTING_KEYS = [
   'momentumRunActive',
   'keystoneTaskId',
   'customContexts',
+  'contextColorOverrides',
+  'customColorPalette',
   'theme',
 ] as const;
 
@@ -114,7 +117,7 @@ export async function importTasks(
         await Promise.all(normalized.map((t) => saveTask(t)));
 
         if (isExportPayload(parsed) && parsed.settings) {
-          const { customContexts, ...otherSettings } = parsed.settings;
+          const { customContexts, contextColorOverrides, customColorPalette, ...otherSettings } = parsed.settings;
 
           await Promise.all(
             Object.entries(otherSettings).map(([key, value]) => {
@@ -126,6 +129,14 @@ export async function importTasks(
 
           if (Array.isArray(customContexts)) {
             await saveCustomContexts(customContexts as string[]);
+          }
+
+          if (contextColorOverrides && typeof contextColorOverrides === 'object') {
+            await saveContextColorOverrides(contextColorOverrides as Record<string, ColorPair>);
+          }
+
+          if (Array.isArray(customColorPalette)) {
+            await saveCustomColorPalette(customColorPalette as ColorPair[]);
           }
         }
 

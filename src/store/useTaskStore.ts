@@ -1,17 +1,25 @@
 import { create } from 'zustand';
 import { Task, LoadLevel, PriorityLevel } from '../types';
+import { ColorPair } from '../constants/TaskOptions';
 import {
   getAllTasks,
   saveTask,
   deleteTask as dbDeleteTask,
   getCustomContexts,
   saveCustomContexts,
+  getContextColorOverrides,
+  saveContextColorOverrides,
+  getCustomColorPalette,
+  saveCustomColorPalette,
 } from '../data/db';
 import { normalizeTaskPositions, reorderByVisibleSwap } from '../utils/taskView';
+import { useFilterStore } from './useFilterStore';
 
 interface TaskStore {
   tasks: Task[];
   customContexts: string[];
+  contextColorOverrides: Record<string, ColorPair>;
+  customColorPalette: ColorPair[];
   settingsLoaded: boolean;
 
   loadTasks: () => Promise<void>;
@@ -36,22 +44,32 @@ interface TaskStore {
   moveTaskDown: (id: string, visibleTasks: Task[]) => Promise<void>;
   clearAllTasks: () => Promise<void>;
   addCustomContext: (context: string) => Promise<void>;
+  deleteCustomContext: (context: string) => Promise<void>;
+  renameCustomContext: (oldName: string, newName: string) => Promise<void>;
+  setContextColorOverride: (context: string, colorPair: ColorPair) => Promise<void>;
+  removeContextColorOverride: (context: string) => Promise<void>;
+  addToPalette: (colorPair: ColorPair) => Promise<void>;
+  removeFromPalette: (index: number) => Promise<void>;
 }
 
 export const useTaskStore = create<TaskStore>((set, get) => ({
   tasks: [],
   customContexts: [],
+  contextColorOverrides: {},
+  customColorPalette: [],
   settingsLoaded: false,
 
   loadTasks: async () => {
-    let storedTasks, storedCustomContexts;
-        try {
-        [storedTasks, storedCustomContexts] = await Promise.all([
-            getAllTasks(),
-            getCustomContexts(),
-        ]);
-        } catch (err) {
-        throw new Error(`Storage unavailable: ${err instanceof Error ? err.message : err}`);
+    let storedTasks, storedCustomContexts, storedOverrides, storedPalette;
+    try {
+      [storedTasks, storedCustomContexts, storedOverrides, storedPalette] = await Promise.all([
+        getAllTasks(),
+        getCustomContexts(),
+        getContextColorOverrides(),
+        getCustomColorPalette(),
+      ]);
+    } catch (err) {
+      throw new Error(`Storage unavailable: ${err instanceof Error ? err.message : err}`);
     }
 
     const normalizedTasks = storedTasks
@@ -64,6 +82,8 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     set({
       tasks: normalizedTasks,
       customContexts: storedCustomContexts,
+      contextColorOverrides: storedOverrides,
+      customColorPalette: storedPalette,
       settingsLoaded: true,
     });
   },
@@ -196,5 +216,101 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
     const updated = [...customContexts, trimmed];
     await saveCustomContexts(updated);
     set({ customContexts: updated });
+  },
+
+  deleteCustomContext: async (context) => {
+    const { tasks, customContexts, contextColorOverrides } = get();
+
+    // Migrate all tasks using this context to 'general'
+    const migratedTasks = tasks.map((t) =>
+      t.context === context ? { ...t, context: 'general' } : t
+    );
+    await Promise.all(migratedTasks.map((t) => saveTask(t)));
+
+    // Remove from customContexts
+    const updatedContexts = customContexts.filter((c) => c !== context);
+    await saveCustomContexts(updatedContexts);
+
+    // Remove override if present (no orphaned entries)
+    const updatedOverrides = { ...contextColorOverrides };
+    delete updatedOverrides[context];
+    await saveContextColorOverrides(updatedOverrides);
+
+    // Reset the context filter if it was set to the deleted context
+    const { filterContext, setFilterContext } = useFilterStore.getState();
+    if (filterContext === context) {
+      setFilterContext('all');
+    }
+
+    set({
+      tasks: migratedTasks,
+      customContexts: updatedContexts,
+      contextColorOverrides: updatedOverrides,
+    });
+  },
+
+  renameCustomContext: async (oldName, newName) => {
+    const { tasks, customContexts, contextColorOverrides } = get();
+    const trimmed = newName.trim().toLowerCase();
+    if (!trimmed || trimmed === oldName || customContexts.includes(trimmed)) return;
+
+    // Migrate tasks
+    const migratedTasks = tasks.map((t) =>
+      t.context === oldName ? { ...t, context: trimmed } : t
+    );
+    await Promise.all(migratedTasks.map((t) => saveTask(t)));
+
+    // Update customContexts
+    const updatedContexts = customContexts.map((c) => (c === oldName ? trimmed : c));
+    await saveCustomContexts(updatedContexts);
+
+    // Migrate override key
+    const updatedOverrides = { ...contextColorOverrides };
+    if (updatedOverrides[oldName]) {
+      updatedOverrides[trimmed] = updatedOverrides[oldName];
+      delete updatedOverrides[oldName];
+    }
+    await saveContextColorOverrides(updatedOverrides);
+
+    // Update context filter if active
+    const { filterContext, setFilterContext } = useFilterStore.getState();
+    if (filterContext === oldName) {
+      setFilterContext(trimmed);
+    }
+
+    set({
+      tasks: migratedTasks,
+      customContexts: updatedContexts,
+      contextColorOverrides: updatedOverrides,
+    });
+  },
+
+  setContextColorOverride: async (context, colorPair) => {
+    const { contextColorOverrides } = get();
+    const updated = { ...contextColorOverrides, [context]: colorPair };
+    await saveContextColorOverrides(updated);
+    set({ contextColorOverrides: updated });
+  },
+
+  removeContextColorOverride: async (context) => {
+    const { contextColorOverrides } = get();
+    const updated = { ...contextColorOverrides };
+    delete updated[context];
+    await saveContextColorOverrides(updated);
+    set({ contextColorOverrides: updated });
+  },
+
+  addToPalette: async (colorPair) => {
+    const { customColorPalette } = get();
+    const updated = [...customColorPalette, colorPair];
+    await saveCustomColorPalette(updated);
+    set({ customColorPalette: updated });
+  },
+
+  removeFromPalette: async (index) => {
+    const { customColorPalette } = get();
+    const updated = customColorPalette.filter((_, i) => i !== index);
+    await saveCustomColorPalette(updated);
+    set({ customColorPalette: updated });
   },
 }));

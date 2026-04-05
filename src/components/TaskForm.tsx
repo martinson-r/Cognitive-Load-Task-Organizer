@@ -15,8 +15,8 @@ interface TaskFormProps {
 }
 
 function TaskForm({ contextOptions }: TaskFormProps) {
-  const { addTask, addCustomContext } = useTaskStore();
-  const { taskFormOpen, openTaskForm, closeTaskForm } = useUIStore();
+  const { addTask, addCustomContext, contextColorOverrides } = useTaskStore();
+  const { taskFormOpen, closeTaskForm, openSettings } = useUIStore();
 
   const [input, setInput] = useState("");
   const [load, setLoad] = useState<LoadLevel>("medium");
@@ -78,6 +78,11 @@ function TaskForm({ contextOptions }: TaskFormProps) {
     setShowCustomContextInput(false);
   }
 
+  function handleManageContexts() {
+    handleClose();
+    openSettings();
+  }
+
   const loadOptions = Object.entries(LOAD_SHORT).map(([value, label]) => ({ value, label }));
   const priorityOptions = Object.entries(PRIORITY_SHORT).map(([value, label]) => ({ value, label }));
   const contextSegmentOptions = [
@@ -90,7 +95,7 @@ function TaskForm({ contextOptions }: TaskFormProps) {
       <button
         type="button"
         className="task-form-trigger"
-        onClick={openTaskForm}
+        onClick={() => useUIStore.getState().openTaskForm()}
         aria-label="Add a task"
       >
         <span className="task-form-trigger__placeholder">Add a task</span>
@@ -101,7 +106,7 @@ function TaskForm({ contextOptions }: TaskFormProps) {
           className="task-modal-backdrop"
           onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
         >
-          <div className="task-modal" role="dialog" aria-modal="true" aria-label="Add task" ref={modalRef}>
+          <div className="task-modal" role="dialog" aria-modal="true" aria-label="New task" ref={modalRef}>
             <div className="task-modal__header">
               <input
                 ref={inputRef}
@@ -134,7 +139,10 @@ function TaskForm({ contextOptions }: TaskFormProps) {
                 options={contextSegmentOptions}
                 value={context}
                 onChange={handleContextChange}
-                getOptionColor={(val) => val === "__add_custom__" ? null : getContextColor(val)}
+                getOptionColor={(val) => val === "__add_custom__" ? null : getContextColor(val, contextColorOverrides)}
+                footerItems={[
+                  { label: "↗ manage contexts", onClick: handleManageContexts },
+                ]}
               />
             </div>
 

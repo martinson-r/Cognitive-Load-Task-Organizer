@@ -1,5 +1,6 @@
 import { openDB, IDBPDatabase } from 'idb';
 import { Task } from '../types';
+import { ColorPair } from '../constants/TaskOptions';
 
 const DB_NAME = 'cognitive-load-db';
 const TASK_STORE = 'tasks';
@@ -55,4 +56,27 @@ export async function getCustomContexts(): Promise<string[]> {
 
 export async function saveCustomContexts(values: string[]): Promise<void> {
   return saveSetting('customContexts', values);
+}
+
+// ── Context color overrides ────────────────────────────────────────────────
+// Keyed by context name. Only stores user-defined overrides; absent entries
+// fall back to preset and pool logic in getContextColor().
+
+export async function getContextColorOverrides(): Promise<Record<string, ColorPair>> {
+  return getSetting<Record<string, ColorPair>>('contextColorOverrides', {});
+}
+
+export async function saveContextColorOverrides(overrides: Record<string, ColorPair>): Promise<void> {
+  return saveSetting('contextColorOverrides', overrides);
+}
+
+// ── Custom color palette ───────────────────────────────────────────────────
+// User-created reusable color pairs, available for assignment to any context.
+
+export async function getCustomColorPalette(): Promise<ColorPair[]> {
+  return getSetting<ColorPair[]>('customColorPalette', []);
+}
+
+export async function saveCustomColorPalette(palette: ColorPair[]): Promise<void> {
+  return saveSetting('customColorPalette', palette);
 }
