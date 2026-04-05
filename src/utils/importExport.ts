@@ -1,4 +1,4 @@
-import { getAllTasks, saveTask, deleteTask, getSetting, saveSetting, saveCustomContexts, saveContextColorOverrides, saveCustomColorPalette } from '../data/db';
+import { getAllTasks, saveTask, deleteTask, getSetting, saveSetting, saveCustomContexts, saveContextColorOverrides, saveCustomColorPalette, saveHiddenDefaultContexts } from '../data/db';
 import { Task } from '../types';
 import { ColorPair } from '../constants/TaskOptions';
 
@@ -19,6 +19,7 @@ const SETTING_KEYS = [
   'momentumRunActive',
   'keystoneTaskId',
   'customContexts',
+  'hiddenDefaultContexts',
   'contextColorOverrides',
   'customColorPalette',
   'theme',
@@ -39,25 +40,11 @@ interface ImportOptions {
 
 export async function exportTasks(): Promise<void> {
   const tasks = await getAllTasks();
-
   const settings: Record<string, unknown> = {};
-  await Promise.all(
-    SETTING_KEYS.map(async (key) => {
-      settings[key] = await getSetting(key, null);
-    })
-  );
+  await Promise.all(SETTING_KEYS.map(async (key) => { settings[key] = await getSetting(key, null); }));
 
-  const payload: ExportPayload = {
-    version: 2,
-    exportedAt: new Date().toISOString(),
-    settings,
-    tasks,
-  };
-
-  const blob = new Blob([JSON.stringify(payload, null, 2)], {
-    type: 'application/json',
-  });
-
+  const payload: ExportPayload = { version: 2, exportedAt: new Date().toISOString(), settings, tasks };
+  const blob = new Blob([JSON.stringify(payload, null, 2)], { type: 'application/json' });
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
   a.href = url;
@@ -68,34 +55,18 @@ export async function exportTasks(): Promise<void> {
   URL.revokeObjectURL(url);
 }
 
-export async function importTasks(
-  file: File,
-  { replace = false }: ImportOptions = {}
-): Promise<Task[]> {
+export async function importTasks(file: File, { replace = false }: ImportOptions = {}): Promise<Task[]> {
   return new Promise((resolve, reject) => {
     const reader = new FileReader();
-
     reader.onload = async (e) => {
       try {
         const raw = e.target?.result;
         if (typeof raw !== 'string') throw new Error('Failed to read file contents.');
 
         const parsed: unknown = JSON.parse(raw);
-
-        const isExportPayload = (v: unknown): v is ExportPayload =>
-          typeof v === 'object' && v !== null && 'tasks' in v;
-
-        const incoming = Array.isArray(parsed)
-          ? parsed
-          : isExportPayload(parsed)
-          ? parsed.tasks
-          : null;
-
-        if (!Array.isArray(incoming)) {
-          throw new Error(
-            'Invalid file format. Expected an array of tasks or an export file from this app.'
-          );
-        }
+        const isExportPayload = (v: unknown): v is ExportPayload => typeof v === 'object' && v !== null && 'tasks' in v;
+        const incoming = Array.isArray(parsed) ? parsed : isExportPayload(parsed) ? parsed.tasks : null;
+        if (!Array.isArray(incoming)) throw new Error('Invalid file format. Expected an array of tasks or an export file from this app.');
 
         if (replace) {
           const existing = await getAllTasks();
@@ -117,27 +88,18 @@ export async function importTasks(
         await Promise.all(normalized.map((t) => saveTask(t)));
 
         if (isExportPayload(parsed) && parsed.settings) {
-          const { customContexts, contextColorOverrides, customColorPalette, ...otherSettings } = parsed.settings;
+          const { customContexts, hiddenDefaultContexts, contextColorOverrides, customColorPalette, ...otherSettings } = parsed.settings;
 
-          await Promise.all(
-            Object.entries(otherSettings).map(([key, value]) => {
-              if (value !== null && (SETTING_KEYS as readonly string[]).includes(key)) {
-                return saveSetting(key as SettingKey, value);
-              }
-            })
-          );
+          await Promise.all(Object.entries(otherSettings).map(([key, value]) => {
+            if (value !== null && (SETTING_KEYS as readonly string[]).includes(key)) {
+              return saveSetting(key as SettingKey, value);
+            }
+          }));
 
-          if (Array.isArray(customContexts)) {
-            await saveCustomContexts(customContexts as string[]);
-          }
-
-          if (contextColorOverrides && typeof contextColorOverrides === 'object') {
-            await saveContextColorOverrides(contextColorOverrides as Record<string, ColorPair>);
-          }
-
-          if (Array.isArray(customColorPalette)) {
-            await saveCustomColorPalette(customColorPalette as ColorPair[]);
-          }
+          if (Array.isArray(customContexts)) await saveCustomContexts(customContexts as string[]);
+          if (Array.isArray(hiddenDefaultContexts)) await saveHiddenDefaultContexts(hiddenDefaultContexts as string[]);
+          if (contextColorOverrides && typeof contextColorOverrides === 'object') await saveContextColorOverrides(contextColorOverrides as Record<string, ColorPair>);
+          if (Array.isArray(customColorPalette)) await saveCustomColorPalette(customColorPalette as ColorPair[]);
         }
 
         resolve(normalized);
@@ -145,7 +107,6 @@ export async function importTasks(
         reject(err);
       }
     };
-
     reader.onerror = () => reject(new Error('Failed to read the file.'));
     reader.readAsText(file);
   });

@@ -59,8 +59,6 @@ export async function saveCustomContexts(values: string[]): Promise<void> {
 }
 
 // ── Context color overrides ────────────────────────────────────────────────
-// Keyed by context name. Only stores user-defined overrides; absent entries
-// fall back to preset and pool logic in getContextColor().
 
 export async function getContextColorOverrides(): Promise<Record<string, ColorPair>> {
   return getSetting<Record<string, ColorPair>>('contextColorOverrides', {});
@@ -71,7 +69,6 @@ export async function saveContextColorOverrides(overrides: Record<string, ColorP
 }
 
 // ── Custom color palette ───────────────────────────────────────────────────
-// User-created reusable color pairs, available for assignment to any context.
 
 export async function getCustomColorPalette(): Promise<ColorPair[]> {
   return getSetting<ColorPair[]>('customColorPalette', []);
@@ -79,4 +76,15 @@ export async function getCustomColorPalette(): Promise<ColorPair[]> {
 
 export async function saveCustomColorPalette(palette: ColorPair[]): Promise<void> {
   return saveSetting('customColorPalette', palette);
+}
+
+// ── Hidden default contexts ────────────────────────────────────────────────
+// Tracks which DEFAULT_CONTEXT_OPTIONS the user has deleted.
+
+export async function getHiddenDefaultContexts(): Promise<string[]> {
+  return getSetting<string[]>('hiddenDefaultContexts', []);
+}
+
+export async function saveHiddenDefaultContexts(values: string[]): Promise<void> {
+  return saveSetting('hiddenDefaultContexts', values);
 }

@@ -1,5 +1,7 @@
 .settings-modal {
   max-width: 420px;
+  max-height: 85dvh;
+  overflow-y: auto;
 }
 
 .settings-modal__title {
@@ -296,9 +298,7 @@
 }
 
 .context-row__action--color {
-  border: none;
-  border-radius: var(--radius-pill);
-  font-size: 0.7rem;
+  /* Uses standard icon button styling */
 }
 
 .context-row__action--delete:hover {
@@ -404,6 +404,77 @@
 .palette-swatch:hover {
   opacity: 0.75;
   transform: scale(0.95);
+}
+
+
+/* ── Context row icons ────────────────────────────────────────────────────── */
+
+.context-row__icon {
+  width: 16px;
+  height: 16px;
+}
+
+/* ── Accordion footer links ───────────────────────────────────────────────── */
+
+.settings-accordion__footer-links {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-1);
+  padding-top: var(--space-1);
+  border-top: 1px solid var(--border-default);
+  margin-top: var(--space-1);
+}
+
+.settings-accordion__footer-link {
+  background: none;
+  border: none;
+  padding: var(--space-1) 0;
+  font: inherit;
+  font-size: var(--font-chip-mobile-size);
+  color: var(--color-link);
+  cursor: pointer;
+  text-align: left;
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+.settings-accordion__footer-link:hover {
+  color: var(--color-link-hover);
+}
+
+/* ── Palette picker swatches ──────────────────────────────────────────────── */
+
+.palette-picker__empty {
+  font-size: var(--font-chip-mobile-size);
+  color: var(--text-tertiary);
+  margin: 0;
+  font-style: italic;
+}
+
+.palette-picker__swatches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.palette-picker__swatch {
+  width: 52px;
+  height: 52px;
+  border-radius: var(--radius-input);
+  border: 2px solid transparent;
+  font: inherit;
+  font-size: var(--font-chip-mobile-size);
+  font-weight: 600;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: transform 0.1s ease, border-color 0.1s ease;
+}
+
+.palette-picker__swatch:hover {
+  transform: scale(1.08);
+  border-color: var(--border-strong);
 }
 
 /* ── Segment picker footer ────────────────────────────────────────────────── */
