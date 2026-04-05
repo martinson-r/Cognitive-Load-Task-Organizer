@@ -1,0 +1,206 @@
+/*
+ * Theme overrides
+ *
+ * :root in App.css holds the Default (light) theme baseline.
+ * Each [data-theme] block overrides only the tokens that differ.
+ *
+ * Planned themes:
+ *   default          — :root baseline, no overrides needed
+ *   default-dark     — dark mode inversion of Default
+ *   low-stimulation  — monochrome, no animations (light + dark)
+ *   brain-candy      — high stimulation, custom icons/animations (light + dark)
+ *   hotdog           — Windows Hot Dog Stand tribute, no dark mode
+ *
+ * Low Stimulation and Brain Candy will also require ThemeContext structural
+ * changes (disabling animations, swapping icon sets). Default, Default Dark,
+ * and Hotdog are CSS-only — ThemeContext is a no-op for them.
+ */
+
+/* ── Default Dark ─────────────────────────────────────────────────────────── */
+
+html[data-theme="default-dark"] {
+  /* Text */
+  --text-primary: #F9FAFB;
+  --text-secondary: #D1D5DB;
+  --text-tertiary: #9CA3AF;
+  --text-highlight: #111827;
+  --text-button-subtle: #9CA3AF;
+
+  /* Surfaces */
+  --surface-base: #1F2937;
+  --surface-subtle: #111827;
+  --surface-light: #374151;
+  --surface-muted: #4B5563;
+  --surface-toggle-on: #60A5FA;
+  --surface-toggle-off: #4B5563;
+  --surface-toggle-hover: #3B82F6;
+
+  /* Borders */
+  --border-default: #374151;
+  --border-strong: #4B5563;
+  --border-button-subtle: #374151;
+  --border-input: #4B5563;
+
+  /* Priority */
+  --priority-low: #94A3B8;
+  --priority-low-bg: #1E293B;
+  --priority-medium: #818CF8;
+  --priority-medium-bg: #1E1B4B;
+  --priority-high: #E879F9;
+  --priority-high-bg: #2D1B35;
+
+  /* Cognitive Load */
+  --load-low: #60A5FA;
+  --load-low-bg: #1E3A5F;
+  --load-medium: #FB923C;
+  --load-medium-bg: #431407;
+  --load-high: #F87171;
+  --load-high-bg: #450A0A;
+
+  /* Actions */
+  --action-edit: #4ADE80;
+  --action-delete: #F87171;
+
+  /* Icons */
+  --icon: #9CA3AF;
+  --icon-hover: #F9FAFB;
+  --icon-subtle: #6B7280;
+
+  /* Interactive & Focus */
+  --focus-ring: #60A5FA;
+  --focus-ring-subtle: rgba(96, 165, 250, 0.25);
+  --color-active-dark: #93C5FD;
+
+  /* Semantic */
+  --color-danger: #FCA5A5;
+  --color-danger-bg: #450A0A;
+  --color-danger-border: #7F1D1D;
+  --color-warning: #FCD34D;
+  --color-link: #60A5FA;
+  --color-link-hover: #93C5FD;
+  --color-success: #4ADE80;
+  --color-keystone: #FFC353;
+
+  /* Feature: Snoozed tasks */
+  --surface-snoozed: #1E3A5F;
+  --border-snoozed: #2D4A6E;
+
+  /* Feature: Active filters */
+  --surface-filter-active: rgba(55, 48, 163, 0.3);
+  --surface-filter-wrapper: #111827;
+  --color-filter-active: #FCA5A5;
+  --color-filter-active-hover: #FECACA;
+  --border-filter-active: rgba(252, 165, 165, 0.2);
+
+
+  /* index.css page-level tokens */
+  --bg: #111827;
+  --border: #374151;
+  --text: #D1D5DB;
+  --text-h: #F9FAFB;
+  --code-bg: #1F2937;
+  color-scheme: dark;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-modal-mobile: 0 -4px 24px rgba(0, 0, 0, 0.6);
+  --shadow-modal-desktop: 0 8px 32px rgba(0, 0, 0, 0.7);
+  --backdrop-overlay: rgba(0, 0, 0, 0.65);
+  --backdrop-overlay-dark: rgba(0, 0, 0, 0.75);
+}
+
+/* ── Hero (Just Shapes & Beats) ───────────────────────────────────────────── */
+
+html[data-theme="hero"] {
+  /* Text */
+  --text-primary: #F9FAFB;
+  --text-secondary: #E4B4D8;
+  --text-tertiary: #9C7A8E;
+  --text-highlight: #0D0D14;
+  --text-button-subtle: #E4B4D8;
+
+  /* Surfaces — near-black with purple undertone */
+  --surface-base: #0D0D14;
+  --surface-subtle: #080810;
+  --surface-light: #1A1A2E;
+  --surface-muted: #2A1A2E;
+  --surface-toggle-on: #F72585;
+  --surface-toggle-off: #2A1A2E;
+  --surface-toggle-hover: #C91A6A;
+  --surface-button-primary: #00F5FF;
+  --surface-button-primary-hover: #00CFCF;
+
+  /* Borders */
+  --border-default: #2A1A2E;
+  --border-strong: #4A1942;
+  --border-button-subtle: #2A1A2E;
+  --border-input: #4A1942;
+
+  /* Priority — cyan / magenta / hot pink */
+  --priority-low: #7FFFD4;
+  --priority-low-bg: #0A2A2A;
+  --priority-medium: #00CFCF;
+  --priority-medium-bg: #0A1F2A;
+  --priority-high: #F72585;
+  --priority-high-bg: #2A0A1A;
+
+  /* Cognitive Load — cyan through magenta */
+  --load-low: #00F5FF;
+  --load-low-bg: #002A2E;
+  --load-medium: #BF5AF2;
+  --load-medium-bg: #1A0A2E;
+  --load-high: #F72585;
+  --load-high-bg: #2A0014;
+
+  /* Actions */
+  --action-edit: #00F5FF;
+  --action-delete: #F72585;
+
+  /* Icons */
+  --icon: #E4B4D8;
+  --icon-hover: #F9FAFB;
+  --icon-subtle: #9C7A8E;
+
+  /* Interactive & Focus */
+  --focus-ring: #F72585;
+  --focus-ring-subtle: rgba(247, 37, 133, 0.25);
+  --color-active-dark: #FF69B4;
+
+  /* Semantic */
+  --color-danger: #F72585;
+  --color-danger-bg: #2A0014;
+  --color-danger-border: #6B0030;
+  --color-warning: #FFD700;
+  --color-link: #00F5FF;
+  --color-link-hover: #7FFFD4;
+  --color-success: #00F5FF;
+  --color-keystone: #F72585;
+
+  /* Feature: Snoozed tasks */
+  --surface-snoozed: #0A1A2E;
+  --border-snoozed: #1A3A5E;
+
+  /* Feature: Active filters */
+  --surface-filter-active: rgba(0, 245, 255, 0.1);
+  --surface-filter-wrapper: #080810;
+  --color-filter-active: #00F5FF;
+  --color-filter-active-hover: #7FFFD4;
+  --border-filter-active: rgba(0, 245, 255, 0.25);
+
+  /* index.css page-level tokens */
+  --bg: #080810;
+  --border: #2A1A2E;
+  --text: #E4B4D8;
+  --text-h: #F9FAFB;
+  --code-bg: #0D0D14;
+  color-scheme: dark;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(247, 37, 133, 0.15);
+  --shadow-md: 0 8px 24px rgba(247, 37, 133, 0.15);
+  --shadow-modal-mobile: 0 -4px 24px rgba(0, 0, 0, 0.7);
+  --shadow-modal-desktop: 0 8px 32px rgba(0, 0, 0, 0.8);
+  --backdrop-overlay: rgba(0, 0, 0, 0.75);
+  --backdrop-overlay-dark: rgba(0, 0, 0, 0.85);
+}

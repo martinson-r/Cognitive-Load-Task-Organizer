@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useFocusTrap } from "../hooks/useFocusTrap.ts";
+import { useTheme, THEMES, THEME_LABELS } from "../context/ThemeContext";
 import "../styles/settings-modal.css";
 
 interface SettingsModalProps {
@@ -11,6 +12,7 @@ interface SettingsModalProps {
 
 function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: SettingsModalProps) {
   const modalRef = useRef<HTMLDivElement>(null);
+  const { theme, setTheme } = useTheme();
   useFocusTrap(modalRef);
 
   useEffect(() => {
@@ -39,6 +41,21 @@ function SettingsModal({ onClose, onExport, onImportFile, onClearAllTasks }: Set
             ✕
           </button>
         </div>
+
+        <section className="settings-modal__section">
+          <h2 className="settings-modal__section-title">Appearance</h2>
+          <p className="settings-modal__section-desc">Choose how the app looks.</p>
+          <select
+            className="settings-select"
+            value={theme}
+            onChange={(e) => setTheme(e.target.value as typeof theme)}
+            aria-label="Theme"
+          >
+            {THEMES.map((t) => (
+              <option key={t} value={t}>{THEME_LABELS[t]}</option>
+            ))}
+          </select>
+        </section>
 
         <section className="settings-modal__section">
           <h2 className="settings-modal__section-title">Data</h2>
