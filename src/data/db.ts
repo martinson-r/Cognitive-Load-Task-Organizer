@@ -1,5 +1,6 @@
 import { openDB, IDBPDatabase } from 'idb';
 import { Task } from '../types';
+import { ColorPair } from '../constants/TaskOptions';
 
 const DB_NAME = 'cognitive-load-db';
 const TASK_STORE = 'tasks';
@@ -55,4 +56,35 @@ export async function getCustomContexts(): Promise<string[]> {
 
 export async function saveCustomContexts(values: string[]): Promise<void> {
   return saveSetting('customContexts', values);
+}
+
+// ── Context color overrides ────────────────────────────────────────────────
+
+export async function getContextColorOverrides(): Promise<Record<string, ColorPair>> {
+  return getSetting<Record<string, ColorPair>>('contextColorOverrides', {});
+}
+
+export async function saveContextColorOverrides(overrides: Record<string, ColorPair>): Promise<void> {
+  return saveSetting('contextColorOverrides', overrides);
+}
+
+// ── Custom color palette ───────────────────────────────────────────────────
+
+export async function getCustomColorPalette(): Promise<ColorPair[]> {
+  return getSetting<ColorPair[]>('customColorPalette', []);
+}
+
+export async function saveCustomColorPalette(palette: ColorPair[]): Promise<void> {
+  return saveSetting('customColorPalette', palette);
+}
+
+// ── Hidden default contexts ────────────────────────────────────────────────
+// Tracks which DEFAULT_CONTEXT_OPTIONS the user has deleted.
+
+export async function getHiddenDefaultContexts(): Promise<string[]> {
+  return getSetting<string[]>('hiddenDefaultContexts', []);
+}
+
+export async function saveHiddenDefaultContexts(values: string[]): Promise<void> {
+  return saveSetting('hiddenDefaultContexts', values);
 }

@@ -1,7 +1,10 @@
 import { useEffect, useRef } from "react";
 import { useFocusTrap } from "../hooks/useFocusTrap.ts";
 import "../styles/task-form.css";
-import { LOAD_PILL_COLORS, PRIORITY_PILL_COLORS, getContextColor, LOAD_OPTIONS, PRIORITY_OPTIONS } from "../constants/TaskOptions";
+import {
+  LOAD_PILL_COLORS, PRIORITY_PILL_COLORS, getContextColor,
+  LOAD_OPTIONS, PRIORITY_OPTIONS, ColorPair,
+} from "../constants/TaskOptions";
 import { SegmentGroup } from "./SegmentGroup";
 import { useUIStore } from "../store/useUIStore";
 import { useTaskStore } from "../store/useTaskStore";
@@ -12,8 +15,11 @@ interface EditTaskModalProps {
 }
 
 function EditTaskModal({ contextOptions }: EditTaskModalProps) {
-  const { editDraft, updateEditDraft, cancelEdit } = useUIStore();
-  const { saveEdit } = useTaskStore();
+  const { editDraft, updateEditDraft, cancelEdit, openSettings } = useUIStore();
+  const {
+    saveEdit, contextColorOverrides, customColorPalette,
+    addCustomContext, setContextColorOverride,
+  } = useTaskStore();
 
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,6 +50,16 @@ function EditTaskModal({ contextOptions }: EditTaskModalProps) {
       context: editDraft.context,
     });
     cancelEdit();
+  }
+
+  async function handleQuickAddContext(name: string, color?: ColorPair) {
+    await addCustomContext(name);
+    if (color) await setContextColorOverride(name, color);
+  }
+
+  function handleManageContexts() {
+    cancelEdit();
+    openSettings();
   }
 
   return (
@@ -84,7 +100,13 @@ function EditTaskModal({ contextOptions }: EditTaskModalProps) {
             options={contextEditOptions}
             value={editDraft.context}
             onChange={(val) => updateEditDraft({ context: val })}
-            getOptionColor={(val) => getContextColor(val)}
+            getOptionColor={(val) => getContextColor(val, contextColorOverrides)}
+            quickAddProps={{
+              palette: customColorPalette,
+              onAdd: handleQuickAddContext,
+              onManage: handleManageContexts,
+              manageLabel: "Manage and Delete",
+            }}
           />
         </div>
 

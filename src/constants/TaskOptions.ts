@@ -138,8 +138,20 @@ function hashString(str: string): number {
   return Math.abs(hash);
 }
 
-export function getContextColor(context: string): ColorPair {
+/**
+ * Returns the color pair for a context.
+ *
+ * Priority order:
+ * 1. User override (from contextColorOverrides, if provided and present)
+ * 2. Preset CONTEXT_COLORS
+ * 3. CUSTOM_COLOR_POOL (deterministic hash)
+ */
+export function getContextColor(
+  context: string,
+  overrides?: Record<string, ColorPair>
+): ColorPair {
   if (!context) return CONTEXT_COLORS.general;
+  if (overrides?.[context]) return overrides[context];
   if (CONTEXT_COLORS[context]) return CONTEXT_COLORS[context];
   return CUSTOM_COLOR_POOL[hashString(context) % CUSTOM_COLOR_POOL.length];
 }

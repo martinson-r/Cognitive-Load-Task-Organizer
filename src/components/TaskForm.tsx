@@ -3,7 +3,7 @@ import { useFocusTrap } from "../hooks/useFocusTrap";
 import "../styles/task-form.css";
 import {
   LOAD_PILL_COLORS, PRIORITY_PILL_COLORS, getContextColor,
-  LOAD_SHORT, PRIORITY_SHORT,
+  LOAD_SHORT, PRIORITY_SHORT, ColorPair,
 } from "../constants/TaskOptions";
 import { SegmentGroup } from "./SegmentGroup";
 import { useTaskStore } from "../store/useTaskStore";
@@ -15,15 +15,16 @@ interface TaskFormProps {
 }
 
 function TaskForm({ contextOptions }: TaskFormProps) {
-  const { addTask, addCustomContext } = useTaskStore();
-  const { taskFormOpen, openTaskForm, closeTaskForm } = useUIStore();
+  const {
+    addTask, addCustomContext, setContextColorOverride,
+    contextColorOverrides, customColorPalette,
+  } = useTaskStore();
+  const { taskFormOpen, closeTaskForm, openSettings } = useUIStore();
 
   const [input, setInput] = useState("");
   const [load, setLoad] = useState<LoadLevel>("medium");
   const [priority, setPriority] = useState<PriorityLevel>("medium");
   const [context, setContext] = useState("general");
-  const [showCustomContextInput, setShowCustomContextInput] = useState(false);
-  const [newContextInput, setNewContextInput] = useState("");
 
   const modalRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
@@ -44,10 +45,6 @@ function TaskForm({ contextOptions }: TaskFormProps) {
 
   function handleClose() {
     closeTaskForm();
-    if (showCustomContextInput) {
-      setShowCustomContextInput(false);
-      setNewContextInput("");
-    }
   }
 
   async function handleSubmit(e: React.MouseEvent | React.KeyboardEvent) {
@@ -61,36 +58,26 @@ function TaskForm({ contextOptions }: TaskFormProps) {
     closeTaskForm();
   }
 
-  function handleContextChange(value: string) {
-    if (value === "__add_custom__") {
-      setShowCustomContextInput(true);
-      return;
-    }
-    setContext(value);
+  async function handleQuickAddContext(name: string, color?: ColorPair) {
+    await addCustomContext(name);
+    if (color) await setContextColorOverride(name, color);
   }
 
-  async function handleAddCustomContext() {
-    const trimmed = newContextInput.trim().toLowerCase();
-    if (!trimmed) return;
-    await addCustomContext(trimmed);
-    setContext(trimmed);
-    setNewContextInput("");
-    setShowCustomContextInput(false);
+  function handleManageContexts() {
+    handleClose();
+    openSettings();
   }
 
   const loadOptions = Object.entries(LOAD_SHORT).map(([value, label]) => ({ value, label }));
   const priorityOptions = Object.entries(PRIORITY_SHORT).map(([value, label]) => ({ value, label }));
-  const contextSegmentOptions = [
-    ...contextOptions.map((opt) => ({ value: opt, label: opt })),
-    { value: "__add_custom__", label: "+ add custom" },
-  ];
+  const contextSegmentOptions = contextOptions.map((opt) => ({ value: opt, label: opt }));
 
   return (
     <>
       <button
         type="button"
         className="task-form-trigger"
-        onClick={openTaskForm}
+        onClick={() => useUIStore.getState().openTaskForm()}
         aria-label="Add a task"
       >
         <span className="task-form-trigger__placeholder">Add a task</span>
@@ -101,7 +88,7 @@ function TaskForm({ contextOptions }: TaskFormProps) {
           className="task-modal-backdrop"
           onClick={(e) => { if (e.target === e.currentTarget) handleClose(); }}
         >
-          <div className="task-modal" role="dialog" aria-modal="true" aria-label="Add task" ref={modalRef}>
+          <div className="task-modal" role="dialog" aria-modal="true" aria-label="New task" ref={modalRef}>
             <div className="task-modal__header">
               <input
                 ref={inputRef}
@@ -133,24 +120,16 @@ function TaskForm({ contextOptions }: TaskFormProps) {
                 label="Context"
                 options={contextSegmentOptions}
                 value={context}
-                onChange={handleContextChange}
-                getOptionColor={(val) => val === "__add_custom__" ? null : getContextColor(val)}
+                onChange={setContext}
+                getOptionColor={(val) => getContextColor(val, contextColorOverrides)}
+                quickAddProps={{
+                  palette: customColorPalette,
+                  onAdd: handleQuickAddContext,
+                  onManage: handleManageContexts,
+                  manageLabel: "Manage and Delete",
+                }}
               />
             </div>
-
-            {showCustomContextInput && (
-              <div className="task-modal__custom-context">
-                <input
-                  value={newContextInput}
-                  onChange={(e) => setNewContextInput(e.target.value)}
-                  placeholder="New context name..."
-                  autoFocus
-                  onKeyDown={(e) => { if (e.key === "Enter") { e.preventDefault(); handleAddCustomContext(); } }}
-                />
-                <button type="button" onClick={handleAddCustomContext}>Save</button>
-                <button type="button" onClick={() => { setShowCustomContextInput(false); setNewContextInput(""); }}>Cancel</button>
-              </div>
-            )}
 
             <button className="task-modal__save" onClick={handleSubmit} disabled={!input.trim()}>
               Save
