@@ -1,0 +1,64 @@
+/*
+ * Theme overrides
+ *
+ * :root in App.css holds the Default theme baseline.
+ * Each [data-theme] block here overrides only the tokens that differ.
+ *
+ * Planned themes:
+ *   default          — :root baseline, no overrides needed
+ *   default-dark     — dark mode inversion of Default
+ *   low-stimulation  — monochrome, no animations (light + dark)
+ *   brain-candy      — high stimulation, custom icons/animations (light + dark)
+ *   hotdog           — Windows Hot Dog Stand tribute, no dark mode
+ *
+ * Low Stimulation and Brain Candy will also require ThemeContext structural
+ * changes (disabling animations, swapping icon sets). Default, Default Dark,
+ * and Hotdog are CSS-only — ThemeContext is a no-op for them.
+ */
+
+/* ── Default Dark ─────────────────────────────────────────────────────────── */
+
+[data-theme="default-dark"] {
+  /* Text */
+  --text-primary: #F9FAFB;
+  --text-secondary: #9CA3AF;
+  --text-tertiary: #6B7280;
+  --text-highlight: #111827;
+  --text-button-subtle: #9CA3AF;
+
+  /* Surfaces */
+  --surface-base: #111827;
+  --surface-subtle: #1F2937;
+  --surface-light: #374151;
+  --surface-muted: #4B5563;
+  --surface-toggle-on: #F9FAFB;
+  --surface-toggle-off: #374151;
+  --surface-toggle-hover: #E5E7EB;
+
+  /* Borders */
+  --border-default: #374151;
+  --border-strong: #4B5563;
+  --border-button-subtle: #374151;
+  --border-input: #4B5563;
+
+  /* Icons */
+  --icon: #9CA3AF;
+  --icon-hover: #F9FAFB;
+  --icon-subtle: #6B7280;
+
+  /* Focus */
+  --focus-ring: #60A5FA;
+
+  /* Feature: Snoozed tasks */
+  --surface-snoozed: #1A2A3A;
+  --border-snoozed: #2D4A5E;
+
+  /* Feature: Active filters */
+  --surface-filter-active: #1F2937;
+  --surface-filter-wrapper: #1A2234;
+  --color-filter-active: #60A5FA;
+  --color-filter-active-hover: #93C5FD;
+
+  /* Feature: Keystone task */
+  --color-keystone: #1E3A5F;
+}

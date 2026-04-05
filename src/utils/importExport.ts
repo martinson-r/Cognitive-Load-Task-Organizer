@@ -18,6 +18,7 @@ const SETTING_KEYS = [
   'momentumRunActive',
   'keystoneTaskId',
   'customContexts',
+  'theme',
 ] as const;
 
 type SettingKey = typeof SETTING_KEYS[number];
