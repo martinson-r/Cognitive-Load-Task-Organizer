@@ -109,3 +109,98 @@ html[data-theme="default-dark"] {
   --backdrop-overlay: rgba(0, 0, 0, 0.65);
   --backdrop-overlay-dark: rgba(0, 0, 0, 0.75);
 }
+
+/* ── Hero (Just Shapes & Beats) ───────────────────────────────────────────── */
+
+html[data-theme="hero"] {
+  /* Text */
+  --text-primary: #F9FAFB;
+  --text-secondary: #E4B4D8;
+  --text-tertiary: #9C7A8E;
+  --text-highlight: #0D0D14;
+  --text-button-subtle: #E4B4D8;
+
+  /* Surfaces — near-black with purple undertone */
+  --surface-base: #0D0D14;
+  --surface-subtle: #080810;
+  --surface-light: #1A1A2E;
+  --surface-muted: #2A1A2E;
+  --surface-toggle-on: #F72585;
+  --surface-toggle-off: #2A1A2E;
+  --surface-toggle-hover: #C91A6A;
+  --surface-button-primary: #00F5FF;
+  --surface-button-primary-hover: #00CFCF;
+
+  /* Borders */
+  --border-default: #2A1A2E;
+  --border-strong: #4A1942;
+  --border-button-subtle: #2A1A2E;
+  --border-input: #4A1942;
+
+  /* Priority — cyan / magenta / hot pink */
+  --priority-low: #7FFFD4;
+  --priority-low-bg: #0A2A2A;
+  --priority-medium: #00CFCF;
+  --priority-medium-bg: #0A1F2A;
+  --priority-high: #F72585;
+  --priority-high-bg: #2A0A1A;
+
+  /* Cognitive Load — cyan through magenta */
+  --load-low: #00F5FF;
+  --load-low-bg: #002A2E;
+  --load-medium: #BF5AF2;
+  --load-medium-bg: #1A0A2E;
+  --load-high: #F72585;
+  --load-high-bg: #2A0014;
+
+  /* Actions */
+  --action-edit: #00F5FF;
+  --action-delete: #F72585;
+
+  /* Icons */
+  --icon: #E4B4D8;
+  --icon-hover: #F9FAFB;
+  --icon-subtle: #9C7A8E;
+
+  /* Interactive & Focus */
+  --focus-ring: #F72585;
+  --focus-ring-subtle: rgba(247, 37, 133, 0.25);
+  --color-active-dark: #FF69B4;
+
+  /* Semantic */
+  --color-danger: #F72585;
+  --color-danger-bg: #2A0014;
+  --color-danger-border: #6B0030;
+  --color-warning: #FFD700;
+  --color-link: #00F5FF;
+  --color-link-hover: #7FFFD4;
+  --color-success: #00F5FF;
+  --color-keystone: #F72585;
+
+  /* Feature: Snoozed tasks */
+  --surface-snoozed: #0A1A2E;
+  --border-snoozed: #1A3A5E;
+
+  /* Feature: Active filters */
+  --surface-filter-active: rgba(0, 245, 255, 0.1);
+  --surface-filter-wrapper: #080810;
+  --color-filter-active: #00F5FF;
+  --color-filter-active-hover: #7FFFD4;
+  --border-filter-active: rgba(0, 245, 255, 0.25);
+
+  /* index.css page-level tokens */
+  --bg: #080810;
+  --border: #2A1A2E;
+  --text: #E4B4D8;
+  --text-h: #F9FAFB;
+  --code-bg: #0D0D14;
+  color-scheme: dark;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(247, 37, 133, 0.15);
+  --shadow-md: 0 8px 24px rgba(247, 37, 133, 0.15);
+  --shadow-modal-mobile: 0 -4px 24px rgba(0, 0, 0, 0.7);
+  --shadow-modal-desktop: 0 8px 32px rgba(0, 0, 0, 0.8);
+  --backdrop-overlay: rgba(0, 0, 0, 0.75);
+  --backdrop-overlay-dark: rgba(0, 0, 0, 0.85);
+}

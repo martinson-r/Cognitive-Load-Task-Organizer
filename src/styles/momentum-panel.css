@@ -48,9 +48,9 @@
 }
 
 .momentum-energy-btn.is-selected {
-  background: var(--surface-toggle-on);
+  background: var(--surface-button-primary);
   color: var(--text-highlight);
-  border-color: var(--surface-toggle-on);
+  border-color: var(--surface-button-primary);
   font-weight: 600;
 }
 
@@ -73,13 +73,13 @@
 }
 
 .momentum-btn--primary {
-  background: var(--surface-toggle-on);
+  background: var(--surface-button-primary);
   color: var(--text-highlight);
-  border-color: var(--surface-toggle-on);
+  border-color: var(--surface-button-primary);
 }
 
 .momentum-btn--primary:hover {
-  background: var(--surface-toggle-hover);
+  background: var(--surface-button-primary-hover);
 }
 
 .momentum-panel__actions {

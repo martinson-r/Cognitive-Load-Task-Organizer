@@ -3,12 +3,13 @@ import { getSetting, saveSetting } from '../data/db';
 
 // ── Types ──────────────────────────────────────────────────────────────────
 
-export const THEMES = ['default', 'default-dark'] as const;
+export const THEMES = ['default', 'default-dark', 'hero'] as const;
 export type Theme = typeof THEMES[number];
 
 export const THEME_LABELS: Record<Theme, string> = {
   'default': 'Default',
   'default-dark': 'Default Dark',
+  'hero': 'Hero',
 };
 
 // localStorage key — must match the inline script in index.html

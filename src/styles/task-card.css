@@ -4,12 +4,6 @@
   margin: 0;
 }
 
-.task-list-section {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-
 .task-item {
   display: flex;
   justify-content: space-between;
@@ -188,13 +182,13 @@
 }
 
 .save-button {
-  background: var(--surface-toggle-on);
+  background: var(--surface-button-primary);
   color: var(--text-highlight);
-  border-color: var(--surface-toggle-on);
+  border-color: var(--surface-button-primary);
 }
 
 .save-button:hover {
-  background: var(--surface-toggle-hover);
+  background: var(--surface-button-primary-hover);
 }
 
 .cancel-button {
@@ -306,6 +300,7 @@
 /* ── Completed task pagination ────────────────────────────────────────────── */
 
 .completed-tasks-count {
+  margin: var(--space-1) 0 0;
   font-size: var(--font-chip-mobile-size);
   line-height: var(--font-chip-mobile-line);
   color: var(--text-secondary);
