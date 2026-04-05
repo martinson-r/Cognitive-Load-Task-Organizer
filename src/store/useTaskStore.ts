@@ -270,9 +270,23 @@ export const useTaskStore = create<TaskStore>((set, get) => ({
   },
 
   removeFromPalette: async (index) => {
-    const { customColorPalette } = get();
+    const { customColorPalette, contextColorOverrides } = get();
+    const removedPair = customColorPalette[index];
     const updated = customColorPalette.filter((_, i) => i !== index);
     await saveCustomColorPalette(updated);
-    set({ customColorPalette: updated });
+
+    // Remove any context overrides whose colors exactly match the deleted pair.
+    // Affected contexts fall back to their preset/pool color automatically.
+    const updatedOverrides = { ...contextColorOverrides };
+    let changed = false;
+    for (const [ctx, color] of Object.entries(updatedOverrides)) {
+      if (color.bg === removedPair.bg && color.text === removedPair.text) {
+        delete updatedOverrides[ctx];
+        changed = true;
+      }
+    }
+    if (changed) await saveContextColorOverrides(updatedOverrides);
+
+    set({ customColorPalette: updated, ...(changed && { contextColorOverrides: updatedOverrides }) });
   },
 }));
