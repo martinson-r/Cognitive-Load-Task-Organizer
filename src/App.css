@@ -585,7 +585,9 @@ button {
 /* ── Dark Mode Theme ─────────────────────────────────────────────────────── */
 
 @media (prefers-color-scheme: dark) {
-  :root {
+
+  /* explicitly bypass data-theme settings because user has expressly overriden styling for a reason */
+  :root:not([data-theme]) {
     /* ── Text ── */
     --text-primary: #F9FAFB;
     --text-secondary: #D1D5DB;

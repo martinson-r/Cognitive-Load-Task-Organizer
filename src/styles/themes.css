@@ -1,8 +1,8 @@
 /*
  * Theme overrides
  *
- * :root in App.css holds the Default theme baseline.
- * Each [data-theme] block here overrides only the tokens that differ.
+ * :root in App.css holds the Default (light) theme baseline.
+ * Each [data-theme] block overrides only the tokens that differ.
  *
  * Planned themes:
  *   default          — :root baseline, no overrides needed
@@ -18,22 +18,22 @@
 
 /* ── Default Dark ─────────────────────────────────────────────────────────── */
 
-[data-theme="default-dark"] {
+html[data-theme="default-dark"] {
   /* Text */
   --text-primary: #F9FAFB;
-  --text-secondary: #9CA3AF;
-  --text-tertiary: #6B7280;
+  --text-secondary: #D1D5DB;
+  --text-tertiary: #9CA3AF;
   --text-highlight: #111827;
   --text-button-subtle: #9CA3AF;
 
   /* Surfaces */
-  --surface-base: #111827;
-  --surface-subtle: #1F2937;
+  --surface-base: #1F2937;
+  --surface-subtle: #111827;
   --surface-light: #374151;
   --surface-muted: #4B5563;
-  --surface-toggle-on: #F9FAFB;
-  --surface-toggle-off: #374151;
-  --surface-toggle-hover: #E5E7EB;
+  --surface-toggle-on: #60A5FA;
+  --surface-toggle-off: #4B5563;
+  --surface-toggle-hover: #3B82F6;
 
   /* Borders */
   --border-default: #374151;
@@ -41,24 +41,71 @@
   --border-button-subtle: #374151;
   --border-input: #4B5563;
 
+  /* Priority */
+  --priority-low: #94A3B8;
+  --priority-low-bg: #1E293B;
+  --priority-medium: #818CF8;
+  --priority-medium-bg: #1E1B4B;
+  --priority-high: #E879F9;
+  --priority-high-bg: #2D1B35;
+
+  /* Cognitive Load */
+  --load-low: #60A5FA;
+  --load-low-bg: #1E3A5F;
+  --load-medium: #FB923C;
+  --load-medium-bg: #431407;
+  --load-high: #F87171;
+  --load-high-bg: #450A0A;
+
+  /* Actions */
+  --action-edit: #4ADE80;
+  --action-delete: #F87171;
+
   /* Icons */
   --icon: #9CA3AF;
   --icon-hover: #F9FAFB;
   --icon-subtle: #6B7280;
 
-  /* Focus */
+  /* Interactive & Focus */
   --focus-ring: #60A5FA;
+  --focus-ring-subtle: rgba(96, 165, 250, 0.25);
+  --color-active-dark: #93C5FD;
+
+  /* Semantic */
+  --color-danger: #FCA5A5;
+  --color-danger-bg: #450A0A;
+  --color-danger-border: #7F1D1D;
+  --color-warning: #FCD34D;
+  --color-link: #60A5FA;
+  --color-link-hover: #93C5FD;
+  --color-success: #4ADE80;
+  --color-keystone: #FFC353;
 
   /* Feature: Snoozed tasks */
-  --surface-snoozed: #1A2A3A;
-  --border-snoozed: #2D4A5E;
+  --surface-snoozed: #1E3A5F;
+  --border-snoozed: #2D4A6E;
 
   /* Feature: Active filters */
-  --surface-filter-active: #1F2937;
-  --surface-filter-wrapper: #1A2234;
-  --color-filter-active: #60A5FA;
-  --color-filter-active-hover: #93C5FD;
+  --surface-filter-active: rgba(55, 48, 163, 0.3);
+  --surface-filter-wrapper: #111827;
+  --color-filter-active: #FCA5A5;
+  --color-filter-active-hover: #FECACA;
+  --border-filter-active: rgba(252, 165, 165, 0.2);
 
-  /* Feature: Keystone task */
-  --color-keystone: #1E3A5F;
+
+  /* index.css page-level tokens */
+  --bg: #111827;
+  --border: #374151;
+  --text: #D1D5DB;
+  --text-h: #F9FAFB;
+  --code-bg: #1F2937;
+  color-scheme: dark;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-modal-mobile: 0 -4px 24px rgba(0, 0, 0, 0.6);
+  --shadow-modal-desktop: 0 8px 32px rgba(0, 0, 0, 0.7);
+  --backdrop-overlay: rgba(0, 0, 0, 0.65);
+  --backdrop-overlay-dark: rgba(0, 0, 0, 0.75);
 }
